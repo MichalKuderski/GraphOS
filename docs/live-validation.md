@@ -1,5 +1,9 @@
 # Live generation and repair validation
 
+This is the historical static-web v1 milestone. Its eight-check results do not
+certify the expanded accessibility gates or newer profiles. See the
+[evaluation pilot](evaluation-pilot.md) for the subsequent protocol.
+
 On 2026-11-07 GraphOS completed a real model-generated task-list app and a separate
 controlled persistence repair. Both resulting candidates passed all eight trusted
 Docker/Chromium checks and were exported with immutable release manifests.

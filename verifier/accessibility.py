@@ -54,9 +54,11 @@ def tab_to(page, locator, max_tabs=60):
     """Reach a target using actual Tab events, never locator.focus()."""
     assert locator.count() == 1 and locator.is_visible(), "Keyboard target is missing or hidden"
     for _ in range(max_tabs):
+        # A seed or app may have focused a tabindex=-1 control programmatically.
+        # Require fresh sequential navigation even when the target starts focused.
+        page.keyboard.press("Tab")
         if locator.evaluate("el => el === document.activeElement"):
             return
-        page.keyboard.press("Tab")
     raise AssertionError("Control cannot be reached with Tab within the bounded traversal")
 
 
@@ -240,9 +242,21 @@ def static_web_accessibility_checks():
 
 
 def _controls(page):
-    candidates = page.locator("input:not([type=hidden]),button,select,textarea,a[href],[tabindex]")
+    interactive = ("input:not([type=hidden]),button,select,textarea,a[href],"
+                   "[role=button],[role=checkbox],[role=combobox],[role=link],"
+                   "[role=listbox],[role=menuitem],[role=menuitemcheckbox],"
+                   "[role=menuitemradio],[role=option],[role=radio],[role=scrollbar],"
+                   "[role=searchbox],[role=slider],[role=spinbutton],[role=switch],"
+                   "[role=tab],[role=textbox],[role=treeitem]")
+    candidates = page.locator(interactive + ",[tabindex]")
     controls = [candidates.nth(index) for index in range(candidates.count())
-                if candidates.nth(index).is_visible() and candidates.nth(index).is_enabled()]
+                if candidates.nth(index).is_visible() and candidates.nth(index).is_enabled()
+                and candidates.nth(index).evaluate(
+                    "(el, selector) => el.matches(selector) || el.tabIndex >= 0", interactive)]
+    # Negative tabindex is legitimate on structural programmatic focus targets
+    # such as main headings reached by skip links. Native/custom interactive
+    # controls remain in scope even with tabindex=-1: filtering those out would
+    # conceal keyboard regressions. Roving-tabindex widgets need another profile.
     assert controls, "No interactive controls found for accessibility checks"
     assert len(controls) <= 40, "Interactive control count exceeds this profile's bounded traversal"
     return controls

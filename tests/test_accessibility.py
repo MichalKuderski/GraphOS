@@ -63,7 +63,7 @@ import json, sys, threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 sys.path.insert(0, '/verifier')
-from accessibility import static_web_accessibility_checks
+from accessibility import static_web_accessibility_checks, common_accessibility_checks
 from playwright.sync_api import sync_playwright
 class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *_): pass
@@ -72,6 +72,10 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 origin = f'http://127.0.0.1:{server.server_port}'
 spec = json.load(open('/cases/spec.json'))
 checks = dict(static_web_accessibility_checks())
+def seed(page):
+    page.get_by_role('textbox', name='New task', exact=True).fill('Keyboard scope')
+    page.get_by_role('button', name='Add task', exact=True).click()
+checks.update(('common_' + name, check) for name, check in common_accessibility_checks(seed))
 results = []
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True, chromium_sandbox=False,
@@ -131,6 +135,13 @@ def accessibility_browser_results():
          "css": "body{overflow-x:hidden}li label span{white-space:nowrap}"},
         {"name": "incomplete_contrast", "checks": ["axe_populated"],
          "css": "li button{color:#111;background:linear-gradient(45deg,#000,#fff)}"},
+        {"name": "programmatic_target",
+         "checks": ["common_keyboard_navigation", "common_visible_focus"],
+         "html_replace": ["<main>", '<main id="content" tabindex="-1">']},
+        {"name": "negative_native_tabindex", "checks": ["common_keyboard_navigation"],
+         "html_replace": ['id="new-task"', 'id="new-task" tabindex="-1"']},
+        {"name": "negative_custom_tabindex", "checks": ["common_keyboard_navigation"],
+         "html_replace": ['</main>', '<div role="button" tabindex="-1">More</div></main>']},
     ]
     with tempfile.TemporaryDirectory(prefix="graphos-a11y-") as temporary:
         directory = Path(temporary)
@@ -151,6 +162,8 @@ def accessibility_browser_results():
                     content += "\n" + case.get("js", "")
                 if name == "index.html" and case.get("unlabel"):
                     content = content.replace('for="new-task"', '')
+                if name == "index.html" and case.get("html_replace"):
+                    content = content.replace(*case["html_replace"])
                 (candidate / name).write_text(content)
                 (candidate / name).chmod(0o444)
         (cases / "spec.json").write_text(json.dumps(spec))
@@ -204,6 +217,14 @@ def test_valid_static_fixture_passes_accessibility(accessibility_browser_results
 
 
 @pytest.mark.sandbox
+@pytest.mark.parametrize("check", ["common_keyboard_navigation", "common_visible_focus"])
+def test_structural_programmatic_focus_target_is_not_an_interactive_control(
+        accessibility_browser_results, check):
+    result = accessibility_browser_results[("programmatic_target", check)]
+    assert result["passed"], result
+
+
+@pytest.mark.sandbox
 @pytest.mark.parametrize("case,check,reason", [
     ("red_delete", "axe_populated", "violations:color-contrast"),
     ("gray_completed", "axe_completed", "violations:color-contrast"),
@@ -215,6 +236,8 @@ def test_valid_static_fixture_passes_accessibility(accessibility_browser_results
     ("wide_layout", "mobile_reflow", "Mobile reflow failed"),
     ("clipped_text", "mobile_reflow", "Mobile reflow failed"),
     ("incomplete_contrast", "axe_populated", "incomplete:color-contrast"),
+    ("negative_native_tabindex", "common_keyboard_navigation", "cannot be reached with Tab"),
+    ("negative_custom_tabindex", "common_keyboard_navigation", "cannot be reached with Tab"),
 ])
 def test_defective_fixture_is_rejected_for_the_expected_reason(
         accessibility_browser_results, case, check, reason):

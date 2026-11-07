@@ -95,5 +95,3 @@ CHECKS = [("accessible_structure", structure), ("add_task", addition),
           ("toggle_completion", completion), ("filter_tasks", filters),
           ("delete_task", deletion), ("local_storage_reload", persistence),
           ("reject_empty_input", empty_input), ("literal_html_input", literal_input)]
-
-

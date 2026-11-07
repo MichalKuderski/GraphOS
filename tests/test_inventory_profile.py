@@ -49,7 +49,7 @@ def test_inventory_fixture_passes_real_trusted_browser_suite(inventory_sandbox):
     profile = get_profile("local-inventory")
     report = verify_bundle(fixture_files("local-inventory"), profile["acceptance_criteria"],
                            profile_id="local-inventory")
-    assert report["passed"], report["checks"]
+    assert report["passed"], [check for check in report["checks"] if not check["passed"]]
     assert [check["name"] for check in report["checks"]] == profile["required_checks"]
 
 
@@ -63,5 +63,6 @@ def test_inventory_browser_suite_rejects_fractional_quantity_mutant(inventory_sa
     report = verify_bundle(files, profile["acceptance_criteria"], profile_id="local-inventory")
     assert not report["passed"], "Fractional inventory quantities were incorrectly certified"
     checks = {check["name"]: check for check in report["checks"]}
-    assert "reject_invalid_input" in checks, report["checks"]
-    assert checks["reject_invalid_input"]["passed"] is False, report["checks"]
+    failed = [check for check in report["checks"] if not check["passed"]]
+    assert "reject_invalid_input" in checks, failed
+    assert checks["reject_invalid_input"]["passed"] is False, failed

@@ -208,7 +208,7 @@ def main() -> None:
     sub.add_parser("migrate")
     sub.add_parser("doctor")
     submit = sub.add_parser("submit")
-    submit.add_argument("--name", default="GraphOS task-list application")
+    submit.add_argument("--name", default="GraphOS offline application")
     submit.add_argument("--profile", choices=["static-web", "local-notes", "local-inventory"], default="static-web")
     submit.add_argument("--budget", type=int, default=1_000_000, help="Maximum microdollars")
     run = sub.add_parser("execute")
