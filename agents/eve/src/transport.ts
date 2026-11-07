@@ -41,7 +41,12 @@ export function eveTransport(baseUrl: string, token: string): AgentTransport {
   return {
     async create(request, signal) {
       const {session, delivery} = await client.sessions.create({
-        message: JSON.stringify(request), outputSchema: GeneratedSchema, signal, reconnect: false,
+        // eve ends each HTTP stream lease after 60 seconds while the same turn
+        // can still be running. Reconnect only its read-only stream GET from the
+        // saved cursor; never create/send another paid turn. The caller's fixed
+        // AbortSignal remains the deadline across every connection.
+        message: JSON.stringify(request), outputSchema: GeneratedSchema, signal,
+        reconnect: {maxAttempts: 3, baseDelayMs: 25, maxDelayMs: 250},
       });
       const settleControl = async (kind: "cancel" | "end", controlSignal: AbortSignal) => {
         const command = await (session as ClientSession)[kind]({signal: controlSignal});
