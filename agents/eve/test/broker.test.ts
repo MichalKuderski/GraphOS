@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import type { SessionStreamEvent } from "eve/client";
+import {z} from "zod";
 import { AdapterError, assertGatewayAuth, assertLiveAuthorization, brokerSettings, MAX_FILE_BYTES, MAX_PROMPT_BYTES,
-  MODEL_ID, parseRequest, validateGenerated } from "../src/contracts.js";
+  GeneratedSchema, MODEL_ID, parseRequest, validateGenerated } from "../src/contracts.js";
 import { generate, usageFromEvents } from "../src/broker.js";
 import { boundedMiddleware } from "../src/model.js";
 import type { AgentTransport } from "../src/transport.js";
@@ -22,7 +23,8 @@ function events(costUsd: number | undefined = 0.0010001): SessionStreamEvent[] {
   // Only provider transport observations are mocked; broker/accounting implementation is real.
   return [{type:"model.started",data:{runId:"m1",modelId:MODEL_ID,attempt:0}},
     {type:"usage.recorded",data:{kind:"model",owner:{runId:"m1"},usage:{inputTokens:100,
-      outputTokens:200,cacheReadTokens:10,cacheWriteTokens:0,costUsd}}}] as SessionStreamEvent[];
+      outputTokens:200,cacheReadTokens:10,cacheWriteTokens:0,costUsd}}},
+    {type:"model.settled",data:{runId:"m1",outcome:"completed",finishReason:"stop"}}] as SessionStreamEvent[];
 }
 function mockTransport(options: {cost?: number; data?: unknown; fail?: boolean; missingCost?: boolean} = {}) {
   const calls: string[] = [];
@@ -112,9 +114,11 @@ test("explicit Gateway and broker credentials required; cleartext remote URL for
   assert.equal(brokerSettings({GRAPHOS_EVE_TOKEN:"x".repeat(32)}).baseUrl,"http://127.0.0.1:3001");
 });
 test("model middleware constrains actual request tokens and prompt size", async () => {
-  const transform=boundedMiddleware.transformParams as unknown as (value:{params:{prompt:unknown,maxOutputTokens:number}})=>Promise<{maxOutputTokens:number}>;
-  assert.equal((await transform({params:{prompt:[],maxOutputTokens:1000000}})).maxOutputTokens,16384);
-  await assert.rejects(transform({params:{prompt:"a".repeat(MAX_PROMPT_BYTES+1),maxOutputTokens:1}}), /model_context_limit/);
+  const transform=boundedMiddleware.transformParams as unknown as (value:{params:Record<string,unknown>})=>Promise<{maxOutputTokens:number}>;
+  const {$schema:_version,...inputSchema}=z.toJSONSchema(GeneratedSchema,{target:"draft-7"});
+  const tools=[{type:"function",name:"eve__reply",inputSchema}];
+  assert.equal((await transform({params:{prompt:[],tools,maxOutputTokens:1000000}})).maxOutputTokens,16384);
+  await assert.rejects(transform({params:{prompt:"a".repeat(MAX_PROMPT_BYTES+1),tools,maxOutputTokens:1}}), /model_context_limit/);
 });
 test("accounting uses provider cost rounded up and rejects incomplete, duplicate or retry-ambiguous reports", () => {
   assert.equal(usageFromEvents(events()).actual_cost_microdollars,1001);
@@ -134,10 +138,10 @@ test("successful result is unverified model provenance, not model-supplied accou
   assert.deepEqual(calls,["create","result","events","end"]);
 });
 test("transport failure requests cancellation, closes session and hides provider error", async () => {
-  const {transport,calls}=mockTransport({fail:true});
+  const {transport,calls}=mockTransport({fail:true,missingCost:true});
   await assert.rejects(generate(parseRequest(JSON.stringify(requestInput())),transport),
     error=>error instanceof AdapterError && error.code==="eve_transport_or_runtime_error" && !error.costKnown && !error.message.includes("SECRET"));
-  assert.deepEqual(calls,["create","result","cancel","end"]);
+  assert.deepEqual(calls,["create","result","cancel","end","events"]);
 });
 test("over-reservation and missing-cost runs cannot produce a successful bundle", async () => {
   const over=mockTransport({cost:2});

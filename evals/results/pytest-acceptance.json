@@ -1,27 +1,27 @@
 {
   "schema_version": 1,
-  "started_at": "2026-11-07T18:59:16.436783+00:00",
+  "started_at": "2026-11-07T20:24:46.301890+00:00",
   "mode": "integration-fixture",
   "cases": [
     {
       "id": "happy_fixture_release",
       "status": "PASS",
       "details": {
-        "run_id": "47442a1c-e67d-4e46-b584-a6459cf9963c",
+        "run_id": "59d2d987-b36d-419d-8af8-93659ba07623",
         "release": {
-          "run_id": "47442a1c-e67d-4e46-b584-a6459cf9963c",
+          "run_id": "59d2d987-b36d-419d-8af8-93659ba07623",
           "revision": 1,
-          "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
+          "spec_hash": "68bf69bc28f654b1cedecf410200d10e13c75e027da880d3f43c23c9b58e4650",
           "profile": "static-web",
           "tasks": [
             {
-              "task_id": "9bea42d8-a3f5-4001-9c92-b96cb19bb339",
+              "task_id": "f881d270-7165-495d-844e-25d4cb2e68c3",
               "task_key": "app",
-              "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
-              "evidence_hash": "fc04cbec6beba04cb119c72c3a27461325a039b64f5d68d0e8c6ce4b7ff5ec04",
-              "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
-              "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-              "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+              "candidate_hash": "84af54bfb9ce17dc597c9a3f446970a7a640020dcb4818e5f7c50b2c005612fd",
+              "evidence_hash": "ac81d2b4fe83ee568b3dfd3ffd688a078a02b9f8896ee61181a898cd477ff644",
+              "input_hash": "c0960244e2abd086e413420f56a9cb54cdc10e0f33938fb6523809343e0a1831",
+              "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+              "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
               "verifier_id": "verifier:acceptance-real-verifier-worker",
               "producer_id": "builder:acceptance-real-builder-worker",
               "provenance": {
@@ -29,13 +29,13 @@
                 "usage": {
                   "actual_cost_microdollars": 0
                 },
-                "fixture": "static-web-task-list-v1",
+                "fixture": "static-web-v2",
                 "ai_generated": false
               }
             }
           ],
-          "manifest_hash": "1aa58fdbe3c0ab1743c3246a2071ee9e220ce300e84e2d2a86d68a3d71c5f449",
-          "release_id": "43fbbdd2-6666-456d-a0f2-8aaec4841d66",
+          "manifest_hash": "c8153ff436f2ec66e5d0b4074c3ed1755329a8610e7e414bcbaa8cbc8f1a88db",
+          "release_id": "d03122ae-9c66-4cd5-b341-2b2c9565ed81",
           "deployment_performed": false,
           "scope": "Acceptance applies only to the registered capability profile",
           "fixture_enabled_on_service": true
@@ -82,15 +82,66 @@
               "name": "literal_html_input",
               "passed": true,
               "detail": "Observed in Chromium"
+            },
+            {
+              "name": "axe_empty",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "empty",
+                "rules_passed": 19,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_populated",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "populated",
+                "rules_passed": 21,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_completed",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "completed",
+                "rules_passed": 21,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "keyboard_operation",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "visible_focus",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "mobile_reflow",
+              "passed": true,
+              "detail": "Observed in Chromium"
             }
           ],
-          "runner": "docker-trusted-playwright-static-web-v1",
+          "runner": "docker-trusted-playwright-profiles-v2",
           "browser_process_sandbox": false,
-          "duration_ms": 13228,
-          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "duration_ms": 8977,
+          "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+          "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
           "image": "graphos-verifier:local",
-          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+          "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
         },
         "provenance": "fixture",
         "worker_modes": [
@@ -98,16 +149,16 @@
           "docker-verifier"
         ]
       },
-      "duration_ms": 13449
+      "duration_ms": 9245
     },
     {
       "id": "duplicate_admission_and_submission",
       "status": "PASS",
       "details": {
-        "run_id": "851e93a3-e52f-4822-9a65-b54282b85827",
+        "run_id": "eae4c785-b2fb-4a05-8557-2ba36906d0f4",
         "duplicate_charge": false
       },
-      "duration_ms": 139
+      "duration_ms": 173
     },
     {
       "id": "registered_profile_boundary",
@@ -117,39 +168,39 @@
         "unsupported_requirement_rejected": true,
         "fixed_suite_scope": "registered static-web task-list contract only"
       },
-      "duration_ms": 3
+      "duration_ms": 7
     },
     {
       "id": "roles_and_cancellation",
       "status": "PASS",
       "details": {
-        "run_id": "ceaef137-7da6-4dfb-b759-3f1ed597d2f1",
+        "run_id": "804079f6-2e76-4746-95a1-3c2f0d31e752",
         "state": "CANCELLED",
         "stale_build_rejected": true,
         "effect_dispatch_blocked": true,
         "real_external_action_performed": false
       },
-      "duration_ms": 141
+      "duration_ms": 159
     },
     {
       "id": "evidence_revision_and_artifact_binding",
       "status": "PASS",
       "details": {
-        "run_id": "ce419ed2-9fbf-4de5-8a91-5ca77a592844",
+        "run_id": "3c2c8777-43c4-4bca-9776-661c385b6104",
         "previous_release": {
-          "run_id": "ce419ed2-9fbf-4de5-8a91-5ca77a592844",
+          "run_id": "3c2c8777-43c4-4bca-9776-661c385b6104",
           "revision": 1,
-          "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
+          "spec_hash": "68bf69bc28f654b1cedecf410200d10e13c75e027da880d3f43c23c9b58e4650",
           "profile": "static-web",
           "tasks": [
             {
-              "task_id": "341d02ac-6d27-431a-9281-9f34815a47d9",
+              "task_id": "8b8f03ec-4b28-4b26-a81c-394ad29e08d2",
               "task_key": "app",
-              "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
-              "evidence_hash": "fdacce37843e7386f9270f99fac2fc9cd304017276511a3343458a17f0dd21d5",
-              "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
-              "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-              "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+              "candidate_hash": "84af54bfb9ce17dc597c9a3f446970a7a640020dcb4818e5f7c50b2c005612fd",
+              "evidence_hash": "78e5bb17c3d6d60b9110a5e62b23665b3db5b792794dd270e78362c5ee5f9570",
+              "input_hash": "c0960244e2abd086e413420f56a9cb54cdc10e0f33938fb6523809343e0a1831",
+              "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+              "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
               "verifier_id": "verifier:acceptance-verifier",
               "producer_id": "builder:acceptance-builder",
               "provenance": {
@@ -159,8 +210,8 @@
               }
             }
           ],
-          "manifest_hash": "a5dc4d195c52ab465ac1d624bdb747a565a9dfa38103c8221a86d44e9167a3e6",
-          "release_id": "ed046be0-2973-4725-8c3c-3b6716b4f9d3",
+          "manifest_hash": "347672c27feff585fe2eb564780ce81254707887ea35330944a2d2e6370a050b",
+          "release_id": "22470731-48ad-422a-a65c-837063720576",
           "deployment_performed": false,
           "scope": "Acceptance applies only to the registered capability profile",
           "fixture_enabled_on_service": true
@@ -208,26 +259,77 @@
               "name": "literal_html_input",
               "passed": true,
               "detail": "Observed in Chromium"
+            },
+            {
+              "name": "axe_empty",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "empty",
+                "rules_passed": 19,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_populated",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "populated",
+                "rules_passed": 21,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_completed",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "completed",
+                "rules_passed": 21,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "keyboard_operation",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "visible_focus",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "mobile_reflow",
+              "passed": true,
+              "detail": "Observed in Chromium"
             }
           ],
-          "runner": "docker-trusted-playwright-static-web-v1",
+          "runner": "docker-trusted-playwright-profiles-v2",
           "browser_process_sandbox": false,
-          "duration_ms": 12894,
-          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "duration_ms": 15184,
+          "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+          "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
           "image": "graphos-verifier:local",
-          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+          "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
         },
         "stale_receipt_rejected": true,
         "incomplete_certificate_rejected": true
       },
-      "duration_ms": 13221
+      "duration_ms": 15583
     },
     {
       "id": "bad_candidate_fails_browser",
       "status": "PASS",
       "details": {
-        "run_id": "4d2e3164-901b-48e3-98b6-f135c05b7c17",
+        "run_id": "ac0d6a66-8562-4956-91db-eec5a78d0eff",
         "verifier_report": {
           "passed": false,
           "checks": [
@@ -270,25 +372,69 @@
               "name": "literal_html_input",
               "passed": false,
               "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+            },
+            {
+              "name": "axe_empty",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "empty",
+                "rules_passed": 19,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_populated",
+              "passed": true,
+              "detail": "Observed in Chromium",
+              "observations": {
+                "engine": "axe-core@4.14.0",
+                "state": "populated",
+                "rules_passed": 19,
+                "violations": 0,
+                "incomplete": 0
+              }
+            },
+            {
+              "name": "axe_completed",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "keyboard_operation",
+              "passed": false,
+              "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+            },
+            {
+              "name": "visible_focus",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "mobile_reflow",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
             }
           ],
-          "runner": "docker-trusted-playwright-static-web-v1",
+          "runner": "docker-trusted-playwright-profiles-v2",
           "browser_process_sandbox": false,
-          "duration_ms": 31561,
-          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "duration_ms": 44562,
+          "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+          "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
           "image": "graphos-verifier:local",
-          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+          "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
         },
         "provenance": "broken-fixture"
       },
-      "duration_ms": 31734
+      "duration_ms": 44779
     },
     {
       "id": "worker_crash_and_lease_recovery",
       "status": "PASS",
       "details": {
-        "run_id": "5bb41089-a077-41af-b5c1-366fd8753c0f",
+        "run_id": "2196822d-0835-46a5-a50c-86a67746aec5",
         "worker_exit_code": 137,
         "expired_reservation_conservatively_charged": 13,
         "uncertainty_paused_dispatch": true,
@@ -297,14 +443,14 @@
         "stale_submission_rejected": true,
         "replacement_artifact_submitted": true
       },
-      "duration_ms": 1375
+      "duration_ms": 1448
     },
     {
       "id": "controller_restart_preserves_state",
       "status": "PASS",
       "details": {
-        "run_id": "47442a1c-e67d-4e46-b584-a6459cf9963c",
-        "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+        "run_id": "59d2d987-b36d-419d-8af8-93659ba07623",
+        "candidate_hash": "84af54bfb9ce17dc597c9a3f446970a7a640020dcb4818e5f7c50b2c005612fd",
         "process_restarted": true,
         "preserved": [
           "accepted task",
@@ -315,7 +461,7 @@
           "release bindings"
         ]
       },
-      "duration_ms": 707
+      "duration_ms": 568
     }
   ],
   "claims": {
@@ -335,7 +481,7 @@
     "reason": "Live model evaluation not requested",
     "model_quality_measured": false
   },
-  "finished_at": "2026-11-07T19:00:17.207225+00:00",
+  "finished_at": "2026-11-07T20:25:58.264211+00:00",
   "summary": {
     "pass": 8,
     "fail": 0,
@@ -346,10 +492,10 @@
     "configured_fixture_cases": 8,
     "browser_reports_with_image_identity": 3,
     "verifier_image_ids": [
-      "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+      "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
     ],
-    "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
-    "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+    "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+    "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
     "controller_restart_requested": true,
     "database_disaster_recovery_tested": false,
     "real_external_effects_tested": false,

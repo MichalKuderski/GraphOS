@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -18,9 +19,46 @@ MAX_EVE_REQUEST_BYTES = 128 * 1024  # agents/eve/src/cli.ts stdin contract
 
 
 class BuildFailure(WorkerError):
-    def __init__(self, message: str, actual_cost: int | None = None):
+    def __init__(self, message: str, actual_cost: int | None = None, usage: dict | None = None):
         super().__init__(message)
         self.actual_cost = actual_cost
+        self.usage = _safe_failure_usage(usage, actual_cost)
+
+
+def _safe_failure_usage(value, actual_cost: int | None) -> dict | None:
+    """Forward only bounded, settled receipt metadata; never arbitrary adapter output."""
+    if (not isinstance(value, dict) or type(actual_cost) is not int
+            or value.get("actual_cost_microdollars") != actual_cost
+            or value.get("cost_source") != "eve_gateway_usage_events"):
+        return None
+    counts = ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens",
+              "actual_cost_microdollars", "model_runs")
+    if any(type(value.get(key)) is not int or not 0 <= value[key] <= 2**53 - 1 for key in counts):
+        return None
+    generations = value.get("generations")
+    if not 1 <= value["model_runs"] <= 3 or not isinstance(generations, list) or len(generations) != value["model_runs"]:
+        return None
+    result = {key: value[key] for key in counts}
+    result.update(cost_source=value["cost_source"], generations=[])
+    runs, ids = set(), set()
+    for generation in generations:
+        if not isinstance(generation, dict):
+            return None
+        run_id = generation.get("run_id")
+        generation_id = generation.get("generation_id")
+        reason = generation.get("finish_reason")
+        if (not isinstance(run_id, str) or not re.fullmatch(r"run_[A-Za-z0-9_-]{1,128}", run_id)
+                or run_id in runs or (generation_id is not None and
+                    (not isinstance(generation_id, str) or not re.fullmatch(r"gen_[A-Za-z0-9_-]{1,128}", generation_id)
+                     or generation_id in ids))
+                or (reason is not None and not isinstance(reason, str))
+                or reason not in {None, "stop", "length", "content-filter", "tool-calls", "error", "other", "unknown"}):
+            return None
+        runs.add(run_id)
+        if generation_id:
+            ids.add(generation_id)
+        result["generations"].append({"run_id": run_id, "generation_id": generation_id, "finish_reason": reason})
+    return result
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -102,6 +140,7 @@ def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dic
                                   cwd=ROOT / "agents" / "eve")
     if code:
         known_cost = None
+        failure_usage = None
         failure_code = "unclassified_adapter_failure"
         try:
             error = json.loads(stderr)
@@ -117,9 +156,10 @@ def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dic
                     and type(error.get("actual_cost_microdollars")) is int
                     and error["actual_cost_microdollars"] >= 0):
                 known_cost = error["actual_cost_microdollars"]
+                failure_usage = _safe_failure_usage(error.get("usage"), known_cost)
         except (ValueError, UnicodeError):
             pass
-        raise BuildFailure(f"eve adapter failed ({failure_code}); no fixture fallback was attempted", known_cost)
+        raise BuildFailure(f"eve adapter failed ({failure_code}); no fixture fallback was attempted", known_cost, failure_usage)
     try:
         output = json.loads(stdout)
     except (ValueError, UnicodeError) as exc:
@@ -208,7 +248,8 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
                           {"token": claim["token"], "epoch": claim["epoch"],
                            "reason": str(exc)[:300], "actual_cost": charge, "cost_known": cost_known})
         return {"status": "failed", "claim": claim, "result": result,
-                "reason": str(exc)[:300], "provenance": {"mode": builder}}
+                "reason": str(exc)[:300], "provenance": {"mode": builder},
+                **({"usage": exc.usage} if isinstance(exc, BuildFailure) and exc.usage else {})}
     # A transport failure here is ambiguous: do not issue a compensating fail.
     result = _request(api_url, token, task_route + "/submit", payload)
     return {"status": "submitted", "claim": claim, "result": result,

@@ -1,9 +1,9 @@
 import type { SessionStreamEvent } from "eve/client";
 import { createHash } from "node:crypto";
-import { AdapterError, CATALOG_SHA256, MODEL_ID, TIMEOUT_MS, validateGenerated, type TaskRequest } from "./contracts.js";
+import { AdapterError, CATALOG_SHA256, MODEL_ID, TIMEOUT_MS, validateGenerated, type ModelUsage, type TaskRequest } from "./contracts.js";
 import type { AgentSession, AgentTransport } from "./transport.js";
 
-export function usageFromEvents(events: readonly SessionStreamEvent[]) {
+export function usageFromEvents(events: readonly SessionStreamEvent[]): ModelUsage {
   let input_tokens = 0, output_tokens = 0, cache_read_tokens = 0, cache_write_tokens = 0;
   let actual_cost_microdollars = 0;
   const started = new Set<string>(), reported = new Set<string>();
@@ -11,7 +11,9 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
   const generationIds = new Set<string>();
   for (const event of events) {
     if (event.type === "model.started") {
-      if (event.data.modelId !== MODEL_ID || event.data.attempt !== 0) throw new AdapterError("unreconciled_model_usage");
+      if (event.data.modelId !== MODEL_ID || event.data.attempt !== 0 || started.has(event.data.runId)) {
+        throw new AdapterError("unreconciled_model_usage");
+      }
       started.add(event.data.runId);
     }
     // A retry can have incurred provider cost without reporting usage; never call it free.
@@ -45,7 +47,8 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
   }
   if (!started.size || started.size !== reported.size || [...started].some(id => !reported.has(id)) ||
       [...settled.keys()].some(id => !started.has(id)) ||
-      !Number.isSafeInteger(actual_cost_microdollars)) throw new AdapterError("unreconciled_model_usage");
+      [input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, actual_cost_microdollars]
+        .some(value => !Number.isSafeInteger(value))) throw new AdapterError("unreconciled_model_usage");
   // Missing Gateway lookup IDs remain explicit. Runtime usage is not a fetched
   // provider receipt, and a missing ID must never be synthesized from a run ID.
   const generations = [...started].map(run_id => ({run_id,
@@ -53,6 +56,18 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
     finish_reason: settled.get(run_id)?.finish_reason ?? null}));
   return {input_tokens, output_tokens, cache_read_tokens, cache_write_tokens,
     actual_cost_microdollars, model_runs: started.size, cost_source: "eve_gateway_usage_events", generations};
+}
+
+function completeFailureUsage(events: readonly SessionStreamEvent[]): ModelUsage {
+  const usage = usageFromEvents(events);
+  // A failed turn's available usage can be only a completed prefix. Retirement
+  // alone does not make an interrupted/unreported provider call free.
+  const completed = new Set(events.flatMap(event => event.type === "model.settled" &&
+    event.data.outcome === "completed" ? [event.data.runId] : []));
+  if (usage.generations.some(generation => !completed.has(generation.run_id))) {
+    throw new AdapterError("unreconciled_model_usage");
+  }
+  return usage;
 }
 
 export async function generate(request: TaskRequest, transport: AgentTransport, timeoutMs = TIMEOUT_MS) {
@@ -83,18 +98,27 @@ export async function generate(request: TaskRequest, transport: AgentTransport, 
       generated_at: new Date().toISOString(), independent_verification: "pending",
     }};
   } catch (error) {
-    if (error instanceof AdapterError) {
-      if (usage && !error.costKnown) throw new AdapterError(error.code, true, usage.actual_cost_microdollars);
-      throw error;
-    }
-    throw new AdapterError(signal.aborted ? "eve_timeout" : "eve_transport_or_runtime_error",
-      Boolean(usage), usage?.actual_cost_microdollars);
-  } finally {
+    const code = error instanceof AdapterError ? error.code :
+      signal.aborted ? "eve_timeout" : "eve_transport_or_runtime_error";
     if (session && !ended) {
       // Aborting the client read does not cancel remote work. Request remote cancellation explicitly.
       if (!completed) await session.cancel(AbortSignal.timeout(5_000)).catch(() => undefined);
-      await session.end(AbortSignal.timeout(5_000)).catch(() => undefined);
-      // Failed cancellation leaves the attempt's reservation consumed by GraphOS.
+      try {
+        // Production end() proves this exact control delivery applied and the
+        // session ended. Do not recover a partial cost before that proof.
+        await session.end(AbortSignal.timeout(5_000));
+        ended = true;
+      } catch { /* Retirement uncertainty retains the full reservation. */ }
     }
+    if (session && ended) {
+      try {
+        usage = completeFailureUsage(await session.events(AbortSignal.timeout(5_000)));
+      } catch { usage = undefined; }
+    } else {
+      usage = undefined;
+    }
+    // Preserve the original sanitized failure; accounting recovery cannot
+    // return a candidate or turn an unsuccessful build into a success.
+    throw new AdapterError(code, Boolean(usage), usage?.actual_cost_microdollars, usage);
   }
 }

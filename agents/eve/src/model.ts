@@ -1,5 +1,12 @@
 import { gateway, wrapLanguageModel, type LanguageModelMiddleware } from "ai";
-import { AdapterError, assertLiveAuthorization, MAX_OUTPUT_TOKENS, MAX_PROMPT_BYTES, MODEL_ID } from "./contracts.js";
+import {isDeepStrictEqual} from "node:util";
+import {z} from "zod";
+import { AdapterError, assertLiveAuthorization, GeneratedSchema, MAX_OUTPUT_TOKENS, MAX_PROMPT_BYTES, MODEL_ID } from "./contracts.js";
+
+// Pinned eve 0.91: protocol/reply-tool.js and harness/model-call/tools.js
+// inject this function for outputSchema. No private framework import is used.
+export const REPLY_TOOL_NAME = "eve__reply";
+const {$schema: _schemaVersion, ...replySchema} = z.toJSONSchema(GeneratedSchema, {target:"draft-7"});
 
 // Enforced on the actual provider request, independent of model instructions.
 export const boundedMiddleware: LanguageModelMiddleware = {
@@ -8,7 +15,13 @@ export const boundedMiddleware: LanguageModelMiddleware = {
     if (Buffer.byteLength(JSON.stringify(params.prompt)) > MAX_PROMPT_BYTES) {
       throw new AdapterError("model_context_limit");
     }
-    return {...params, maxOutputTokens: MAX_OUTPUT_TOKENS};
+    const reply = params.tools?.[0];
+    if (params.tools?.length !== 1 || reply?.type !== "function" ||
+        reply.name !== REPLY_TOOL_NAME || !isDeepStrictEqual(reply.inputSchema, replySchema)) {
+      throw new AdapterError("structured_reply_tool_required");
+    }
+    return {...params, maxOutputTokens: MAX_OUTPUT_TOKENS,
+      toolChoice: {type:"tool",toolName:REPLY_TOOL_NAME}};
   },
 };
 

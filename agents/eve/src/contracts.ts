@@ -69,9 +69,41 @@ export const RequestSchema = z.object({
 });
 export type TaskRequest = z.infer<typeof RequestSchema>;
 
+const safeCount = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+const ModelUsageSchema = z.object({
+  input_tokens: safeCount, output_tokens: safeCount,
+  cache_read_tokens: safeCount, cache_write_tokens: safeCount,
+  actual_cost_microdollars: safeCount, model_runs: safeCount.min(1),
+  cost_source: z.literal("eve_gateway_usage_events"),
+  generations: z.array(z.object({
+    run_id: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/),
+    generation_id: z.string().regex(/^gen_[A-Za-z0-9_-]{1,508}$/).nullable(),
+    finish_reason: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/).nullable(),
+  }).strict()).max(100),
+}).strict().superRefine((value, ctx) => {
+  const ids=value.generations.flatMap(g=>g.generation_id === null ? [] : [g.generation_id]);
+  if (value.model_runs !== value.generations.length ||
+      new Set(value.generations.map(g=>g.run_id)).size !== value.model_runs ||
+      new Set(ids).size !== ids.length) {
+    ctx.addIssue({code:"custom",message:"invalid usage identity binding"});
+  }
+});
+export type ModelUsage = z.infer<typeof ModelUsageSchema>;
+
 export class AdapterError extends Error {
   constructor(public readonly code: string, public readonly costKnown = false,
-    public readonly actualCostMicrodollars?: number) { super(code); }
+    public readonly actualCostMicrodollars?: number, public readonly usage?: ModelUsage) { super(code); }
+}
+
+export function adapterErrorPayload(error: unknown) {
+  const known = error instanceof AdapterError ? error : new AdapterError("unexpected_adapter_error");
+  const usage = ModelUsageSchema.safeParse(known.usage);
+  return {error: known.code, cost_known: known.costKnown,
+    actual_cost_microdollars: known.costKnown ? known.actualCostMicrodollars : undefined,
+    accounting: known.costKnown ? "provider_reported" : "consume_reservation_and_reconcile",
+    ...(known.costKnown && usage.success &&
+      usage.data.actual_cost_microdollars === known.actualCostMicrodollars ? {usage: usage.data} : {}),
+  };
 }
 
 export function parseRequest(text: string): TaskRequest {
