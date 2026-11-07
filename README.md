@@ -4,12 +4,14 @@ GraphOS turns a versioned task specification into artifacts that can be delivere
 only with current verification evidence. Models propose outputs; the controller
 enforces state, budgets, authority, and acceptance.
 
-**Status: first production milestone under validation.** This is a working
+**Status: first bounded execution milestone implemented and locally verified.** This is a working
 self-hosted control plane with a deliberately narrow task-list web-application
 profile. It is not a completed universal agent platform. Live model generation,
 long-horizon reliability, and comparative model quality have not yet been
 validated. See [production readiness](docs/production-readiness.md) and the
 [acceptance results](evals/results/pytest-acceptance.json).
+The [validation summary](docs/validation-summary.md) identifies measured results
+and their limits, including retained infrastructure failures.
 
 ## Implemented
 

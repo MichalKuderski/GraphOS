@@ -1,0 +1,90 @@
+{
+  "recorded_at_utc": "2026-11-07T16:07:35.015918+00:00",
+  "status": "completed",
+  "driver": "vfs",
+  "cause": "Four failed GraphOS verifier container creations left init and partial writable copies outside Docker layer references after ENOSPC.",
+  "free_bytes_before": 308494336,
+  "diagnostic_sha256": "28f3bed55c3a6f3cb055ff599e467d5201eb7ae1e6613aa2075b499eeac9ead6",
+  "trusted_runner_sha256": "b6635ea047372bff4c52e42cb97bb605dd06b8dd175ea2e8925cf11db5c875b2",
+  "observed_reference_count": 26,
+  "current_verifier_image_preserved": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff",
+  "database_container_preserved": "graphos-dev-db",
+  "targets": [
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/03a4f33d3fe5f345c6a84f8906ccbf3b171def2af5f9987bd7b17439131ef7e2",
+      "size_bytes_lower_bound": 1040142336,
+      "mtime_utc": "2026-11-07T15:42:11+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/03a4f33d3fe5f345c6a84f8906ccbf3b171def2af5f9987bd7b17439131ef7e2-init",
+      "size_bytes_lower_bound": 2543677440,
+      "mtime_utc": "2026-11-07T15:42:11+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/48deaad2c5e39ac163b7f56f093d59e6e2727441ac93e516d5b075ee3d92d735",
+      "size_bytes_lower_bound": 2442645504,
+      "mtime_utc": "2026-11-07T15:43:06+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/48deaad2c5e39ac163b7f56f093d59e6e2727441ac93e516d5b075ee3d92d735-init",
+      "size_bytes_lower_bound": 2543685632,
+      "mtime_utc": "2026-11-07T15:43:05+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/88135d662cb09263d499a60b2372c5aa374d7614edc679c0718827de6d5f1770",
+      "size_bytes_lower_bound": 1040150528,
+      "mtime_utc": "2026-11-07T15:50:07+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/88135d662cb09263d499a60b2372c5aa374d7614edc679c0718827de6d5f1770-init",
+      "size_bytes_lower_bound": 2543681536,
+      "mtime_utc": "2026-11-07T15:50:07+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/44bf6af7e4c738d1b04fc0ddf20552335512e60a36d47f7fe8592bffe7b5aac0",
+      "size_bytes_lower_bound": 1327071232,
+      "mtime_utc": "2026-11-07T15:57:07+00:00",
+      "referenced": false
+    },
+    {
+      "path": "/home/dockerd/.local/share/docker/vfs/dir/44bf6af7e4c738d1b04fc0ddf20552335512e60a36d47f7fe8592bffe7b5aac0-init",
+      "size_bytes_lower_bound": 2543693824,
+      "mtime_utc": "2026-11-07T15:57:07+00:00",
+      "referenced": false
+    }
+  ],
+  "cleanup_scope": "Contents of exactly eight verified orphan directories only. Each exact directory is separately bind-mounted; its empty root remains. Docker metadata is mounted read-only. No volumes, current image layers, other orphan directories, or database data are writable.",
+  "safeguards": [
+    "All image cache-id and container mount-id/init-id records checked before deletion",
+    "Four init copies must match the exact current trusted verifier runner hash",
+    "All other task Docker activity paused; only healthy database container present",
+    "No network, read-only container root, no Docker socket mounted, capabilities limited to DAC_OVERRIDE and FOWNER"
+  ],
+  "cleanup_output": [
+    "CLEARED 03a4f33d3fe5f345c6a84f8906ccbf3b171def2af5f9987bd7b17439131ef7e2",
+    "CLEARED 03a4f33d3fe5f345c6a84f8906ccbf3b171def2af5f9987bd7b17439131ef7e2-init",
+    "CLEARED 48deaad2c5e39ac163b7f56f093d59e6e2727441ac93e516d5b075ee3d92d735",
+    "CLEARED 48deaad2c5e39ac163b7f56f093d59e6e2727441ac93e516d5b075ee3d92d735-init",
+    "CLEARED 88135d662cb09263d499a60b2372c5aa374d7614edc679c0718827de6d5f1770",
+    "CLEARED 88135d662cb09263d499a60b2372c5aa374d7614edc679c0718827de6d5f1770-init",
+    "CLEARED 44bf6af7e4c738d1b04fc0ddf20552335512e60a36d47f7fe8592bffe7b5aac0",
+    "CLEARED 44bf6af7e4c738d1b04fc0ddf20552335512e60a36d47f7fe8592bffe7b5aac0-init"
+  ],
+  "free_bytes_after": 16333533184,
+  "completed_at_utc": "2026-11-07T16:07:37.493741+00:00",
+  "post_cleanup_checks": {
+    "database_container_healthy": true,
+    "only_database_container_remains": true,
+    "current_verifier_image_id_unchanged": true,
+    "report_json_valid": true
+  },
+  "diagnostic_container_image": "busybox@sha256:a7dbc319b1438115a207e11930dc4bb3e643dcb3ec0bdd694bb36cd8fad289ec",
+  "approval_review": "Outside-workspace writes submitted through exec require_escalated and approved before mutation.",
+  "remaining_orphans": "Two small task diagnostic/API failed-create init directories, approximately 24 MiB total, deliberately left untouched; eight cleared parent directories remain empty."
+}

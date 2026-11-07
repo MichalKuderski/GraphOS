@@ -1,7 +1,7 @@
 {
-  "status": "FAIL",
-  "started_at": "2026-11-07T15:57:00.337068+00:00",
-  "source_digest": "0d5cf6e561d93c0758042febfdb0224d894a6125ad3702ec318ad40e3734899a",
+  "status": "PASS",
+  "started_at": "2026-11-07T16:08:04.755103+00:00",
+  "source_digest": "f61c6dc540834818c2ffb361c009d814341814fa18f09ba4f45bf5c96395c3dc",
   "commands": [
     {
       "command": [
@@ -37,10 +37,18 @@
         "--junitxml",
         "/workspace/GraphOS/evals/results/pytest.xml"
       ],
-      "exit_code": 1
+      "exit_code": 0
     }
   ],
   "model_generation": "not exercised by this pipeline",
   "production_certification": false,
-  "finished_at": "2026-11-07T15:57:15.903407+00:00"
+  "python": {
+    "tests": 133,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "original_reference_tests": 25,
+  "finished_at": "2026-11-07T16:09:10.876401+00:00",
+  "source_unchanged": true
 }

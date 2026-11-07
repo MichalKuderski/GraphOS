@@ -1,23 +1,113 @@
 {
   "schema_version": 1,
-  "started_at": "2026-11-07T15:57:01.208999+00:00",
+  "started_at": "2026-11-07T16:08:05.611003+00:00",
   "mode": "integration-fixture",
   "cases": [
     {
       "id": "happy_fixture_release",
-      "status": "FAIL",
-      "error_type": "AssertionError",
-      "error": "",
-      "duration_ms": 8165
+      "status": "PASS",
+      "details": {
+        "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+        "release": {
+          "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+          "revision": 1,
+          "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
+          "profile": "static-web",
+          "tasks": [
+            {
+              "task_id": "f46cddfc-0e15-489e-8ca9-961968df0023",
+              "task_key": "app",
+              "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+              "evidence_hash": "96a70781ee1d0cd629f500d4ccef598847d6f6456d3524386c7fc6f0c1710b1f",
+              "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
+              "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+              "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+              "verifier_id": "verifier:acceptance-real-verifier-worker",
+              "producer_id": "builder:acceptance-real-builder-worker",
+              "provenance": {
+                "mode": "fixture",
+                "usage": {
+                  "actual_cost_microdollars": 0
+                },
+                "fixture": "static-web-task-list-v1",
+                "ai_generated": false
+              }
+            }
+          ],
+          "manifest_hash": "b7b2256e0284f1f20e3b881ab513317b0b2f163791db9c2937b772e8071131e0",
+          "release_id": "69f97e71-21ea-4cb2-8e07-9c5903e3ec81",
+          "deployment_performed": false,
+          "scope": "Acceptance applies only to the registered capability profile",
+          "fixture_enabled_on_service": true
+        },
+        "verifier_report": {
+          "passed": true,
+          "checks": [
+            {
+              "name": "accessible_structure",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "add_task",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "toggle_completion",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "filter_tasks",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "delete_task",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "local_storage_reload",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "reject_empty_input",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "literal_html_input",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            }
+          ],
+          "runner": "docker-trusted-playwright-static-web-v1",
+          "browser_process_sandbox": false,
+          "duration_ms": 14393,
+          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "image": "graphos-verifier:local",
+          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+        },
+        "provenance": "fixture",
+        "worker_modes": [
+          "fixture-builder",
+          "docker-verifier"
+        ]
+      },
+      "duration_ms": 14660
     },
     {
       "id": "duplicate_admission_and_submission",
       "status": "PASS",
       "details": {
-        "run_id": "786e4cfa-e9e7-40e2-9894-a5652552e563",
+        "run_id": "2e37f1c8-c274-42ab-bb38-3bc0fa58e794",
         "duplicate_charge": false
       },
-      "duration_ms": 164
+      "duration_ms": 128
     },
     {
       "id": "registered_profile_boundary",
@@ -33,33 +123,172 @@
       "id": "roles_and_cancellation",
       "status": "PASS",
       "details": {
-        "run_id": "5f03a8b9-f6d0-4bf9-94ea-ea1dc2ea32dd",
+        "run_id": "fbdbb5ca-1c47-42a0-bf9d-352511640f08",
         "state": "CANCELLED",
         "stale_build_rejected": true,
         "effect_dispatch_blocked": true,
         "real_external_action_performed": false
       },
-      "duration_ms": 142
+      "duration_ms": 141
     },
     {
       "id": "evidence_revision_and_artifact_binding",
-      "status": "FAIL",
-      "error_type": "OSError",
-      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-0tzboeln'",
-      "duration_ms": 96
+      "status": "PASS",
+      "details": {
+        "run_id": "c84295f9-72f7-481d-acbd-a45402972af7",
+        "previous_release": {
+          "run_id": "c84295f9-72f7-481d-acbd-a45402972af7",
+          "revision": 1,
+          "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
+          "profile": "static-web",
+          "tasks": [
+            {
+              "task_id": "106e7028-d83d-4ed3-8279-4ea9dd347aa2",
+              "task_key": "app",
+              "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+              "evidence_hash": "5b8c184ee739a28a695382266d65633ce8db772287c6f06d11f1110172845364",
+              "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
+              "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+              "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+              "verifier_id": "verifier:acceptance-verifier",
+              "producer_id": "builder:acceptance-builder",
+              "provenance": {
+                "mode": "fixture",
+                "fixture": "static-web/task-list",
+                "purpose": "HTTP acceptance; not model generation"
+              }
+            }
+          ],
+          "manifest_hash": "3bf7bb82faac23581a31a93374bd7ce30eca0a623fc7119d9d53e47ca2f69d8f",
+          "release_id": "91c7f3ed-51ea-472f-85b6-101a2ccd29c1",
+          "deployment_performed": false,
+          "scope": "Acceptance applies only to the registered capability profile",
+          "fixture_enabled_on_service": true
+        },
+        "revision": 2,
+        "verifier_report": {
+          "passed": true,
+          "checks": [
+            {
+              "name": "accessible_structure",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "add_task",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "toggle_completion",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "filter_tasks",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "delete_task",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "local_storage_reload",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "reject_empty_input",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "literal_html_input",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            }
+          ],
+          "runner": "docker-trusted-playwright-static-web-v1",
+          "browser_process_sandbox": false,
+          "duration_ms": 11624,
+          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "image": "graphos-verifier:local",
+          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+        },
+        "stale_receipt_rejected": true,
+        "incomplete_certificate_rejected": true
+      },
+      "duration_ms": 11993
     },
     {
       "id": "bad_candidate_fails_browser",
-      "status": "FAIL",
-      "error_type": "OSError",
-      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-mat170sz'",
-      "duration_ms": 100
+      "status": "PASS",
+      "details": {
+        "run_id": "4763f61c-c8ae-4e6a-9c5c-e67246068fb8",
+        "verifier_report": {
+          "passed": false,
+          "checks": [
+            {
+              "name": "accessible_structure",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "add_task",
+              "passed": false,
+              "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+            },
+            {
+              "name": "toggle_completion",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "filter_tasks",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "delete_task",
+              "passed": false,
+              "detail": "Locator.click: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "local_storage_reload",
+              "passed": false,
+              "detail": "Locator.check: Timeout 2500ms exceeded.\n"
+            },
+            {
+              "name": "reject_empty_input",
+              "passed": true,
+              "detail": "Observed in Chromium"
+            },
+            {
+              "name": "literal_html_input",
+              "passed": false,
+              "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+            }
+          ],
+          "runner": "docker-trusted-playwright-static-web-v1",
+          "browser_process_sandbox": false,
+          "duration_ms": 32292,
+          "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+          "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+          "image": "graphos-verifier:local",
+          "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+        },
+        "provenance": "broken-fixture"
+      },
+      "duration_ms": 32478
     },
     {
       "id": "worker_crash_and_lease_recovery",
       "status": "PASS",
       "details": {
-        "run_id": "8e3d8c81-3465-4559-a4ba-68b6c76bccd2",
+        "run_id": "0d5c3635-9696-4121-835c-2d0e8d431b07",
         "worker_exit_code": 137,
         "expired_reservation_conservatively_charged": 13,
         "uncertainty_paused_dispatch": true,
@@ -68,14 +297,25 @@
         "stale_submission_rejected": true,
         "replacement_artifact_submitted": true
       },
-      "duration_ms": 1576
+      "duration_ms": 1509
     },
     {
       "id": "controller_restart_preserves_state",
-      "status": "FAIL",
-      "error_type": "AssertionError",
-      "error": "A genuinely browser-verified fixture run is required for the restart check",
-      "duration_ms": 0
+      "status": "PASS",
+      "details": {
+        "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+        "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+        "process_restarted": true,
+        "preserved": [
+          "accepted task",
+          "events",
+          "budget",
+          "artifact",
+          "evidence",
+          "release bindings"
+        ]
+      },
+      "duration_ms": 707
     }
   ],
   "claims": {
@@ -95,17 +335,19 @@
     "reason": "No model gateway credential configured",
     "model_quality_measured": false
   },
-  "finished_at": "2026-11-07T15:57:11.455725+00:00",
+  "finished_at": "2026-11-07T16:09:07.231478+00:00",
   "summary": {
-    "pass": 4,
-    "fail": 4,
+    "pass": 8,
+    "fail": 0,
     "not_run": 0,
     "blocked": 0
   },
   "coverage": {
     "configured_fixture_cases": 8,
-    "browser_reports_with_image_identity": 0,
-    "verifier_image_ids": [],
+    "browser_reports_with_image_identity": 3,
+    "verifier_image_ids": [
+      "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+    ],
     "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
     "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
     "controller_restart_requested": true,

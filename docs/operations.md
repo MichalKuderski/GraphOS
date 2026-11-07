@@ -36,6 +36,14 @@ not high availability, public TLS termination, automatic backup, or a managed
 worker fleet. A public deployment requires trusted host configuration, TLS,
 external identity as appropriate, monitoring, backups, and an isolation review.
 
+Reserve and monitor worker-host storage before starting containers. In this
+managed environment, Docker's VFS driver required full init/writable image
+copies, and failed starts left orphaned copies; see `storage-recovery.json`.
+The final suite passed after precise recovery. Prefer a supported copy-on-write
+storage driver on a dedicated execution host for wider operation. Automated disk
+admission, host recovery and cross-run resource scheduling are not implemented.
+Do not turn the one-time recovery into a broad deletion job over Docker storage.
+
 ## Model budgets
 
 Amounts are integer microdollars. 1,000,000 means $1. Each dispatch reserves a
