@@ -189,7 +189,7 @@ class AcceptanceHarness:
         assert claim, "Expected an eligible verification claim"
         bundle = self.request("GET", f"/v1/artifacts/{claim['candidate_hash']}", role="verifier", lease=claim).json()
         files = bundle.get("files", bundle)
-        report = verify_bundle(files, claim["requirements"])
+        report = verify_bundle(files, claim["requirements"], profile_id=claim["profile"])
         assert report["passed"] is True, "Trusted Docker/browser suite rejected the valid fixture"
         payload = {name: claim[name] for name in ("token", "epoch", "revision", "input_hash",
                                                      "candidate_hash", "suite_hash", "policy_hash")}

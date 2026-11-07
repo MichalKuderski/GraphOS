@@ -46,8 +46,38 @@ test("task parser removes lease credentials and rejects mismatched profile hashe
   input.claim.reservation=1;
   assert.throws(()=>parseRequest(JSON.stringify(input)), /invalid_task_contract/);
 });
+test("trusted profile selection is bound to the claim even when hashes match", () => {
+  const profiles=["static-web","local-notes","local-inventory"];
+  for (const claimProfile of profiles) {
+    for (const suppliedProfile of profiles) {
+      const input=requestInput();
+      input.claim.profile=claimProfile; input.profile.id=suppliedProfile;
+      if (claimProfile === suppliedProfile) {
+        const parsed=parseRequest(JSON.stringify(input));
+        assert.equal(parsed.claim.profile,claimProfile);
+        assert.equal(parsed.profile.id,suppliedProfile);
+        assert.ok(!JSON.stringify(parsed).includes("PRIVATE_LEASE"));
+      } else {
+        assert.throws(()=>parseRequest(JSON.stringify(input)), /invalid_task_contract/);
+      }
+    }
+  }
+});
+test("every admitted profile retains its exact three-file and active-status boundary", () => {
+  for (const profile of ["static-web","local-notes","local-inventory"]) {
+    const input=requestInput(); input.claim.profile=profile; input.profile.id=profile;
+    for (const change of [{required_files:["index.html","app.js","../secret"]},
+        {required_files:["index.html","app.js","app.js"]},
+        {required_files:["index.html","app.js","styles.css","server.js"]},
+        {status:"blocked"}]) {
+      assert.throws(()=>parseRequest(JSON.stringify({...input,profile:{...input.profile,...change}})), /invalid_task_contract/);
+    }
+  }
+});
 test("unsupported profiles and excessive input fail before transport", () => {
   const input=requestInput(); input.claim.profile="games";
+  assert.throws(()=>parseRequest(JSON.stringify(input)), /invalid_task_contract/);
+  input.claim.profile="static-web"; input.profile.id="games";
   assert.throws(()=>parseRequest(JSON.stringify(input)), /invalid_task_contract/);
   assert.throws(()=>parseRequest(" ".repeat(128*1024+1)), /request_too_large/);
 });

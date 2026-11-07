@@ -6,6 +6,8 @@ import pytest
 
 from scripts.acceptance import AcceptanceHarness, ManagedAPI, local_environment
 
+pytestmark = [pytest.mark.integration, pytest.mark.sandbox]
+
 
 @pytest.fixture(scope="module")
 def acceptance_results():

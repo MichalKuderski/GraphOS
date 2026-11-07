@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "local-browser-disclosed-contract-pilot-v1",
+  "scope": "Three fixed, disclosed local-browser application contracts; repeated generations are not independent product-task samples.",
+  "profiles": ["static-web", "local-notes", "local-inventory"],
+  "trials_per_profile": 2,
+  "trial_order": "Repeat first, then profile in declared order",
+  "attempts_per_trial": 1,
+  "repair_attempts": 0,
+  "calibration_cases": [
+    {"id": "positive-fixture", "kind": "positive", "expected_pass": true},
+    {"id": "missing-entrypoint", "kind": "negative", "expected_failed_check": "required_files"},
+    {"id": "disabled-persistence", "kind": "negative", "expected_failed_check": "local_storage_reload"},
+    {"id": "low-contrast-text", "kind": "negative", "expected_failed_check": "axe_empty"}
+  ],
+  "live_denominator": "Every dispatched trial, including generation, verification, infrastructure, and accounting failures. Undispatched trials are separately counted against the planned sample.",
+  "accounting": {
+    "session_authorization_microdollars": 5000000,
+    "attempt_reservation_microdollars": 1000000,
+    "require_explicit_prior_session_spend": true,
+    "uncertain_cost_action": "Stop all further dispatch, retain reservation, require independent ledger and provider reconciliation.",
+    "gateway_budget_is_soft": true
+  },
+  "claims_not_supported": [
+    "Held-out generalization",
+    "Statistical reliability across arbitrary software projects",
+    "Production certification or WCAG conformance",
+    "Superiority over another model, agent configuration, or human team"
+  ],
+  "future_comparison": {
+    "design": "Independently curated task-family holdouts, paired configurations on the same tasks, equal declared budgets, randomized order, frozen graders, and all failures retained.",
+    "current_pilot_is_comparative": false
+  }
+}

@@ -17,7 +17,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .artifacts import ArtifactError, ArtifactStore
 from .config import Settings
 from .ledger import Conflict, Ledger
-from .profiles import default_spec, get_profile
+from .profiles import default_spec, get_profile, list_profiles
 
 Nonnegative = Annotated[int, Field(strict=True, ge=0, le=1_000_000_000)]
 Digest = Annotated[str, Field(pattern=r"^(sha256:)?[0-9a-f]{64}$")]
@@ -221,7 +221,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(422, "Requirements must match the registered profile contract; "
                                 "additional behavior needs a new versioned verification profile")
         value = spec.model_dump()
-        if value["tasks"] != default_spec()["tasks"]:
+        if value["tasks"] != default_spec(spec.profile)["tasks"]:
             raise HTTPException(422, "This profile supports only its registered task and objective; "
                                 "a new task contract needs its own verifier")
         for key in ("suite_hash", "policy_hash"):
@@ -261,9 +261,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/v1/profiles", dependencies=[Depends(operator)])
     def profiles():
-        items = [get_profile(name) for name in
-                 ("static-web", "games", "bots", "data", "media", "trading-research")]
-        items[0]["task_template"] = default_spec()["tasks"]
+        items = list_profiles()
+        for item in items:
+            if item["status"] == "active":
+                item["task_template"] = default_spec(item["id"])["tasks"]
         return items
 
     @app.post("/v1/runs", dependencies=[Depends(operator)], status_code=201)
@@ -330,9 +331,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             [c.get("name") for c in checks] != profile["required_checks"]
             or report.get("suite_hash") != profile["suite_hash"]
             or report.get("policy_hash") != profile["policy_hash"]
-            or report.get("runner") != "docker-trusted-playwright-static-web-v1"
+            or report.get("runner") != "docker-trusted-playwright-profiles-v2"
             or not isinstance(report.get("image_id"), str)
-            or not report["image_id"].startswith("sha256:")
+            or report["image_id"] != profile["sandbox_policy"]["image_digest"]
         ):
             raise HTTPException(422, "Passing evidence must cover the complete trusted profile suite")
         evidence_hash = store.put_json(report)

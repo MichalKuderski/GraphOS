@@ -116,7 +116,7 @@
     const criteria = profile?.acceptance_criteria || [];
     $("requirements-input").value = criteria.map((item) => typeof item === "string" ? item : (item.description || item.name || JSON.stringify(item))).join("\n");
     $("objective-input").value = profile ? taskTemplate(profile).map((task) => task.objective).join("\n") : "";
-    $("profile-contract-note").textContent = profile ? "The registered objective and fixed task-list behaviors define this profile. Arbitrary objectives are not accepted, and aesthetic preferences are not certified by these checks." : "No executable profile is available.";
+    $("profile-contract-note").textContent = profile ? "The registered objective and fixed app behaviors define this profile. Arbitrary objectives are not accepted, and aesthetic preferences are not certified by these checks." : "No executable profile is available.";
   }
   function renderRuns() {
     const list = $("runs-list"); list.replaceChildren();

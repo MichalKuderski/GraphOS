@@ -13,6 +13,7 @@ export const CATALOG_SHA256 = "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4
 
 const hash = z.string().regex(/^[0-9a-f]{64}$/);
 const file = z.string().min(1).max(MAX_FILE_BYTES);
+const profileId = z.enum(["static-web", "local-notes", "local-inventory"]);
 export const GeneratedSchema = z.object({
   files: z.object({ "index.html": file, "app.js": file, "styles.css": file }).strict(),
 }).strict();
@@ -24,11 +25,11 @@ const ClaimSchema = z.object({
   revision: z.number().int().nonnegative(), input_hash: hash,
   objective: z.string().min(1).max(8_000),
   requirements: z.array(z.string().min(1).max(2_000)).max(40),
-  profile: z.literal("static-web"), suite_hash: hash, policy_hash: hash,
+  profile: profileId, suite_hash: hash, policy_hash: hash,
   reservation: z.number().int().min(MIN_RESERVATION).max(100_000_000),
 });
 const ProfileSchema = z.object({
-  id: z.literal("static-web"), status: z.literal("active"),
+  id: profileId, status: z.literal("active"),
   required_files: z.array(z.enum(["index.html", "app.js", "styles.css"])).length(3),
   acceptance_criteria: z.array(z.string().max(2_000)).min(1).max(40),
   required_checks: z.array(z.string().max(200)).min(1).max(40),
@@ -49,6 +50,9 @@ export const RequestSchema = z.object({
   dependencies: z.array(z.object({candidate_hash: hash, files: GeneratedSchema.shape.files}).strict()).max(8).default([]),
   repair: RepairSchema.optional(),
 }).strict().superRefine((value, ctx) => {
+  if (value.claim.profile !== value.profile.id) {
+    ctx.addIssue({code: "custom", message: "profile id does not match claimed task"});
+  }
   if (value.claim.suite_hash !== value.profile.suite_hash || value.claim.policy_hash !== value.profile.policy_hash) {
     ctx.addIssue({code: "custom", message: "profile hashes do not match claimed task"});
   }

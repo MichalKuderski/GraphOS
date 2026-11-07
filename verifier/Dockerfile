@@ -8,7 +8,7 @@ RUN --mount=type=secret,id=proxy_ca,required=false \
     && mkdir -p /candidate /verifier \
     && chmod 755 /candidate /verifier
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-COPY --chmod=0444 trusted_runner.py /verifier/trusted_runner.py
+COPY --chmod=0555 . /verifier
 USER 10001:10001
 WORKDIR /tmp
-CMD ["python", "-I", "/verifier/trusted_runner.py"]
+CMD ["python", "-I", "/verifier/trusted_runner.py", "--profile", "static-web"]

@@ -14,7 +14,7 @@ import time
 import uuid
 
 from .artifacts import ArtifactError, materialize_files, validate_digest, validate_files
-from .profiles import SANDBOX_POLICY, VERIFIER_ROOT, get_profile
+from .profiles import SANDBOX_POLICY, VERIFIER_ROOT, require_active
 
 
 class ProcessError(RuntimeError):
@@ -74,7 +74,7 @@ def run_bounded(command: list[str], *, timeout: float, output_limit: int,
 
 
 def docker_command(image_id: str, candidate: Path, trusted_runner: Path,
-                   container_name: str, *, docker_config: Path) -> list[str]:
+                   container_name: str, *, docker_config: Path, profile_id: str = "static-web") -> list[str]:
     """All arguments are fixed policy or trusted local paths, never model commands."""
     policy = SANDBOX_POLICY
     clear_proxy = [part for name in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
@@ -88,16 +88,16 @@ def docker_command(image_id: str, candidate: Path, trusted_runner: Path,
             "--memory", policy["memory"], "--memory-swap", policy["memory_swap"],
             "--shm-size", policy["shm_size"], "--tmpfs", policy["tmpfs"],
             "--mount", f"type=bind,src={candidate},dst=/candidate,readonly",
-            "--mount", f"type=bind,src={trusted_runner},dst=/verifier/trusted_runner.py,readonly",
+            "--mount", f"type=bind,src={trusted_runner},dst=/verifier,readonly",
             *clear_proxy, "--workdir", "/tmp", "--entrypoint", "python", image_id,
-            "-I", "/verifier/trusted_runner.py"]
+            "-I", "/verifier/trusted_runner.py", "--profile", profile_id]
 
 
-def verify_bundle(files: dict[str, str], requirements: list[str]) -> dict:
+def verify_bundle(files: dict[str, str], requirements: list[str], profile_id: str = "static-web") -> dict:
     started = time.monotonic()
-    profile = get_profile("static-web")
+    profile = require_active(profile_id)
     image = os.environ.get("GRAPHOS_VERIFIER_IMAGE", "graphos-verifier:local")
-    base = {"runner": "docker-trusted-playwright-static-web-v1",
+    base = {"runner": "docker-trusted-playwright-profiles-v2",
             "suite_hash": profile["suite_hash"], "policy_hash": profile["policy_hash"],
             "image": image, "browser_process_sandbox": False}
 
@@ -110,8 +110,8 @@ def verify_bundle(files: dict[str, str], requirements: list[str]) -> dict:
         validate_files(files)
     except ArtifactError as exc:
         return failure("artifact_validation", str(exc))
-    if any(name not in files for name in profile["required_files"]):
-        return failure("required_files", "index.html, app.js and styles.css are required")
+    if set(files) != set(profile["required_files"]):
+        return failure("required_files", "Exactly index.html, app.js and styles.css are required")
     if requirements != profile["acceptance_criteria"]:
         return failure("profile_requirements", "This fixed suite cannot certify a different requirement set")
     expected_image = profile["sandbox_policy"]["image_digest"]
@@ -134,12 +134,24 @@ def verify_bundle(files: dict[str, str], requirements: list[str]) -> dict:
     docker_base = ["docker", "--host", "unix:///var/run/docker.sock", "--config", str(docker_config)]
     docker_env = {key: value for key, value in os.environ.items() if key in {"PATH", "LANG", "LC_ALL"}}
     try:
-        suite_bytes = trusted.read_bytes()
-        if hashlib.sha256(suite_bytes).hexdigest() != profile["suite_manifest"]["runner"]:
-            return failure("trusted_suite", "Trusted suite changed before execution")
-        trusted_copy = directory / "trusted_runner.py"
-        trusted_copy.write_bytes(suite_bytes)
-        trusted_copy.chmod(0o444)
+        trusted_copy = directory / "verifier"
+        trusted_copy.mkdir(mode=0o755)
+        trusted_copy.chmod(0o755)
+        for relative, expected_hash in profile["suite_manifest"]["files"].items():
+            source = VERIFIER_ROOT / relative
+            if source.is_symlink() or not source.is_file():
+                return failure("trusted_suite", "Trusted verifier asset is missing or unsafe")
+            content = source.read_bytes()
+            if hashlib.sha256(content).hexdigest() != expected_hash:
+                return failure("trusted_suite", "Trusted suite changed before execution")
+            destination = trusted_copy / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            for parent in destination.parents:
+                if parent == directory:
+                    break
+                parent.chmod(0o755)
+            destination.write_bytes(content)
+            destination.chmod(0o444)
         code, stdout, _ = run_bounded([*docker_base, "image", "inspect", "--format", "{{.Id}}", image],
                                       timeout=15, output_limit=65536, env=docker_env)
         image_id = stdout.decode("utf-8").strip()
@@ -150,7 +162,7 @@ def verify_bundle(files: dict[str, str], requirements: list[str]) -> dict:
         base["image_id"] = image_id
         candidate = directory / "candidate"
         materialize_files(files, candidate)
-        command = docker_command(image_id, candidate, trusted_copy, container_name, docker_config=docker_config)
+        command = docker_command(image_id, candidate, trusted_copy, container_name, docker_config=docker_config, profile_id=profile_id)
         code, stdout, stderr = run_bounded(command, timeout=SANDBOX_POLICY["timeout_seconds"],
                                            output_limit=SANDBOX_POLICY["stdout_stderr_limit"], env=docker_env)
         if code:

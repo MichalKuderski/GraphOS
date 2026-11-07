@@ -177,6 +177,7 @@ def main(argv=None) -> int:
     parser.add_argument("--execute", action="store_true", help="Explicitly authorize real model requests")
     parser.add_argument("--max-attempts", type=int, choices=(1, 2), default=1)
     parser.add_argument("--budget", type=int, default=1_000_000, help="Run microdollars, at most 5,000,000")
+    parser.add_argument("--profile", choices=["static-web", "local-notes", "local-inventory"], default="static-web")
     parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args(argv)
     if not args.execute:
@@ -196,7 +197,7 @@ def main(argv=None) -> int:
               "source_digest": source_digest(), "max_attempts": args.max_attempts,
               "budget_microdollars": args.budget, "attempt_reservation_microdollars": 1_000_000,
               "gateway_budget_is_soft": True, "attempts": [], "production_certification": False,
-              "limits": ["One fixed static-web task-list contract", "No statistical reliability estimate",
+              "limits": ["One disclosed registered app contract", "No statistical reliability estimate",
                          "Operator must reconcile remaining session spend before dispatch",
                          "Process termination does not guarantee provider cancellation"]}
     def persist():
@@ -214,8 +215,8 @@ def main(argv=None) -> int:
         execution_env = {**controller_env, "GRAPHOS_API_URL": api.url, "EVE_SERVER_URL": eve.url}
         os.environ.clear()
         os.environ.update(execution_env)
-        spec = default_spec()
-        spec.update(name="GraphOS live task-list acceptance", max_attempts=args.max_attempts)
+        spec = default_spec(args.profile)
+        spec.update(name=f"GraphOS live {args.profile} acceptance", max_attempts=args.max_attempts)
         with client() as http:
             run = checked(http.post("/v1/runs", json={"spec": spec, "budget": args.budget,
                                                      "idempotency_key": f"live-{stamp}"}))

@@ -23,7 +23,7 @@ ROOT = _runtime_root()
 PROFILE_ROOT = ROOT / "profiles"
 VERIFIER_ROOT = ROOT / "verifier"
 SANDBOX_POLICY = {
-    "version": 1,
+    "version": 2,
     "network": "none",
     "user": "10001:10001",
     "read_only": True,
@@ -44,6 +44,8 @@ SANDBOX_POLICY = {
     "docker_config": "fresh-empty-per-verification",
     "container_proxy_environment": "cleared",
 }
+ACTIVE_PROFILES = ("static-web", "local-notes", "local-inventory")
+
 CONTRACT_ONLY = {
     "games": "Needs engine-specific build, playability, asset, and performance checks.",
     "bots": "Needs a platform adapter, scoped credentials, event replay, and rate-limit checks.",
@@ -62,13 +64,20 @@ def sandbox_policy() -> dict:
 
 
 def get_profile(name: str) -> dict:
-    if name == "static-web":
+    if name in ACTIVE_PROFILES:
         profile_bytes = (PROFILE_ROOT / name / "profile.json").read_bytes()
         profile = json.loads(profile_bytes)
+        files = {}
+        for path in sorted(VERIFIER_ROOT.rglob("*")):
+            if "__pycache__" in path.parts or path.suffix == ".pyc":
+                continue
+            if path.is_symlink():
+                raise ProfileError("Trusted verifier assets cannot be symlinks")
+            if path.is_file():
+                files[path.relative_to(VERIFIER_ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
         suite_manifest = {
             "profile": hashlib.sha256(profile_bytes).hexdigest(),
-            "runner": hashlib.sha256((VERIFIER_ROOT / "trusted_runner.py").read_bytes()).hexdigest(),
-            "dockerfile": hashlib.sha256((VERIFIER_ROOT / "Dockerfile").read_bytes()).hexdigest(),
+            "files": files,
             "playwright_version": SANDBOX_POLICY["playwright_version"],
         }
         profile["suite_hash"] = hashlib.sha256(canonical(suite_manifest)).hexdigest()
@@ -88,16 +97,18 @@ def get_profile(name: str) -> dict:
 
 
 def list_profiles() -> list[dict]:
-    return [get_profile(name) for name in ("static-web", *CONTRACT_ONLY)]
+    return [get_profile(name) for name in (*ACTIVE_PROFILES, *CONTRACT_ONLY)]
 
 
-def default_spec() -> dict:
-    profile = get_profile("static-web")
-    return {"name": "Accessible task list", "profile": "static-web",
-            "requirements": list(profile["acceptance_criteria"]),
-            "tasks": [{"key": "app", "objective": "Build a polished task-list app satisfying every fixed static-web profile requirement.",
-                       "depends_on": []}],
-            "suite_hash": profile["suite_hash"], "policy_hash": profile["policy_hash"],
+def default_spec(profile: str = "static-web") -> dict:
+    selected = require_active(profile)
+    task = selected.get("task_template", {
+        "key": "app", "objective": "Build a polished task-list app satisfying every fixed static-web profile requirement.",
+        "depends_on": []})
+    return {"name": selected.get("display_name", "Accessible task list"), "profile": profile,
+            "requirements": list(selected["acceptance_criteria"]),
+            "tasks": [dict(task)],
+            "suite_hash": selected["suite_hash"], "policy_hash": selected["policy_hash"],
             "max_attempts": 3}
 
 
@@ -108,9 +119,10 @@ def require_active(name: str) -> dict:
     return profile
 
 
-def fixture_files() -> dict[str, str]:
+def fixture_files(profile: str = "static-web") -> dict[str, str]:
     """Explicit deterministic integration fixture; never called as an auth fallback."""
-    directory = PROFILE_ROOT / "static-web" / "fixtures" / "task-list"
+    selected = require_active(profile)
+    directory = PROFILE_ROOT / profile / "fixtures" / selected.get("fixture_directory", "task-list")
     result = {}
     for name in ("index.html", "app.js", "styles.css"):
         path = directory / name

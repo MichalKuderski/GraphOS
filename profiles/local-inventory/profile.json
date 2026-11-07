@@ -1,0 +1,53 @@
+{
+  "id": "local-inventory",
+  "version": 1,
+  "status": "active",
+  "display_name": "Local inventory",
+  "fixture_directory": "inventory",
+  "description": "A dependency-free offline inventory app with validated quantities; this bounded profile does not certify databases, purchasing, accounting, or arbitrary business applications.",
+  "task_template": {
+    "key": "app",
+    "objective": "Build a polished offline inventory app satisfying every fixed local-inventory profile requirement.",
+    "depends_on": []
+  },
+  "required_files": ["index.html", "app.js", "styles.css"],
+  "required_checks": [
+    "accessible_structure", "add_inventory_item", "edit_quantity", "search_inventory",
+    "delete_inventory_item", "local_storage_reload", "reject_invalid_input",
+    "unique_item_names", "literal_html_input", "keyboard_operation", "axe_empty",
+    "axe_populated", "keyboard_navigation", "visible_focus", "mobile_reflow"
+  ],
+  "acceptance_criteria": [
+    "The page has a main landmark, a visible heading, labeled controls, and a visible status message for invalid input.",
+    "A textbox labeled Item name, a spinbutton labeled Quantity, and a button named Add item create an item with a trimmed nonempty name and a safe integer quantity from 0 through 9007199254740991 inclusive.",
+    "Every inventory item is an element with data-testid=inventory-item, its literal name, a spinbutton named Quantity followed by the item name, and buttons named Save followed by the item name and Delete followed by the item name.",
+    "Editing an item's quantity and pressing its Save button updates only that item; valid zero quantities are accepted.",
+    "A searchbox labeled Search items filters visible items by case-insensitive substring of the item name; clearing the query restores all items.",
+    "Deleting an item removes only that item. Items and saved quantity changes persist in localStorage and survive a page reload; deletion also persists.",
+    "Empty or whitespace-only names, empty quantities, negative quantities, fractional quantities, and quantities outside the safe integer range are rejected without adding or changing an item. Rejected input produces a visible message in a status region.",
+    "Names are unique after trimming and case folding; adding a duplicate name must neither create another item nor overwrite the existing quantity.",
+    "HTML-looking item names are displayed as literal text and cannot create DOM elements or execute script, including after reload.",
+    "The app works offline with only index.html, app.js, and styles.css, without remote assets, package installation, server-side code, or external network access.",
+    "The add, edit quantity, search, and delete flow works with Tab, Enter, and Space, and every visible control is reachable by keyboard.",
+    "Empty and populated states have no axe-core 4.14.0 WCAG 2 A/AA, WCAG 2.1 A/AA, or WCAG 2.2 AA automated violations or incomplete findings, including color contrast. Normal text needs at least 4.5:1 contrast; large text needs at least 3:1.",
+    "Every visible control has a keyboard focus outline at least 2 CSS pixels wide, at least 3:1 contrast against a solid adjacent background, and no clipping or obstruction. Use an opaque solid outline and a nonnegative outline offset.",
+    "At viewport widths of 320 and 390 CSS pixels, populated states including a long unbroken item name have no horizontal page overflow or offscreen text or controls."
+  ],
+  "selector_contract": {
+    "name": "get_by_role('textbox', name='Item name', exact=True)",
+    "quantity": "get_by_role('spinbutton', name='Quantity', exact=True)",
+    "add": "get_by_role('button', name='Add item', exact=True)",
+    "search": "get_by_role('searchbox', name='Search items', exact=True)",
+    "row": "[data-testid='inventory-item']",
+    "row_quantity": "get_by_role('spinbutton', name='Quantity ' + item_name, exact=True)",
+    "save": "get_by_role('button', name='Save ' + item_name, exact=True)",
+    "delete": "get_by_role('button', name='Delete ' + item_name, exact=True)",
+    "status": "get_by_role('status')"
+  },
+  "limitations": [
+    "The disclosed finite acceptance suite is a regression gate, not proof of arbitrary correctness or resistance to deliberate test gaming.",
+    "Browser localStorage is single-browser storage, not a durable database or backup. No identity, cross-device synchronization, transaction accounting, or multi-user inventory is supported.",
+    "Automated accessibility checks cover only the declared states and rules. Passing does not certify WCAG conformance, assistive-technology usability, all zoom settings, all browsers, or arbitrary interaction states. Incomplete axe findings fail closed and require repair or a separately designed trusted review process.",
+    "The focus check deliberately requires an opaque 2px-or-larger outline over a solid background. Equivalent custom focus designs need a separately verified profile before acceptance."
+  ]
+}

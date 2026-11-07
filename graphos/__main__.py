@@ -48,9 +48,9 @@ def checked(response: httpx.Response):
     return response.json()
 
 
-def new_run(name: str, budget: int):
+def new_run(name: str, budget: int, profile: str = "static-web"):
     from .profiles import default_spec
-    spec = default_spec()
+    spec = default_spec(profile)
     spec["name"] = name
     with client() as api:
         return checked(api.post("/v1/runs", json={"spec": spec, "budget": budget,
@@ -209,6 +209,7 @@ def main() -> None:
     sub.add_parser("doctor")
     submit = sub.add_parser("submit")
     submit.add_argument("--name", default="GraphOS task-list application")
+    submit.add_argument("--profile", choices=["static-web", "local-notes", "local-inventory"], default="static-web")
     submit.add_argument("--budget", type=int, default=1_000_000, help="Maximum microdollars")
     run = sub.add_parser("execute")
     run.add_argument("run_id")
@@ -216,6 +217,7 @@ def main() -> None:
     run.add_argument("--reservation", type=int, default=1_000_000)
     demo = sub.add_parser("demo")
     demo.add_argument("--builder", choices=["fixture", "eve"], required=True)
+    demo.add_argument("--profile", choices=["static-web", "local-notes", "local-inventory"], default="static-web")
     demo.add_argument("--budget", type=int, default=1_000_000)
     demo.add_argument("--reservation", type=int, default=1_000_000)
     export = sub.add_parser("export")
@@ -240,12 +242,12 @@ def main() -> None:
         elif args.command == "doctor":
             value = doctor()
         elif args.command == "submit":
-            r = new_run(args.name, args.budget)
+            r = new_run(args.name, args.budget, args.profile)
             value = {"run_id": r["id"], "state": r["state"]}
         elif args.command == "execute":
             value = execute(args.run_id, args.builder, args.reservation)
         elif args.command == "demo":
-            r = new_run("GraphOS verified task-list demonstration", args.budget)
+            r = new_run(f"GraphOS verified {args.profile} demonstration", args.budget, args.profile)
             value = execute(r["id"], args.builder, args.reservation)
         elif args.command == "export":
             value = export_release(args.run_id, args.destination)

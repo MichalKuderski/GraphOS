@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Stockroom — local inventory</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to inventory</a>
+    <main id="main">
+      <header class="masthead">
+        <p class="eyebrow">YOUR EVERYDAY ESSENTIALS</p>
+        <h1>Stockroom</h1>
+        <p class="intro">A little order for the things you keep. Track quantities, find what you need, and keep your list on this device.</p>
+        <p class="local-note"><span aria-hidden="true">●</span> Saved in this browser · No account needed</p>
+      </header>
+      <section class="card" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add to your stock</h2>
+        <form id="add-form" class="add-form" novalidate>
+          <div class="field name-field"><label for="item-name">Item name</label><input id="item-name" name="name" type="text" autocomplete="off" required placeholder="For example, sketchbooks"></div>
+          <div class="field"><label for="quantity">Quantity</label><input id="quantity" name="quantity" type="number" min="0" max="9007199254740991" step="1" value="1" required inputmode="numeric"></div>
+          <button type="submit" class="primary">Add item</button>
+        </form>
+        <p id="status" role="status" aria-live="polite" aria-atomic="true">Ready for your first item.</p>
+      </section>
+      <section class="collection" aria-labelledby="inventory-heading">
+        <div class="collection-header"><div><p class="eyebrow">ALL IN ONE PLACE</p><h2 id="inventory-heading">Your inventory</h2></div><p id="item-count">0 items</p></div>
+        <div class="search-field"><label for="search">Search items</label><input id="search" type="search" placeholder="Find an item…" autocomplete="off"></div>
+        <ul id="inventory-list" aria-label="Inventory items"></ul>
+        <p id="empty-state" class="empty-state">Your shelves are clear. Add your first item above.</p>
+      </section>
+      <footer>Your inventory stays in this browser. Clearing browser storage will remove it.</footer>
+    </main>
+  </body>
+</html>

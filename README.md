@@ -4,14 +4,19 @@ GraphOS turns a versioned task specification into artifacts that can be delivere
 only with current verification evidence. Models propose outputs; the controller
 enforces state, budgets, authority, and acceptance.
 
-**Status: first bounded execution milestone implemented and locally verified.** This is a working
-self-hosted control plane with a deliberately narrow task-list web-application
-profile. It is not a completed universal agent platform. Live model generation,
-long-horizon reliability, and comparative model quality have not yet been
-validated. See [production readiness](docs/production-readiness.md) and the
-[acceptance results](evals/results/pytest-acceptance.json).
-The [validation summary](docs/validation-summary.md) identifies measured results
-and their limits, including retained infrastructure failures.
+**Status: a bounded, single-tenant platform with three offline application
+profiles implemented.** The current source supports a task list, local notes,
+and local inventory. Validation of the expanded suites and the new live pilot is
+pending; implemented scope is not a measured success rate.
+
+An earlier task-list revision completed a real model build and a controlled
+persistence repair. Both passed their eight-check suite. Separate product review
+then found low text contrast that those checks missed; the current revision adds
+automated accessibility gates. Earlier passes do not certify the new revision.
+See [live evidence](docs/live-validation.md), the
+[validation summary](docs/validation-summary.md), and
+[production readiness](docs/production-readiness.md) for measured results,
+retained failures, and outstanding production gates.
 
 ## Implemented
 
@@ -20,20 +25,40 @@ and their limits, including retained infrastructure failures.
 - Independent builder/verifier credentials and lease-scoped artifact access.
 - Content-addressed artifacts with hash verification and strict path/size rules.
 - Candidate/input/suite/policy-bound evidence; revisions invalidate prior work.
-- A fixed trusted Playwright suite running in a constrained, network-disabled
-  Docker container. Generated code never executes directly on the host.
+- Profile-specific Playwright suites running in a constrained, network-disabled
+  Docker container. The full trusted verifier asset tree, including pinned
+  axe-core 4.14.0, is hashed and copied read-only. Generated code never executes
+  directly on the host.
 - Release manifests, cancellation, explicit unknown external-effect state, and
   fenced reconciliation. No external deployment or trading adapter is enabled.
 - Integer-microdollar reservations, conservative unknown-cost handling, and
   truthful overrun incidents that block new dispatch.
 - A real eve agent adapter with typed outputs and no model-accessible tools.
+- Scoped repair context from the latest rejected candidate and its verifier
+  diagnostics; every replacement needs new independent evidence.
 - An operator dashboard and a CLI for reproducible execution and artifact export.
 
-The `static-web` profile currently means one disclosed task-list application
-contract: add, complete, filter, delete, persistence, empty-input handling, and
-literal treatment of HTML-looking input. Its objective and behavioral criteria
-are fixed. Games, bots, data, media and trading research have **contract-only**
-profiles; admission blocks them until implementations and domain graders exist.
+The active profiles are disclosed, fixed product contracts:
+
+| Profile | Implemented application scope |
+|---|---|
+| `static-web` v2 | Task creation, completion, filtering, deletion, localStorage persistence, and literal treatment of user text |
+| `local-notes` v1 | Title/body creation and editing, canceling edits, search, deletion, validation, and localStorage persistence |
+| `local-inventory` v1 | Unique item names, validated integer quantities, quantity updates, search, deletion, and localStorage persistence |
+
+Each produces only `index.html`, `app.js`, and `styles.css`. There is no backend,
+account system, synchronization, package installation, or external network use.
+Browser storage is not a managed database or backup. Arbitrary objectives and
+extra requirements remain inadmissible until a trusted contract and grader exist.
+Games, bots, data, media, and trading research remain **contract-only** and cannot
+execute.
+
+Current suites audit empty and populated states with axe-core; the task-list
+suite also audits completed tasks. Any reported violation or incomplete finding
+blocks acceptance. Additional gates check keyboard operation and reachability,
+visible focus, and mobile reflow at 320 and 390 CSS pixels. These finite checks
+do not certify full WCAG conformance, assistive-technology usability, or every
+interaction state; manual accessibility and product review remain necessary.
 
 ## Local setup
 
@@ -55,12 +80,14 @@ the deployment controls in the readiness document.
 In another terminal, run the complete deterministic platform demonstration:
 
 ```bash
-.venv/bin/python -m graphos --env-file .state/local.env demo --builder fixture
+.venv/bin/python -m graphos --env-file .state/local.env demo --builder fixture --profile static-web
 ```
 
 This mode builds a declared test fixture and runs the real independent browser
 suite. It proves platform integration behavior, **not AI generation quality**.
 It never becomes an automatic fallback when model authentication fails.
+Use `--profile local-notes` or `--profile local-inventory` to select the other
+implemented contracts.
 
 ```bash
 .venv/bin/python -m graphos --env-file .state/local.env export RUN_ID ./delivered-app
@@ -78,25 +105,31 @@ authenticated local server. Gateway credentials stay server-side. The builder
 uses only its dedicated eve token; the verifier receives neither model nor
 release credentials.
 
-Configure a dedicated Gateway credential with a provider-enforced spending
-limit before enabling live calls. The implementation-session authorization is
-**$5 total**. A local acknowledgment or budget reservation is not proof of a
-provider-enforced invoice limit. Unknown or over-reservation cost blocks further
-work; late provider billing still requires operational reconciliation.
+Configure and verify a dedicated Gateway credential and spending budget before
+enabling live calls. Gateway budgets are **soft caps**: an in-flight request can
+cross a threshold, and updates may be delayed. The implementation-session
+authorization is **$5 total**, including earlier failures and experiments.
+Reconcile cumulative spend before each new batch. Local reservations control
+dispatch but do not prove a hard provider invoice ceiling. Unknown or
+over-reservation cost blocks further work; late charges require reconciliation.
 
 After configuring the server and its controls:
 
 ```bash
-.venv/bin/python -m graphos --env-file .state/local.env demo --builder eve --budget 5000000 --reservation 1000000
+.venv/bin/python scripts/live_acceptance.py --execute --profile static-web --max-attempts 1 --budget 1000000
 ```
 
 No API key belongs in source control or chat. `.state/`, environment files,
 sessions, generated outputs, and dependencies are ignored by Git.
+The explicit live harness rebuilds the adapter, records the attempt and usage,
+runs independent verification, and exports only an accepted candidate. A new
+profile or suite revision needs new evidence; it cannot inherit an old pass.
 
 ## Validation
 
 ```bash
 .venv/bin/python scripts/check.py
+.venv/bin/python scripts/evaluate_profiles.py calibrate
 cd agents/eve
 npm run typecheck
 npm test
@@ -106,9 +139,14 @@ npm run test:runtime
 
 Database tests use their own schemas. The managed acceptance harness launches and
 restarts its own API, uses actual PostgreSQL and the pinned browser container,
-and records explicit PASS/FAIL/BLOCKED outcomes. Live model testing is separate
-and off by default. [Evaluation protocol](evals/protocol.json) defines the later
-same-budget, repeated-run comparisons needed before superiority claims.
+and records explicit PASS/FAIL/BLOCKED outcomes. Grader calibration checks valid
+fixtures and deliberately defective artifacts; it does not measure model quality.
+Live model testing is separate and off by default. The
+[profile pilot](docs/evaluation-pilot.md) retains every dispatched trial and
+reports per-profile outcomes, but uses disclosed contracts rather than held-out
+projects. No pilot result is claimed here until its recorded run exists.
+[Evaluation protocol](evals/protocol.json) defines the later matched-budget,
+repeated-run comparisons needed before superiority claims.
 
 ## Architecture and operating limits
 
@@ -131,3 +169,11 @@ isolation before exposing arbitrary hostile workloads to a shared production hos
 No software or finite test suite can guarantee 100% accuracy, reliability, or
 consistency over every timeframe. GraphOS records what passed, what changed, and
 what remains unverified so that its operating claims can be audited.
+
+The next promotion gates are grader calibration and repeated live trials,
+untouched representative benchmarks, manual accessibility review, provider and
+worker failure tests, load/soak operation, and production recovery. Multi-tenant
+identity and authorization, worker isolation, credential lifecycle, and independent
+security review precede public or hostile workloads. Games, bots, analytical
+projects, media, and trading research each need their own tools, domain graders,
+and operating controls before their profiles can be enabled.

@@ -164,8 +164,8 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
                 or claim["requirements"] != profile["acceptance_criteria"]):
             raise WorkerError("claimed task does not match the installed trusted profile")
         if builder == "fixture":
-            output = {"files": fixture_files(), "usage": {"actual_cost_microdollars": 0},
-                      "provenance": {"mode": "fixture", "fixture": "static-web-task-list-v1",
+            output = {"files": fixture_files(claim["profile"]), "usage": {"actual_cost_microdollars": 0},
+                      "provenance": {"mode": "fixture", "fixture": f"{profile['id']}-v{profile['version']}",
                                      "ai_generated": False}}
         else:
             dependencies = []
@@ -230,7 +230,7 @@ def verify_once(api_url: str, token: str, run_id: str, worker_id: str = "verifie
                       lease_headers=_lease_headers(run_id, claim))
     if bundle.get("manifest_hash") != digest or bundle_digest(bundle["files"]) != digest:
         raise WorkerError("API returned a different candidate manifest")
-    report = verify_bundle(bundle["files"], claim["requirements"])
+    report = verify_bundle(bundle["files"], claim["requirements"], profile_id=claim["profile"])
     payload = {**_identity(claim), "candidate_hash": digest,
                "suite_hash": claim["suite_hash"], "policy_hash": claim["policy_hash"],
                "passed": report["passed"], "report": report}

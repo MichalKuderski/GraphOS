@@ -1,0 +1,18 @@
+{
+  "recorded_at_utc": "2026-11-07T19:36:22.909671+00:00",
+  "status": "completed",
+  "driver": "vfs",
+  "cause": "Concurrent verifier container creation exhausted local storage and left unreferenced init/partial writable layers.",
+  "approval": "Automatic review initially rejected manual layer removal; user then explicitly approved the four identified orphan pairs.",
+  "targets": [
+    "09e41089f0531ea6cba69265c4d86e608d532a071473791602bfbce901bf9f2f",
+    "0a32648b3001b58ba9ab617b26b567069dca36929c58e980afb98c1319f460a1",
+    "a94887195e2bc93157f79459eef2cd41989e01ce339b5f0ea516c3f8b6efd6db",
+    "dea43691ccebd4578739e6e16f6ebb1fa84e3cfbc8c808272ba13ef51b3ea72a"
+  ],
+  "scope": "Only the listed directories and corresponding -init directories were removed after a fresh cache-id/mount-id/init-id reference check. Database volumes were not deleted.",
+  "reversible_preparation": "Removed graphos-verifier:local through Docker image rm to create room for the recovery helper, then rebuilt from the updated Dockerfile.",
+  "verifier_image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29",
+  "database_health": "healthy",
+  "operational_followup": "Run local VFS browser verification serially; production disk admission, host scheduling, and storage failure recovery remain deployment gates."
+}
