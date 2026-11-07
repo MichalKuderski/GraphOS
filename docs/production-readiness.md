@@ -2,9 +2,15 @@
 
 GraphOS implements a bounded, single-tenant platform and three offline
 application profiles. It is not a universally capable or fully production-certified
-agent platform. This ledger separates historical measurements from the current
-source's implemented scope. No new expanded-suite or pilot pass is asserted
-until its version-bound result is recorded.
+agent platform. This ledger separates historical measurements from current
+validation. The expanded mandatory suite and all 12 grader-calibration cases
+passed. Two separate live pilots remain incomplete: the first dispatched three
+trials and the second dispatched two; neither accepted a candidate. Their costs
+were subsequently reconciled. The latest usage/output repair has 34 passing
+adapter tests, typecheck and credential-free runtime smoke; its full platform
+gate passed at `c5e4ff2`. The third cohort completed all six trials, accepted one
+local-notes candidate and rejected five; all costs settled. Earlier
+passing gates apply only to the source revisions they identify.
 
 ## Recorded evidence
 
@@ -13,12 +19,17 @@ until its version-bound result is recorded.
 | Durable orchestration | Real PostgreSQL fault/concurrency tests | Single controller service, transactional run locking |
 | Recovery | API process restart, expired worker replacement | Local environment; no regional outage simulation |
 | Local restore | [Measured PostgreSQL/CAS drill](restore-validation.json): identical table fingerprints, referenced object and release-manifest validation | Fresh retained scratch database on the same local cluster; no restored dispatch, remote backup or production RTO/RPO |
-| Verification | Historical Docker/Chromium journeys and live release manifests | Earlier fixed task-list revision; expanded profile evidence pending |
+| Verification | [Full gate passed at `c5e4ff2`](../evals/results/checks.json): 245 Python tests plus 18 subtests, 25 reference tests and Ruff | Zero failures, errors or skips, source unchanged; gate completed in approximately 267 seconds; finite platform/fixture checks, not model reliability |
+| Grader calibration | [12 of 12 expected outcomes observed](../evals/results/profile-calibration-20261107.json); actual historical artifact rejected by four new checks | Three conforming controls and nine specified defect injections; finite grader evidence, not model performance |
 | Evidence binding | Wrong candidate, stale revision, incomplete report rejected | Exact input, suite, policy, image and artifact identities |
 | Authorization | Builder cannot verify; reads require active scoped lease | Single tenant, shared credential per trusted service role |
 | Budget accounting | Reservations, unknown-cost consumption, overrun incidents | Provider invoice limits require provider-side controls |
 | External effects | Durable state, lost-token reconciliation, stale receipt rejection | Record/state machine tested; no real deployment/broker adapter |
-| Model harness | eve build, types, unit tests, authenticated server smoke; actual model runs and failed attempts retained | Real model build and controlled repair passed the earlier eight-check task-list suite |
+| Model harness | Latest usage/output repair: 34 adapter tests, typecheck, credential-free runtime smoke and full platform gate passed | [Stream diagnosis](../evals/results/profile-pilot-interruption-20261107.json) and [failed-output accounting gap](../evals/results/profile-schema-rejection-reconciliation-20261107.json); passing tests do not establish live quality |
+| Live evaluation | [Cohorts kept separate](profile-pilot-results.md): first 0/3 dispatched, second 0/2, third 1/6 | Third cohort completed all six with five failures and all costs settled; earlier cohorts retained with three/four undispatched; not a held-out success estimate |
+| Current generated delivery | Third-cohort local-notes candidate passed, was [exported](../evals/results/profile-structured-pilot-deliveries-20261107.json), and received [desktop/mobile visual review](profile-visual-review.json) | No blocking visual defect observed in two populated/editing views; conditional focus styling observed; not full WCAG certification |
+| Exploratory repair | [Task-list](../evals/results/repair-followup-static-web-20261107.json) and [inventory](../evals/results/repair-followup-local-inventory-20261107.json) each exhausted two attempts without acceptance | Task-list repair fixed ARIA/reflow but not focus width; inventory returned the identical candidate, rejected again. All costs known, no exports, excluded from first-attempt pilot denominator |
+| Current CI | Both `c5e4ff2` workflows passed | [Run 42411292679](https://github.com/MichalKuderski/GraphOS/actions/runs/42411292679) and [run 42411288496](https://github.com/MichalKuderski/GraphOS/actions/runs/42411288496) |
 | Targeted repair | PostgreSQL lease, stale-evidence and worker tests | Latest rejected candidate plus bounded diagnostics; every repair needs fresh verification |
 | Operator UI | Browser UI actions and responsive behavior | Control plane; candidate HTML is never embedded here |
 
@@ -38,9 +49,9 @@ The current HTTP profile registry implements three fixed offline contracts:
 
 | Profile | Scope | Current evidence boundary |
 |---|---|---|
-| `static-web` v2 | Task-list behavior, persistence and the expanded accessibility gates | New-suite validation and live results pending; historical v1 passes remain v1 evidence |
-| `local-notes` v1 | Create/edit/cancel/search/delete notes, input validation, literal user text and persistence | Implemented; new-suite and live results pending |
-| `local-inventory` v1 | Unique names, safe integer quantities, quantity updates, search/delete and persistence | Implemented; new-suite and live results pending |
+| `static-web` v2 | Task-list behavior, persistence and the expanded accessibility gates | Fixture/regression/calibration passed; no current live pilot candidate accepted. Third cohort: strict output rejection/model-call limit, then focus contrast rejection |
+| `local-notes` v1 | Create/edit/cancel/search/delete notes, input validation, literal user text and persistence | Fixture/regression/calibration passed; one third-cohort candidate accepted and exported, the other failed before verification with known usage; earlier failures retained |
+| `local-inventory` v1 | Unique names, safe integer quantities, quantity updates, search/delete and persistence | Fixture/regression/calibration passed; no live pilot candidate accepted. Third cohort rejected long quantity-label overflow and text contrast |
 
 Every application consists of three offline files. None implements a backend,
 authentication, cross-device synchronization, a backup service, or multi-user
@@ -87,45 +98,107 @@ model success rate, broad production readiness, or superiority over a baseline.
 The initial app's separate visual review found low text contrast that its
 eight-check suite missed. That observed defect motivated the new accessibility
 gates; it does not disappear from the historical release merely because the
-grader changed. Calibration must show that the new gates reject this class of
-defect and accept conforming controls. Automated checks cover finite states and
-rules, not full WCAG conformance. Screen-reader use, zoom, different browsers,
+grader changed. All 12 calibration cases produced their expected outcomes. The
+actual historical candidate also failed populated/completed contrast, focus
+outline width and mobile reflow under the new suite. Automated checks cover finite states and
+rules, not full WCAG conformance. The focused-state outline gate can miss an
+always-on outline; add a focused/unfocused negative control and fresh suite
+binding before claiming that distinction is automatically verified. The accepted
+notes artifact independently showed conditional focus CSS and a focused textbox
+without that outline on unfocused controls, preserving that finite review result.
+Screen-reader use, zoom, different browsers,
 meaningful labels, interaction usability, and manual product review remain
 separate requirements.
 
 The [profile pilot](evaluation-pilot.md) separates fixture-based grader
 calibration from serial real-model trials. Its contracts are disclosed, failures
-remain in the denominator, and no result is claimed before execution. Even a
-completed pilot cannot substitute for an untouched project-level test set,
+remain in the denominator, and the [incomplete result](profile-pilot-results.md)
+records every dispatched and undispatched trial. No candidate qualified for
+export. The inventory interruption exposed a 60-second HTTP stream lease with
+client reconnection disabled. The repair resumes only a GET stream for the same
+delivery and cursor within the original deadline; it does not resend a model
+request. Its tests, typecheck, fresh build and credential-free runtime smoke pass;
+the full platform gate also passed at `801f711`. The
+[interruption record](../evals/results/profile-pilot-interruption-20261107.json)
+retains the diagnosis, both inventory receipts and subsequent operator-API
+reconciliation to $0.024126. The run is `EXHAUSTED`, with no remaining reservation
+or uncertain attempt; this accounting repair does not change its failed pilot
+outcome. The second cohort then stopped after two trials: task-list reflow failed,
+and notes output did not fulfill the runtime schema. Its known model charge was
+initially lost at the broker error boundary, then reconciled from its receipt to
+$0.008832. No uncertain costs remain from these cohorts.
+The [refreshed receipts](../evals/results/profile-reconnect-pilot-receipts-20261107.json)
+bring the cumulative provider-receipt sum to $0.14852750, matching key spend at
+that observation. The $1 non-resetting soft budget remains unchanged.
+
+The latest repair recovers complete usage only after confirmed session retirement
+and validates it before forwarding failure accounting. The model is required to
+use the runtime's exact typed reply tool. Build instructions now address the
+observed roles, field validation, focus and wrapping defects. These changes have
+34 passing adapter tests, typecheck, credential-free runtime smoke and the full
+platform gate. The third cohort completed without source changes: one of six
+accepted and five failed, with no undispatched trials or uncertain costs. The
+[17 provider receipts](../evals/results/profile-structured-pilot-receipts-20261107.json)
+total $0.13305905; cumulative receipt-backed spending before exploratory runs is
+$0.28158655. A lower aggregate key-budget reading does not supersede that total.
+The accepted notes release passed its finite independent desktop/mobile visual
+spotcheck, with no observed horizontal overflow, overlap, clipped content or page
+errors. Separate fresh task-list and inventory build/repair demonstrations each
+exhausted two attempts without acceptance. The task-list repair corrected ARIA
+and mobile failures but retained insufficient focus width. Inventory retained
+populated Save-button contrast and long quantity/status text overflow on both
+attempts. Neither run exported an artifact or changed the pilot result.
+Their receipt costs were $0.03437364 and $0.03130749, respectively, bringing
+cumulative receipt-backed session spending to **$0.34726768**. The
+[final ledger/spend review](../evals/results/final-spend-ledger-review-20261107.json)
+confirms zero reservations and uncertain attempts across all 13 dispatched runs.
+The fresh key-budget aggregate is $0.34044667, lower by $0.00682101; its cause is
+not established, so the higher receipt sum remains the conservative basis. This
+is not invoice reconciliation. The $1 soft budget and $5 authorization remain unchanged.
+Because
+instructions were adjusted using observed failures, later results are development
+evidence rather than untouched holdout performance. Even a completed
+pilot cannot substitute for an untouched project-level test set,
 matched-budget comparisons, or statistically justified reliability estimates.
 
 ## Required before wider production use
 
-1. **Calibrate and exercise the current contracts:** validate correct fixtures and
-   deliberately defective examples for all three profiles, run bounded live
-   trials on the current suites, and retain failures and costs. Exercise current
-   repair paths without reusing stale evidence. Add manual accessibility and
-   product review before calling a result suitable for its users.
-2. **Representative evaluation:** versioned held-out project families,
+1. **Improve generation and precise repair within the existing contracts:** the
+   completed pilot accepted one of six, and neither exploratory repair earned a
+   release. Provide diagnostics that identify the failing control, computed
+   style and state. Test provider-side `strict: true` with a minimal compatibility
+   canary for the selected Gateway/model route before adopting it; forced tool
+   selection alone did not guarantee schema-valid arguments. Keep current
+   acceptance thresholds and failed trials intact. Detect no-op model repairs
+   before redundant verification when candidate/input/suite/policy identities
+   match. New experiments need their
+   own declared source and denominator.
+2. **Close specific grader and recovery gaps:** add focused/unfocused negative
+   controls so always-on outlines cannot satisfy a state-change claim; bind
+   revised suites to fresh evidence. Persist Gateway generation IDs and failed-call
+   receipt identities before a worker's final report reaches the ledger. Existing
+   terminal usage recovery does not close the earlier crash window. Continue
+   manual accessibility and product review beyond the finite notes spotcheck.
+3. **Representative evaluation:** versioned held-out project families,
    matched-budget single-agent and multi-agent comparisons, repeated runs,
    uncertainty intervals, escaped-defect measurement and human product review.
    Predeclare promotion criteria and do not tune against the held-out set.
-3. **Failure handling and long-horizon operation:** workload-appropriate load/soak
+4. **Failure handling and long-horizon operation:** workload-appropriate load/soak
    tests, explicit provider/worker outages, bounded retry storms, deployment
    upgrades with paused work, disk exhaustion, and safe recovery without duplicate
    model spending or external actions.
-4. **Identity and isolation:** external identity/SSO when needed, tenant-scoped
+5. **Identity and isolation:** external identity/SSO when needed, tenant-scoped
    authorization tested against cross-tenant access, short-lived worker authority,
    credential rotation/revocation, dedicated sandbox hosts or microVMs, and
    independent security assessment before arbitrary hostile workloads. Adding a
    tenant field does not establish multi-tenant isolation.
-5. **Operations:** encrypted backups and verified restore objectives, monitoring,
+6. **Operations:** encrypted backups and verified restore objectives, monitoring,
    paging, deployment/rollback procedures, data retention, dependency maintenance,
    resource quotas, availability targets and incident ownership.
-6. **Real action adapters:** receiver-enforced deduplication, authoritative
+7. **Real action adapters:** receiver-enforced deduplication, authoritative
    reconciliation, credential scoping, explicit compensation, and provider-specific
    tests before deployments, messages, payments, or trading actions are enabled.
-7. **Domain implementation:** only after the applicable evaluation, isolation and
+8. **Domain implementation:** only after the applicable evaluation, isolation and
    operating gates, add actual tools and graders for games, bots, data, media and
    trading research. Their current profiles remain blocked contracts. For trading,
    software correctness, statistical validity, execution reliability and evidence

@@ -1,0 +1,98 @@
+{
+  "observed_at": "2026-11-07T19:50:20.748840+00:00",
+  "source_digest": "4bf02598a45ba6903a92133f0a311006fc77ebbfa86b15ed5fd293723d3e7ff4",
+  "historical_run_id": "8a0181b8-bdac-49b6-9902-8c2686de815a",
+  "candidate_hash": "2f9a8bfaf37335ac9b1c44baea35609d74d7bc8acd9cb642a8609cc2ef1f21ed",
+  "purpose": "Revalidate a historically accepted v1 artifact against the expanded v2 accessibility gate",
+  "historical_evidence_preserved": true,
+  "model_calls": 0,
+  "report": {
+    "passed": false,
+    "checks": [
+      {
+        "name": "accessible_structure",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "add_task",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "toggle_completion",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "filter_tasks",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "delete_task",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "local_storage_reload",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "reject_empty_input",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "literal_html_input",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "axe_empty",
+        "passed": true,
+        "detail": "Observed in Chromium",
+        "observations": {
+          "engine": "axe-core@4.14.0",
+          "state": "empty",
+          "rules_passed": 20,
+          "violations": 0,
+          "incomplete": 0
+        }
+      },
+      {
+        "name": "axe_populated",
+        "passed": false,
+        "detail": "axe populated: violations:color-contrast at ['li:nth-child(1) > .delete-btn[type=\"button\"]'], ['li:nth-child(2) > .delete-btn[type=\"button\"]']"
+      },
+      {
+        "name": "axe_completed",
+        "passed": false,
+        "detail": "axe completed: violations:color-contrast at ['.completed'], ['li:nth-child(1) > .delete-btn[type=\"button\"]']"
+      },
+      {
+        "name": "keyboard_operation",
+        "passed": true,
+        "detail": "Observed in Chromium"
+      },
+      {
+        "name": "visible_focus",
+        "passed": false,
+        "detail": "Keyboard focus requires a visible outline at least 2 CSS pixels wide"
+      },
+      {
+        "name": "mobile_reflow",
+        "passed": false,
+        "detail": "Mobile reflow failed at 320px: {'tooWide': True, 'outside': ['text:Added task \"LongTaskLongTaskLongTaskLongTaskLongTa', 'text:LongTaskLongTaskLongTaskLongTaskLongTaskLongTaskLo', 'text:Delete LongTaskLongTaskLongTaskLongTaskLongTaskLon']}"
+      }
+    ],
+    "runner": "docker-trusted-playwright-profiles-v2",
+    "browser_process_sandbox": false,
+    "duration_ms": 15080,
+    "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+    "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+    "image": "graphos-verifier:local",
+    "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+  }
+}

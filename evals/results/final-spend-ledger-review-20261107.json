@@ -1,0 +1,133 @@
+{
+  "observed_at": "2026-11-07T20:46:40.888259+00:00",
+  "mode": "read-only-ledger-and-provider-reconciliation",
+  "model_calls": 0,
+  "runs": [
+    {
+      "report": "profile-live-pilot-20261107.json",
+      "run_id": "6bcc4ef7-78b8-43cd-a1e9-c09fb906a843",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 13493,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-20261107.json",
+      "run_id": "5ccaad29-ab6e-4a8e-8761-3ad2d23c84d2",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 22761,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-20261107.json",
+      "run_id": "8cadac60-fe5d-49bc-bf8f-b70ca6b38e1f",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 24126,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-reconnect-20261107.json",
+      "run_id": "451d9b51-bbb9-49ee-9fb1-66eb34454572",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 24657,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-reconnect-20261107.json",
+      "run_id": "86424a99-a168-475f-ae7b-3b02c91044dc",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 8832,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "5b5afb25-cc2b-4068-bc67-62a493535f55",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 17078,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "a6d39170-0b71-4a63-bbed-609a0fdcba2a",
+      "state": "RELEASED",
+      "spent_microdollars": 24578,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "2c6e0863-575b-4c75-87ec-077fc904891a",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 26592,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "03f1b6c3-9a54-452c-ab3f-053297f02d3c",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 11599,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "6131ec46-957f-4a24-b1d9-7c3b529a5f83",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 15114,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "profile-live-pilot-structured-20261107.json",
+      "run_id": "8730c5bc-df85-430d-b476-3b394fa2505b",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 38105,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "repair-followup-static-web-20261107.json",
+      "run_id": "d23ffbe1-5662-4264-85eb-88f8df47915b",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 34376,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    },
+    {
+      "report": "repair-followup-local-inventory-20261107.json",
+      "run_id": "c9e913c5-4443-480e-bd71-f17be70acfdc",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 31309,
+      "reserved_microdollars": 0,
+      "uncertain_cost_attempts": 0
+    }
+  ],
+  "all_sampled_live_runs_settled": true,
+  "cumulative_provider_receipt_spend_usd": "0.34726768",
+  "gateway_key_budget_current_spend_usd": "0.34044667",
+  "receipt_minus_budget_observation_usd": "0.00682101",
+  "difference_matches_receipt_id": "gen_01M6VV7NK48S8WQV3M1Q1S5TVQ",
+  "difference_explanation": "Not established; preserve both observations and use the higher receipt total for authorization headroom. Neither observation is asserted to be a final invoice.",
+  "session_authorization_usd": 5,
+  "conservative_remaining_session_headroom_usd": "4.65273232",
+  "key_budget_usd": 1,
+  "key_budget_is_soft": true,
+  "key_budget_refresh": "none",
+  "billing_settings_changed": false,
+  "credit_purchases": false,
+  "provider_receipt_chain": [
+    "profile-pilot-receipts-20261107.json",
+    "profile-pilot-interruption-20261107.json",
+    "profile-reconnect-pilot-receipts-20261107.json",
+    "profile-structured-pilot-receipts-20261107.json",
+    "repair-followup-static-web-receipts-20261107.json",
+    "repair-followup-local-inventory-receipts-20261107.json"
+  ],
+  "prior_baseline_usd": "0.05466171"
+}

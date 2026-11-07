@@ -1,0 +1,1115 @@
+{
+  "schema_version": 1,
+  "experiment_id": "20261107T194708-153a6652",
+  "mode": "calibrate",
+  "status": "PASS",
+  "started_at": "2026-11-07T19:47:08.708749+00:00",
+  "source_digest": "4bf02598a45ba6903a92133f0a311006fc77ebbfa86b15ed5fd293723d3e7ff4",
+  "profiles": [
+    "static-web",
+    "local-notes",
+    "local-inventory"
+  ],
+  "protocol": {
+    "schema_version": 1,
+    "id": "local-browser-disclosed-contract-pilot-v1",
+    "scope": "Three fixed, disclosed local-browser application contracts; repeated generations are not independent product-task samples.",
+    "profiles": [
+      "static-web",
+      "local-notes",
+      "local-inventory"
+    ],
+    "trials_per_profile": 2,
+    "trial_order": "Repeat first, then profile in declared order",
+    "attempts_per_trial": 1,
+    "repair_attempts": 0,
+    "calibration_cases": [
+      {
+        "id": "positive-fixture",
+        "kind": "positive",
+        "expected_pass": true
+      },
+      {
+        "id": "missing-entrypoint",
+        "kind": "negative",
+        "expected_failed_check": "required_files"
+      },
+      {
+        "id": "disabled-persistence",
+        "kind": "negative",
+        "expected_failed_check": "local_storage_reload"
+      },
+      {
+        "id": "low-contrast-text",
+        "kind": "negative",
+        "expected_failed_check": "axe_empty"
+      }
+    ],
+    "live_denominator": "Every dispatched trial, including generation, verification, infrastructure, and accounting failures. Undispatched trials are separately counted against the planned sample.",
+    "accounting": {
+      "session_authorization_microdollars": 5000000,
+      "attempt_reservation_microdollars": 1000000,
+      "require_explicit_prior_session_spend": true,
+      "uncertain_cost_action": "Stop all further dispatch, retain reservation, require independent ledger and provider reconciliation.",
+      "gateway_budget_is_soft": true
+    },
+    "claims_not_supported": [
+      "Held-out generalization",
+      "Statistical reliability across arbitrary software projects",
+      "Production certification or WCAG conformance",
+      "Superiority over another model, agent configuration, or human team"
+    ],
+    "future_comparison": {
+      "design": "Independently curated task-family holdouts, paired configurations on the same tasks, equal declared budgets, randomized order, frozen graders, and all failures retained.",
+      "current_pilot_is_comparative": false
+    }
+  },
+  "evaluation_class": "fixture-grader-calibration",
+  "held_out": false,
+  "production_certification": false,
+  "cases": [
+    {
+      "profile": "static-web",
+      "case": "positive-fixture",
+      "kind": "positive",
+      "status": "COMPLETE",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 19,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 21,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_completed",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "completed",
+              "rules_passed": 21,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 14070,
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "static-web",
+      "case": "missing-entrypoint",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "browser_process_sandbox": false,
+        "passed": false,
+        "checks": [
+          {
+            "name": "required_files",
+            "passed": false,
+            "detail": "Exactly index.html, app.js and styles.css are required"
+          }
+        ],
+        "duration_ms": 2
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "static-web",
+      "case": "disabled-persistence",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": false,
+            "detail": "No localStorage persistence was written"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": false,
+            "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 19,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 21,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_completed",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "completed",
+              "rules_passed": 21,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 19057,
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "static-web",
+      "case": "low-contrast-text",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": false,
+            "detail": "axe empty: violations:color-contrast at ['.eyebrow'], ['.intro']; incomplete:color-contrast at ['h1'], ['#new-task']"
+          },
+          {
+            "name": "axe_populated",
+            "passed": false,
+            "detail": "axe populated: violations:color-contrast at ['.eyebrow'], ['.intro']; incomplete:color-contrast at ['h1'], ['#new-task']"
+          },
+          {
+            "name": "axe_completed",
+            "passed": false,
+            "detail": "axe completed: violations:color-contrast at ['.eyebrow'], ['.intro']; incomplete:color-contrast at ['h1'], ['#new-task']"
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 14255,
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-notes",
+      "case": "positive-fixture",
+      "kind": "positive",
+      "status": "COMPLETE",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "create_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "cancel_edit",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "search_notes",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "keyboard_note_operations",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 23,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 14693,
+        "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-notes",
+      "case": "missing-entrypoint",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "browser_process_sandbox": false,
+        "passed": false,
+        "checks": [
+          {
+            "name": "required_files",
+            "passed": false,
+            "detail": "Exactly index.html, app.js and styles.css are required"
+          }
+        ],
+        "duration_ms": 1
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-notes",
+      "case": "disabled-persistence",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "create_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "cancel_edit",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "search_notes",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": false,
+            "detail": "No localStorage persistence was written"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": false,
+            "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": false,
+            "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "keyboard_note_operations",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 23,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 25723,
+        "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-notes",
+      "case": "low-contrast-text",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "create_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "cancel_edit",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "search_notes",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_note",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "keyboard_note_operations",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": false,
+            "detail": "axe empty: violations:color-contrast at ['header > .eyebrow'], ['h1']; incomplete:color-contrast at ['#note-title'], ['#note-body']"
+          },
+          {
+            "name": "axe_populated",
+            "passed": false,
+            "detail": "axe populated: violations:color-contrast at ['header > .eyebrow'], ['h1']; incomplete:color-contrast at ['#search-notes']"
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 14674,
+        "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-inventory",
+      "case": "positive-fixture",
+      "kind": "positive",
+      "status": "COMPLETE",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_quantity",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "search_inventory",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_invalid_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "unique_item_names",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 26,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 15603,
+        "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-inventory",
+      "case": "missing-entrypoint",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "browser_process_sandbox": false,
+        "passed": false,
+        "checks": [
+          {
+            "name": "required_files",
+            "passed": false,
+            "detail": "Exactly index.html, app.js and styles.css are required"
+          }
+        ],
+        "duration_ms": 1
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-inventory",
+      "case": "disabled-persistence",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_quantity",
+            "passed": false,
+            "detail": "Locator expected to have Value '0'\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "search_inventory",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": false,
+            "detail": "No localStorage persistence was written"
+          },
+          {
+            "name": "reject_invalid_input",
+            "passed": false,
+            "detail": "Locator expected to have Value '7'\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "unique_item_names",
+            "passed": false,
+            "detail": "Locator expected to have count '1'\nActual value: 0 \n"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": false,
+            "detail": "Locator expected to be visible\nActual value: None\nError: element(s) not found \n"
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 26,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 35054,
+        "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    },
+    {
+      "profile": "local-inventory",
+      "case": "low-contrast-text",
+      "kind": "negative",
+      "status": "COMPLETE",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "edit_quantity",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "search_inventory",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_inventory_item",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_invalid_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "unique_item_names",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": false,
+            "detail": "axe empty: violations:color-contrast at ['header > .eyebrow'], ['.intro']; incomplete:color-contrast at ['h1'], ['#item-name']"
+          },
+          {
+            "name": "axe_populated",
+            "passed": false,
+            "detail": "axe populated: violations:color-contrast at ['header > .eyebrow'], ['.intro']; incomplete:color-contrast at ['h1'], ['#item-name']"
+          },
+          {
+            "name": "keyboard_navigation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 15164,
+        "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "expected_behavior_observed": true
+    }
+  ],
+  "summary": {
+    "cases": 12,
+    "expected_behavior_observed": 12,
+    "by_profile": {
+      "static-web": {
+        "cases": 4,
+        "expected_behavior_observed": 4
+      },
+      "local-notes": {
+        "cases": 4,
+        "expected_behavior_observed": 4
+      },
+      "local-inventory": {
+        "cases": 4,
+        "expected_behavior_observed": 4
+      }
+    },
+    "measures": "Grader sensitivity on declared fixtures and injected faults, not model performance"
+  },
+  "finished_at": "2026-11-07T19:49:57.175516+00:00",
+  "source_unchanged": true
+}

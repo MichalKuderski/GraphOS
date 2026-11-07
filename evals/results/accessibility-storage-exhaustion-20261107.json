@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-11-07T19:31:52.729411+00:00",
+  "mode": "integration-fixture",
+  "cases": [
+    {
+      "id": "happy_fixture_release",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "",
+      "duration_ms": 1254
+    },
+    {
+      "id": "duplicate_admission_and_submission",
+      "status": "PASS",
+      "details": {
+        "run_id": "1d897193-c703-4638-a9a3-0813046d2058",
+        "duplicate_charge": false
+      },
+      "duration_ms": 153
+    },
+    {
+      "id": "registered_profile_boundary",
+      "status": "PASS",
+      "details": {
+        "unsupported_objective_rejected": true,
+        "unsupported_requirement_rejected": true,
+        "fixed_suite_scope": "registered static-web task-list contract only"
+      },
+      "duration_ms": 7
+    },
+    {
+      "id": "roles_and_cancellation",
+      "status": "PASS",
+      "details": {
+        "run_id": "8ded39f0-964b-4321-b66c-14b53fc644b5",
+        "state": "CANCELLED",
+        "stale_build_rejected": true,
+        "effect_dispatch_blocked": true,
+        "real_external_action_performed": false
+      },
+      "duration_ms": 150
+    },
+    {
+      "id": "evidence_revision_and_artifact_binding",
+      "status": "FAIL",
+      "error_type": "OSError",
+      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-u9uutooj'",
+      "duration_ms": 102
+    },
+    {
+      "id": "bad_candidate_fails_browser",
+      "status": "FAIL",
+      "error_type": "OSError",
+      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-qr4tqm4r'",
+      "duration_ms": 112
+    },
+    {
+      "id": "worker_crash_and_lease_recovery",
+      "status": "PASS",
+      "details": {
+        "run_id": "f431a711-432a-43b0-adc2-b97f702e14c0",
+        "worker_exit_code": 137,
+        "expired_reservation_conservatively_charged": 13,
+        "uncertainty_paused_dispatch": true,
+        "authoritative_fixture_cost_after_reconciliation": 0,
+        "new_epoch": 3,
+        "stale_submission_rejected": true,
+        "replacement_artifact_submitted": true
+      },
+      "duration_ms": 1454
+    },
+    {
+      "id": "controller_restart_preserves_state",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "A genuinely browser-verified fixture run is required for the restart check",
+      "duration_ms": 0
+    }
+  ],
+  "claims": {
+    "model_quality_measured": false,
+    "production_readiness_established": false,
+    "scope": "PostgreSQL HTTP control plane and Docker static-web verification"
+  },
+  "limits": [
+    "One supported static-web profile",
+    "Deterministic fixtures are not AI generation",
+    "No live deployment or financial execution",
+    "No statistical accuracy estimate",
+    "Controller restart is not a database disaster-recovery test"
+  ],
+  "live_model": {
+    "status": "NOT_RUN",
+    "reason": "Live model evaluation not requested",
+    "model_quality_measured": false
+  },
+  "finished_at": "2026-11-07T19:31:55.962970+00:00",
+  "summary": {
+    "pass": 4,
+    "fail": 4,
+    "not_run": 0,
+    "blocked": 0
+  },
+  "coverage": {
+    "configured_fixture_cases": 8,
+    "browser_reports_with_image_identity": 0,
+    "verifier_image_ids": [],
+    "suite_hash": "0c9ffbacaa2bd686edabd8337ba94f4c50c3fdd7f480e1e28fae1edba3007a30",
+    "policy_hash": "3f62d84b3e786b785e689326ddc845907adad064bfc839feec7d27732614c92e",
+    "controller_restart_requested": true,
+    "database_disaster_recovery_tested": false,
+    "real_external_effects_tested": false,
+    "statistical_model_benchmark_completed": false
+  }
+}

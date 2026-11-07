@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "diagnostic_kind": "structured_output_rejection",
+  "experiment_id": "20261107T202926-ea739032",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "profile": "static-web",
+  "trial_id": "static-web-1",
+  "run_id": "5b5afb25-cc2b-4068-bc67-62a493535f55",
+  "build_identity": {
+    "attempt_id": "7e189223-d5be-49f0-858f-753d491c4edd",
+    "task_id": "c7495079-79b6-4de9-8d2e-9a8a43e2e787",
+    "epoch": 1,
+    "revision": 1,
+    "input_hash": "16d74716a02df74a564b97b7c01c30adc8ba3714d58a9e441152d0eed26994d9"
+  },
+  "session_id": "wrun_01M6VV7J20XA307HFYGQ2F7W7C",
+  "workflow_run_id": "wrun_01M6VV7J20XA307HFYGQ2F7W7C",
+  "delivery_id": "83439657-58c7-457c-b9e9-c1a7f7f648d3",
+  "terminal_observation": {
+    "at": "2026-11-07T20:30:23.258Z",
+    "turn_id": "turn_0",
+    "outcome": "failed",
+    "error": {
+      "code": "REACTION_FAILED",
+      "message": "model_call_limit"
+    },
+    "broker_error": "eve_turn_not_completed"
+  },
+  "model_calls": [
+    {
+      "run_id": "run_0",
+      "generation_id": "gen_01M6VV7K4FG67C6F507BVS45VJ",
+      "model_outcome": "completed",
+      "finish_reason": "tool-calls",
+      "tool_name": "eve__reply",
+      "tool_result_type": "error-text",
+      "validation_errors": [
+        {
+          "path": [
+            "files",
+            "index.html"
+          ],
+          "message": "String is too short (0 < 1)."
+        },
+        {
+          "path": [
+            "files",
+            "app.js"
+          ],
+          "message": "String is too short (0 < 1)."
+        },
+        {
+          "path": [
+            "files",
+            "styles.css"
+          ],
+          "message": "String is too short (0 < 1)."
+        }
+      ],
+      "observed_argument_shape": "The files object contained all three required names with empty string values."
+    },
+    {
+      "run_id": "run_1",
+      "generation_id": "gen_01M6VV7NK48S8WQV3M1Q1S5TVQ",
+      "model_outcome": "completed",
+      "finish_reason": "tool-calls",
+      "tool_name": "eve__reply",
+      "tool_result_type": "error-text",
+      "validation_errors": [
+        {
+          "message": "Unrecognized key: \"styles.css\""
+        }
+      ],
+      "observed_argument_shape": "The files object contained populated strings, but a second styles.css property appeared at the top level."
+    },
+    {
+      "run_id": "run_2",
+      "generation_id": "gen_01M6VV89PQ8E0FXKVGF8WTK3RV",
+      "model_outcome": "completed",
+      "finish_reason": "tool-calls",
+      "tool_name": "eve__reply",
+      "tool_result_type": "error-text",
+      "validation_errors": [
+        {
+          "message": "Unrecognized key: \"styles.css\""
+        }
+      ],
+      "observed_argument_shape": "The files object contained populated strings, but a second styles.css property appeared at the top level."
+    }
+  ],
+  "accounting": {
+    "cost_known": true,
+    "actual_cost_microdollars": 17078,
+    "cost_source": "eve_gateway_usage_events",
+    "model_runs": 3,
+    "generation_ids": [
+      "gen_01M6VV7K4FG67C6F507BVS45VJ",
+      "gen_01M6VV7NK48S8WQV3M1Q1S5TVQ",
+      "gen_01M6VV89PQ8E0FXKVGF8WTK3RV"
+    ],
+    "note": "This diagnostic uses retained runtime usage events; it performs no new provider receipt lookup."
+  },
+  "assessment": {
+    "forced_reply_tool_worked": true,
+    "strict_schema_rejection_valid": true,
+    "model_call_limit_enforced": true,
+    "candidate_delivered": false,
+    "schema_loosened": false,
+    "source_or_candidate_modified": false,
+    "explanation": "All three model calls selected eve__reply. Their arguments failed the unchanged schema. After the third completed model call, the existing model-call limit stopped further generation."
+  },
+  "evidence_sources": [
+    {
+      "path": "evals/results/profile-live-pilot-structured-20261107.json",
+      "kind": "frozen_cohort_trial_report"
+    },
+    {
+      "kind": "retained_private_workflow_stream",
+      "workflow_run_id": "wrun_01M6VV7J20XA307HFYGQ2F7W7C",
+      "observations": "model.started, model.settled, usage.recorded, turn.settled, delivery.settled, session.ended"
+    },
+    {
+      "kind": "retained_private_turn_step_outputs",
+      "workflow_run_id": "wrun_01M6VV7J20XA307HFYGQ2F7W7C",
+      "observations": "Parsed eve__reply error-text validation tails and argument key/type/length summaries only."
+    }
+  ],
+  "redaction": {
+    "candidate_source_included": false,
+    "prompts_included": false,
+    "credentials_included": false,
+    "raw_provider_payloads_included": false
+  }
+}

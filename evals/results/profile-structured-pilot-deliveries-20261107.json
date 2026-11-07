@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-11-07T20:37:02.085240+00:00",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "pilot": "profile-live-pilot-structured-20261107.json",
+  "exports": [
+    {
+      "trial": "local-notes-1",
+      "profile": "local-notes",
+      "run_id": "a6d39170-0b71-4a63-bbed-609a0fdcba2a",
+      "result": {
+        "exported": "/workspace/GraphOS/.state/profile-pilot-deliveries/local-notes-1",
+        "tasks": 1,
+        "run_id": "a6d39170-0b71-4a63-bbed-609a0fdcba2a",
+        "revision": 1,
+        "manifest_hash": "57ec8cf2f764aa2ca2d665206ae8a703132e7e104bbfb7793e9f4c657c64307e"
+      }
+    }
+  ],
+  "model_calls": 0
+}

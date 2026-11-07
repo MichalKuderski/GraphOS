@@ -1,0 +1,55 @@
+{
+  "observed_at": "2026-11-07T20:16:14.270519+00:00",
+  "status": "RECONCILED",
+  "run_id": "86424a99-a168-475f-ae7b-3b02c91044dc",
+  "attempt_id": "67f99e5c-3413-4c0f-8349-2e0867e61fbb",
+  "session_id": "wrun_01M6VT2X888H5K2HRGG3NKE627",
+  "failure": "OUTPUT_SCHEMA_NOT_FULFILLED after a completed model call",
+  "model_runs_started": 1,
+  "model_runs_completed": 1,
+  "interrupted_or_retried_runs": 0,
+  "runtime_output_tokens_including_reasoning": 4160,
+  "receipts": [
+    {
+      "id": "gen_01M6VT2YX8QTTHN6CV3SYFXD6Y",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.008832",
+      "gateway_cost": "0.008832",
+      "native_tokens_prompt": 2048,
+      "native_tokens_completion": 3328,
+      "native_tokens_reasoning": 832,
+      "finish_reason": "stop",
+      "created_at": "2026-11-07T20:09:35.000Z"
+    }
+  ],
+  "retirement": {
+    "end_delivery_id": "8d7f13e4-efbc-4d0c-9108-71a9ee30f751",
+    "end_applied": true,
+    "session_ended_outcome": "completed",
+    "at": "2026-11-07T20:10:00.352Z"
+  },
+  "operator_api_result": {
+    "run_id": "86424a99-a168-475f-ae7b-3b02c91044dc",
+    "attempt_id": "67f99e5c-3413-4c0f-8349-2e0867e61fbb",
+    "receipt_id": "gateway-schema-rejection-9ef18c77c8595a1148aec6b48176061b2934990fe543eba0e48d255c51f34d28",
+    "actual_cost": 8832,
+    "previous_charge": 1000000,
+    "delta": -991168,
+    "attempt_revision": 1,
+    "accounting_revision": 1,
+    "spent": 8832,
+    "reserved": 0,
+    "state": "EXHAUSTED",
+    "source": "operator_asserted_provider_total"
+  },
+  "final_accounting": {
+    "state": "EXHAUSTED",
+    "spent_microdollars": 8832,
+    "reserved_microdollars": 0,
+    "uncertain_attempts": 0
+  },
+  "implementation_gap": "Broker rejected the failed turn before reading complete retained usage; known provider charges were unnecessarily classified unknown.",
+  "candidate_accepted": false,
+  "model_calls_for_reconciliation": 0
+}

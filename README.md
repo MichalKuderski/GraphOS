@@ -6,13 +6,30 @@ enforces state, budgets, authority, and acceptance.
 
 **Status: a bounded, single-tenant platform with three offline application
 profiles implemented.** The current source supports a task list, local notes,
-and local inventory. Validation of the expanded suites and the new live pilot is
-pending; implemented scope is not a measured success rate.
+and local inventory. The expanded platform, functional and accessibility suite
+passed, as did all 12 grader-calibration cases. Two separately recorded live
+pilots stopped early: the first accepted zero of three dispatched trials; the
+second accepted zero of two. Their interrupted or rejected model calls have been
+reconciled, with no unresolved costs from either cohort.
+
+The latest repair preserves validated usage after failed model output and forces
+the typed reply operation. Its 34 adapter tests, typecheck and credential-free
+runtime smoke pass. The full platform gate also passes: 245 Python tests plus
+18 subtests, 25 reference tests and Ruff. The third cohort completed all six
+trials: one local-notes candidate passed and was exported; five trials failed.
+All six costs settled. Independent desktop/mobile review found no blocking visual
+defect in the notes app. Separate task-list and inventory build/repair runs each
+exhausted two attempts without release; they do not change the one-of-six pilot result.
+Earlier transport validation remains tied to its
+source revision.
+See [the pilot results](docs/profile-pilot-results.md) for the failures,
+accounting resolution, and the evidence required for promotion.
 
 An earlier task-list revision completed a real model build and a controlled
 persistence repair. Both passed their eight-check suite. Separate product review
 then found low text contrast that those checks missed; the current revision adds
-automated accessibility gates. Earlier passes do not certify the new revision.
+automated accessibility gates. Rechecking that actual historical artifact against
+the new suite rejected four checks. Earlier passes do not certify the new revision.
 See [live evidence](docs/live-validation.md), the
 [validation summary](docs/validation-summary.md), and
 [production readiness](docs/production-readiness.md) for measured results,
@@ -33,7 +50,7 @@ retained failures, and outstanding production gates.
   fenced reconciliation. No external deployment or trading adapter is enabled.
 - Integer-microdollar reservations, conservative unknown-cost handling, and
   truthful overrun incidents that block new dispatch.
-- A real eve agent adapter with typed outputs and no model-accessible tools.
+- A real eve agent adapter with typed replies and no external model-accessible tools.
 - Scoped repair context from the latest rejected candidate and its verifier
   diagnostics; every replacement needs new independent evidence.
 - An operator dashboard and a CLI for reproducible execution and artifact export.
@@ -113,6 +130,22 @@ Reconcile cumulative spend before each new batch. Local reservations control
 dispatch but do not prove a hard provider invoice ceiling. Unknown or
 over-reservation cost blocks further work; late charges require reconciliation.
 
+The interrupted inventory attempt's former $1 hold was replaced with its
+receipt-backed $0.024126 cost through the operator reconciliation API. The
+reconciled session total before the second pilot was $0.11503990. That is a
+historical starting balance; subsequent model calls require their own accounting.
+The second pilot's schema-rejected notes call was also reconciled; the refreshed
+all-session receipt sum and key spend matched at $0.14852750 before the third cohort.
+Only one live
+harness may run at a time. The third cohort began after completed validation
+using 148,528 microdollars as its conservatively rounded prior spend. Its 17
+provider receipts total $0.13305905. The two exploratory runs added $0.03437364
+and $0.03130749, bringing [cumulative receipt-backed spending](evals/results/final-spend-ledger-review-20261107.json)
+to **$0.34726768**. All 13 dispatched runs have zero reservations and uncertain
+attempts. A lower aggregate key-budget reading does
+not replace these receipts; subsequent spending needs fresh accounting. The $1
+soft budget and $5 session authorization remain unchanged.
+
 After configuring the server and its controls:
 
 ```bash
@@ -144,7 +177,12 @@ fixtures and deliberately defective artifacts; it does not measure model quality
 Live model testing is separate and off by default. The
 [profile pilot](docs/evaluation-pilot.md) retains every dispatched trial and
 reports per-profile outcomes, but uses disclosed contracts rather than held-out
-projects. No pilot result is claimed here until its recorded run exists.
+projects. The [first recorded result](docs/profile-pilot-results.md) is incomplete:
+zero accepted candidates from three dispatched trials, with three undispatched.
+The second cohort also stopped early, with zero accepted from two dispatched
+trials and four undispatched. The third cohort completed six trials, accepting
+one local-notes candidate and rejecting five. Outcomes are never pooled across
+these changed configurations or with exploratory repair demonstrations.
 [Evaluation protocol](evals/protocol.json) defines the later matched-budget,
 repeated-run comparisons needed before superiority claims.
 
@@ -170,7 +208,22 @@ No software or finite test suite can guarantee 100% accuracy, reliability, or
 consistency over every timeframe. GraphOS records what passed, what changed, and
 what remains unverified so that its operating claims can be audited.
 
-The next promotion gates are grader calibration and repeated live trials,
+The transport repair passed its local gate and both interrupted accounting paths
+were reconciled. The latest usage/output repair passed its full local gate and
+the third cohort completed with one accepted result out of six. Both incomplete
+pilots and all five third-cohort failures remain retained.
+The next milestone is better generation and targeted repair within these three
+contracts: diagnostics that identify the exact failing control, and a minimal
+compatibility test of provider-side `strict: true` for the selected Gateway route.
+Detect no-op repairs before redundant verification when candidate/input/suite/
+policy identities match. Current acceptance thresholds stay unchanged. The focus grader also needs a
+focused-versus-unfocused negative control: its current focused-state outline
+check can miss an always-on outline, and a corrected suite needs new evidence
+bindings. The accepted notes app's conditional focus styling was independently
+observed, within the limits of its visual spotcheck.
+An outstanding recovery gap is durable capture of Gateway generation IDs and
+failed-call receipt identities before the worker's final report reaches the ledger.
+Wider promotion requires
 untouched representative benchmarks, manual accessibility review, provider and
 worker failure tests, load/soak operation, and production recovery. Multi-tenant
 identity and authorization, worker isolation, credential lifecycle, and independent

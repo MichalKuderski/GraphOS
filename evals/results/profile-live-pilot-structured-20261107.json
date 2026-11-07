@@ -1,0 +1,951 @@
+{
+  "schema_version": 1,
+  "experiment_id": "20261107T202926-ea739032",
+  "mode": "live",
+  "status": "FAIL",
+  "started_at": "2026-11-07T20:29:26.809281+00:00",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "profiles": [
+    "static-web",
+    "local-notes",
+    "local-inventory"
+  ],
+  "protocol": {
+    "schema_version": 1,
+    "id": "local-browser-disclosed-contract-pilot-v1",
+    "scope": "Three fixed, disclosed local-browser application contracts; repeated generations are not independent product-task samples.",
+    "profiles": [
+      "static-web",
+      "local-notes",
+      "local-inventory"
+    ],
+    "trials_per_profile": 2,
+    "trial_order": "Repeat first, then profile in declared order",
+    "attempts_per_trial": 1,
+    "repair_attempts": 0,
+    "calibration_cases": [
+      {
+        "id": "positive-fixture",
+        "kind": "positive",
+        "expected_pass": true
+      },
+      {
+        "id": "missing-entrypoint",
+        "kind": "negative",
+        "expected_failed_check": "required_files"
+      },
+      {
+        "id": "disabled-persistence",
+        "kind": "negative",
+        "expected_failed_check": "local_storage_reload"
+      },
+      {
+        "id": "low-contrast-text",
+        "kind": "negative",
+        "expected_failed_check": "axe_empty"
+      }
+    ],
+    "live_denominator": "Every dispatched trial, including generation, verification, infrastructure, and accounting failures. Undispatched trials are separately counted against the planned sample.",
+    "accounting": {
+      "session_authorization_microdollars": 5000000,
+      "attempt_reservation_microdollars": 1000000,
+      "require_explicit_prior_session_spend": true,
+      "uncertain_cost_action": "Stop all further dispatch, retain reservation, require independent ledger and provider reconciliation.",
+      "gateway_budget_is_soft": true
+    },
+    "claims_not_supported": [
+      "Held-out generalization",
+      "Statistical reliability across arbitrary software projects",
+      "Production certification or WCAG conformance",
+      "Superiority over another model, agent configuration, or human team"
+    ],
+    "future_comparison": {
+      "design": "Independently curated task-family holdouts, paired configurations on the same tasks, equal declared budgets, randomized order, frozen graders, and all failures retained.",
+      "current_pilot_is_comparative": false
+    }
+  },
+  "evaluation_class": "disclosed-contract-live-pilot",
+  "held_out": false,
+  "production_certification": false,
+  "trials": [
+    {
+      "id": "static-web-1",
+      "profile": "static-web",
+      "repeat": 1,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:29:34.924624+00:00",
+          "stage": "STOPPED_AFTER_BUILD",
+          "build_status": "failed",
+          "failure_reason": "eve adapter failed (eve_turn_not_completed); no fixture fallback was attempted",
+          "build_identity": {
+            "attempt_id": "7e189223-d5be-49f0-858f-753d491c4edd",
+            "task_id": "c7495079-79b6-4de9-8d2e-9a8a43e2e787",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "16d74716a02df74a564b97b7c01c30adc8ba3714d58a9e441152d0eed26994d9"
+          },
+          "usage": {
+            "input_tokens": 13284,
+            "output_tokens": 7300,
+            "cache_read_tokens": 3840,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 17078,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VV7K4FG67C6F507BVS45VJ",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VV7NK48S8WQV3M1Q1S5TVQ",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VV89PQ8E0FXKVGF8WTK3RV",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve"
+          },
+          "finished_at": "2026-11-07T20:30:23.932540+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:29:34.898475+00:00",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "5b5afb25-cc2b-4068-bc67-62a493535f55",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 17078,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 17078,
+      "finished_at": "2026-11-07T20:30:23.949587+00:00"
+    },
+    {
+      "id": "local-notes-1",
+      "profile": "local-notes",
+      "repeat": 1,
+      "status": "PASS",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:30:23.983363+00:00",
+          "stage": "VERIFIED",
+          "build_status": "submitted",
+          "build_identity": {
+            "attempt_id": "7895e888-3329-465d-a307-6870ecbd6fe9",
+            "task_id": "6677b4ee-d4f9-430d-8113-a1498989a345",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "ce28631b92cf28b3e26d3ca9970db57cb84b5a7a95dc1545f8e2c56e7b2aaac5"
+          },
+          "usage": {
+            "input_tokens": 23413,
+            "output_tokens": 10347,
+            "cache_read_tokens": 8960,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 24578,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VV925YF3SJNWQCSPZRBQ1X",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VV9HN0FCNW0QG68AZWCSW1",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VVA71X6NF5341SMWNSX1MJ",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve",
+            "model": "openai/gpt-5.1-codex-mini",
+            "session_id": "wrun_01M6VV91Z29RBBGJD906Q7JCVK",
+            "delivery_id": "37b097f8-d00e-4f1a-8331-f50c134cb2df",
+            "request_sha256": "567e0e355c19eb70386010cea32d43c5b5fa7c2efba54ca94d8579e462bde1a7",
+            "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+            "input_hash": "ce28631b92cf28b3e26d3ca9970db57cb84b5a7a95dc1545f8e2c56e7b2aaac5",
+            "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "generated_at": "2026-11-07T20:31:29.729Z"
+          },
+          "verification_identity": {
+            "attempt_id": "2725aaa4-fa97-4b11-9707-e2250ecd4632",
+            "candidate_hash": "d92687e9f1f0da40d505bf7b1d4607dfd3ab6272ae9733d4a8c10f0abfb77f62",
+            "input_hash": "ce28631b92cf28b3e26d3ca9970db57cb84b5a7a95dc1545f8e2c56e7b2aaac5",
+            "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+          },
+          "verification_status": "verified",
+          "passed": true,
+          "report": {
+            "passed": true,
+            "checks": [
+              {
+                "name": "accessible_structure",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "create_note",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "edit_note",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "cancel_edit",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "search_notes",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "delete_note",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "local_storage_reload",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "reject_empty_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "literal_html_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "keyboard_note_operations",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "axe_empty",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "empty",
+                  "rules_passed": 21,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_populated",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "populated",
+                  "rules_passed": 22,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "keyboard_navigation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "visible_focus",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "mobile_reflow",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              }
+            ],
+            "runner": "docker-trusted-playwright-profiles-v2",
+            "browser_process_sandbox": false,
+            "duration_ms": 15388,
+            "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "image": "graphos-verifier:local",
+            "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+          },
+          "finished_at": "2026-11-07T20:31:45.280549+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:30:23.959779+00:00",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "a6d39170-0b71-4a63-bbed-609a0fdcba2a",
+      "cost_status": "SETTLED",
+      "state": "READY_FOR_RELEASE",
+      "spent_microdollars": 24578,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 24578,
+      "finished_at": "2026-11-07T20:31:45.317590+00:00"
+    },
+    {
+      "id": "local-inventory-1",
+      "profile": "local-inventory",
+      "repeat": 1,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:31:45.356527+00:00",
+          "stage": "VERIFIED",
+          "build_status": "submitted",
+          "build_identity": {
+            "attempt_id": "20ec3cfa-6cfa-4060-863b-22289ec371b8",
+            "task_id": "7a9f49cb-9ee5-458b-a7af-096f68b8d080",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "371c2bdfde6240bf5894a7e87eb5e62d3986a5c9a64a8e435c1934f80a1038f8"
+          },
+          "usage": {
+            "input_tokens": 26384,
+            "output_tokens": 11124,
+            "cache_read_tokens": 10240,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 26592,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VVBJFBXJ2WW4H0EWHDEFT6",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VVC7DNQ7YHBHZVHMHX5SB8",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VVCYC8EATZ3KTMPQE729M3",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve",
+            "model": "openai/gpt-5.1-codex-mini",
+            "session_id": "wrun_01M6VVBHE5500ANT0H9DK0YVKV",
+            "delivery_id": "0496a6b6-fa0c-4a82-93e2-52dff220a147",
+            "request_sha256": "be4a5a5c5d3d8f18e6043174a5103b8460fa2cdb3effe00d05b81aca398aae1f",
+            "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+            "input_hash": "371c2bdfde6240bf5894a7e87eb5e62d3986a5c9a64a8e435c1934f80a1038f8",
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "generated_at": "2026-11-07T20:32:56.946Z"
+          },
+          "verification_identity": {
+            "attempt_id": "b3e5550b-4b07-4697-85bd-be4171bb8fda",
+            "candidate_hash": "0e418770a6dfb7599f4481f5acc9c93f8169ee7778ab13f5754c4128d0d292ba",
+            "input_hash": "371c2bdfde6240bf5894a7e87eb5e62d3986a5c9a64a8e435c1934f80a1038f8",
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+          },
+          "verification_status": "verified",
+          "passed": false,
+          "report": {
+            "passed": false,
+            "checks": [
+              {
+                "name": "accessible_structure",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "add_inventory_item",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "edit_quantity",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "search_inventory",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "delete_inventory_item",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "local_storage_reload",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "reject_invalid_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "unique_item_names",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "literal_html_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "keyboard_operation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "axe_empty",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "empty",
+                  "rules_passed": 21,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_populated",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "populated",
+                  "rules_passed": 22,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "keyboard_navigation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "visible_focus",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "mobile_reflow",
+                "passed": false,
+                "detail": "Mobile reflow failed at 320px: {'tooWide': True, 'outside': ['text:Quantity Pencils AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA']}"
+              }
+            ],
+            "runner": "docker-trusted-playwright-profiles-v2",
+            "browser_process_sandbox": false,
+            "duration_ms": 14896,
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "image": "graphos-verifier:local",
+            "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+          },
+          "finished_at": "2026-11-07T20:33:11.995422+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:31:45.331241+00:00",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "2c6e0863-575b-4c75-87ec-077fc904891a",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 26592,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 26592,
+      "finished_at": "2026-11-07T20:33:12.034398+00:00"
+    },
+    {
+      "id": "static-web-2",
+      "profile": "static-web",
+      "repeat": 2,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:33:12.076706+00:00",
+          "stage": "VERIFIED",
+          "build_status": "submitted",
+          "build_identity": {
+            "attempt_id": "c99312f6-0ff7-4ecf-920b-2586bd461cb5",
+            "task_id": "d70cd5e8-f4e5-47cc-ac95-2da23ca60e96",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "808d76731922672c4d770506d4de9304140d3c79dc390f2f9123e3399e2c1ae8"
+          },
+          "usage": {
+            "input_tokens": 5937,
+            "output_tokens": 5254,
+            "cache_read_tokens": 1792,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 11599,
+            "model_runs": 2,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VVE7CNTDBZ4M1X65XJMGE1",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VVEMW37B20TW05E5PXDFWY",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve",
+            "model": "openai/gpt-5.1-codex-mini",
+            "session_id": "wrun_01M6VVE6448GN7V76EXG763TJT",
+            "delivery_id": "53ee8d14-0dde-49b4-8e8c-ffe6339292d2",
+            "request_sha256": "8eab905fc444906b14d9cf8bd5e60f9273cd4251b019a01738055c53ac4d30a9",
+            "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+            "input_hash": "808d76731922672c4d770506d4de9304140d3c79dc390f2f9123e3399e2c1ae8",
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "generated_at": "2026-11-07T20:33:50.262Z"
+          },
+          "verification_identity": {
+            "attempt_id": "b9616655-c4a3-4ca4-90aa-99496ea69647",
+            "candidate_hash": "5becb83a89419da72860b9774cede811838941d98fc028c636bd3183f1e11d9d",
+            "input_hash": "808d76731922672c4d770506d4de9304140d3c79dc390f2f9123e3399e2c1ae8",
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+          },
+          "verification_status": "verified",
+          "passed": false,
+          "report": {
+            "passed": false,
+            "checks": [
+              {
+                "name": "accessible_structure",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "add_task",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "toggle_completion",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "filter_tasks",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "delete_task",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "local_storage_reload",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "reject_empty_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "literal_html_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "axe_empty",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "empty",
+                  "rules_passed": 23,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_populated",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "populated",
+                  "rules_passed": 24,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_completed",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "completed",
+                  "rules_passed": 24,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "keyboard_operation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "visible_focus",
+                "passed": false,
+                "detail": "Focus outline contrast is below 3:1"
+              },
+              {
+                "name": "mobile_reflow",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              }
+            ],
+            "runner": "docker-trusted-playwright-profiles-v2",
+            "browser_process_sandbox": false,
+            "duration_ms": 14165,
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "image": "graphos-verifier:local",
+            "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+          },
+          "finished_at": "2026-11-07T20:34:04.586434+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:33:12.049052+00:00",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "03f1b6c3-9a54-452c-ab3f-053297f02d3c",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 11599,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 11599,
+      "finished_at": "2026-11-07T20:34:04.629287+00:00"
+    },
+    {
+      "id": "local-notes-2",
+      "profile": "local-notes",
+      "repeat": 2,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:34:04.673485+00:00",
+          "stage": "STOPPED_AFTER_BUILD",
+          "build_status": "failed",
+          "failure_reason": "eve adapter failed (eve_turn_not_completed); no fixture fallback was attempted",
+          "build_identity": {
+            "attempt_id": "9831e78b-3c13-47ce-a597-abbfaf7bddfd",
+            "task_id": "b711b285-b50c-480d-ad2c-fe0b78cfc002",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "1a7184fd5d4d9d0855ea61b801b50d2c47b0f274d77e79e410efb350560296f2"
+          },
+          "usage": {
+            "input_tokens": 12885,
+            "output_tokens": 6425,
+            "cache_read_tokens": 4352,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 15114,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VVFTBB4JB0BVRC4E456ZJH",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VVFXGRTW4RVBWKAEHJMAYB",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VVGG4B2D9BNVQ635V6M7DD",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve"
+          },
+          "finished_at": "2026-11-07T20:34:49.892708+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:34:04.643728+00:00",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "6131ec46-957f-4a24-b1d9-7c3b529a5f83",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 15114,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 15114,
+      "finished_at": "2026-11-07T20:34:49.912117+00:00"
+    },
+    {
+      "id": "local-inventory-2",
+      "profile": "local-inventory",
+      "repeat": 2,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:34:49.949167+00:00",
+          "stage": "VERIFIED",
+          "build_status": "submitted",
+          "build_identity": {
+            "attempt_id": "2b260100-763e-4853-8dd9-0b8c049d9e3c",
+            "task_id": "0755ce9a-05a4-4c5c-ad53-8e9d27621e5e",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "6e59b7beb699ea396119045bcd48af545c3e72bf552fe1828c1d21b7d61fec8d"
+          },
+          "usage": {
+            "input_tokens": 33362,
+            "output_tokens": 15121,
+            "cache_read_tokens": 2176,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 38105,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VVH5YP0SXXWHEWZMGAT2ZW",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VVJ6MXENXJSKEB6E9PY4F7",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VVK7K1YZSCWS91746V0CWE",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve",
+            "model": "openai/gpt-5.1-codex-mini",
+            "session_id": "wrun_01M6VVH5Q5D3WWWEPE1MGQEXXP",
+            "delivery_id": "4092a5f0-987f-49c6-a539-2c0c03bfee24",
+            "request_sha256": "20ddc5a6102a5fa1f3bf7f576609d5d09807152daffc040020fc99b3465120ba",
+            "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+            "input_hash": "6e59b7beb699ea396119045bcd48af545c3e72bf552fe1828c1d21b7d61fec8d",
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "generated_at": "2026-11-07T20:36:25.144Z"
+          },
+          "verification_identity": {
+            "attempt_id": "58be581b-f131-4a3e-8049-6418f9891a1b",
+            "candidate_hash": "3cbf8193862e6a35e251fda70d8ca11c8e2c9c3d1d884506d4dd26ede6e66ed9",
+            "input_hash": "6e59b7beb699ea396119045bcd48af545c3e72bf552fe1828c1d21b7d61fec8d",
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+          },
+          "verification_status": "verified",
+          "passed": false,
+          "report": {
+            "passed": false,
+            "checks": [
+              {
+                "name": "accessible_structure",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "add_inventory_item",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "edit_quantity",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "search_inventory",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "delete_inventory_item",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "local_storage_reload",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "reject_invalid_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "unique_item_names",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "literal_html_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "keyboard_operation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "axe_empty",
+                "passed": false,
+                "detail": "axe empty: violations:color-contrast at ['.eyebrow']"
+              },
+              {
+                "name": "axe_populated",
+                "passed": false,
+                "detail": "axe populated: violations:color-contrast at ['.eyebrow']"
+              },
+              {
+                "name": "keyboard_navigation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "visible_focus",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "mobile_reflow",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              }
+            ],
+            "runner": "docker-trusted-playwright-profiles-v2",
+            "browser_process_sandbox": false,
+            "duration_ms": 15227,
+            "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "image": "graphos-verifier:local",
+            "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+          },
+          "finished_at": "2026-11-07T20:36:40.526080+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:34:49.922777+00:00",
+      "suite_hash": "1c6498260ac8f905be1e28808937cb1d0fcba2c9840e9f6e5c479718df9cd176",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "8730c5bc-df85-430d-b476-3b394fa2505b",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 38105,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 38105,
+      "finished_at": "2026-11-07T20:36:40.563836+00:00"
+    }
+  ],
+  "prior_spend_microdollars": 148528,
+  "budget_microdollars": 2000000,
+  "attempt_reservation_microdollars": 1000000,
+  "accounted_spend_microdollars": 133066,
+  "gateway_budget_is_soft": true,
+  "compiled_from_current_source": true,
+  "summary": {
+    "overall": {
+      "planned": 6,
+      "dispatched": 6,
+      "passed": 1,
+      "failed_or_incomplete": 5,
+      "not_dispatched": 0,
+      "observed_pass_fraction": 0.16666666666666666
+    },
+    "by_profile": {
+      "static-web": {
+        "planned": 2,
+        "dispatched": 2,
+        "passed": 0,
+        "failed_or_incomplete": 2,
+        "not_dispatched": 0,
+        "observed_pass_fraction": 0.0
+      },
+      "local-notes": {
+        "planned": 2,
+        "dispatched": 2,
+        "passed": 1,
+        "failed_or_incomplete": 1,
+        "not_dispatched": 0,
+        "observed_pass_fraction": 0.5
+      },
+      "local-inventory": {
+        "planned": 2,
+        "dispatched": 2,
+        "passed": 0,
+        "failed_or_incomplete": 2,
+        "not_dispatched": 0,
+        "observed_pass_fraction": 0.0
+      }
+    }
+  },
+  "finished_at": "2026-11-07T20:36:40.760246+00:00",
+  "source_unchanged": true,
+  "settled_spend_microdollars": 133066,
+  "session_accounted_microdollars": 281594
+}
