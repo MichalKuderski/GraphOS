@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "error_type": "OSError",
+  "error": "Drill operation failed; source was not replaced",
+  "production_disaster_recovery_established": false
+}

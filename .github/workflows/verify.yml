@@ -1,0 +1,72 @@
+name: Verify GraphOS
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  control-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17-bookworm@sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994
+        env:
+          POSTGRES_USER: graphos
+          POSTGRES_PASSWORD: ci-ephemeral-only
+          POSTGRES_DB: graphos
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U graphos -d graphos"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      GRAPHOS_DATABASE_URL: postgresql://graphos:ci-ephemeral-only@127.0.0.1:5432/graphos
+      GRAPHOS_TEST_DATABASE_URL: postgresql://graphos:ci-ephemeral-only@127.0.0.1:5432/graphos
+      GRAPHOS_ALLOW_FIXTURE: "1"
+      GRAPHOS_VERIFIER_IMAGE: graphos-verifier:ci
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - name: Generate isolated test credentials
+        run: |
+          python - <<'PY'
+          import os,secrets
+          from pathlib import Path
+          with open(os.environ['GITHUB_ENV'],'a') as out:
+              for role in ('OPERATOR','BUILDER','VERIFIER'):
+                  out.write(f'GRAPHOS_{role}_TOKEN={secrets.token_urlsafe(48)}\n')
+              out.write(f'GRAPHOS_ARTIFACT_ROOT={Path(".state/ci-artifacts").resolve()}\n')
+          PY
+      - name: Build and pin isolated verifier
+        run: |
+          docker build -t graphos-verifier:ci verifier
+          image_digest=$(docker image inspect --format '{{.Id}}' graphos-verifier:ci)
+          echo "GRAPHOS_VERIFIER_IMAGE_DIGEST=$image_digest" >> "$GITHUB_ENV"
+      - name: Mandatory unit, PostgreSQL, recovery and browser gates
+        run: python scripts/check.py
+      - name: Package the API with its trusted runtime assets
+        run: docker build -t graphos-api:ci .
+  model-adapter-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: agents/eve
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: agents/eve/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:runtime

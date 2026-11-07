@@ -1,0 +1,12 @@
+{
+  "status": "FAIL",
+  "counts": {
+    "tests": 119,
+    "failures": 19,
+    "errors": 8,
+    "skipped": 0
+  },
+  "cause": "Docker VFS container-creation copies exhausted the shared filesystem. Failures and errors were retained; this run is not passing evidence.",
+  "raw_junit": "Retained locally at evals/results/disk-exhaustion-pytest.xml (generated report, ignored by Git).",
+  "integration_details": "disk-exhaustion-pytest-acceptance.json"
+}

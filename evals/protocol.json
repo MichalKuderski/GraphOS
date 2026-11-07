@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "GraphOS bounded static-web evaluation protocol",
+  "integration": {
+    "purpose": "Check composed HTTP, PostgreSQL, worker, artifact and browser-verifier behavior",
+    "mode": "integration-fixture",
+    "fixture_results_count_as_model_success": false,
+    "cases": [
+      "happy_fixture_release",
+      "duplicate_admission_and_submission",
+      "registered_profile_boundary",
+      "roles_and_cancellation",
+      "evidence_revision_and_artifact_binding",
+      "bad_candidate_fails_browser",
+      "worker_crash_and_lease_recovery",
+      "controller_restart_preserves_state"
+    ],
+    "required_outcome": "Every configured integration case passes; unavailable cases stay explicit",
+    "forbidden_inferences": ["LLM accuracy", "universal app building", "production readiness", "profitable trading"]
+  },
+  "model_comparison": {
+    "status": "PLANNED_NOT_MEASURED",
+    "pilot_task_count": 30,
+    "repeated_trials_per_task": 5,
+    "split_unit": "project or repository",
+    "splits": ["development", "validation", "untouched release"],
+    "configurations": ["single capable agent", "single builder plus verifier", "fixed graph", "adaptive graph"],
+    "controls": ["task specification", "aggregate model and tool cost ceiling", "elapsed-time ceiling", "CPU and RAM limits", "network policy", "tool and model versions"],
+    "metrics": ["verified completion", "cost per verified completion including failures", "time to verified completion", "pass^k by task", "escaped defects", "human intervention", "recovery outcomes"],
+    "uncertainty": "Paired, project-clustered intervals; no accuracy estimates from fixture runs",
+    "promotion": "Predeclare superiority or noninferiority criteria before the held-out run"
+  }
+}

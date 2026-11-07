@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-11-07T15:32:00.500257+00:00",
+  "mode": "integration-fixture",
+  "cases": [
+    {
+      "id": "happy_fixture_release",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "",
+      "duration_ms": 183
+    },
+    {
+      "id": "duplicate_admission_and_submission",
+      "status": "PASS",
+      "details": {
+        "run_id": "bd9d2620-0c44-4c5e-b254-1d17da8fed91",
+        "duplicate_charge": false
+      },
+      "duration_ms": 132
+    },
+    {
+      "id": "registered_profile_boundary",
+      "status": "PASS",
+      "details": {
+        "unsupported_objective_rejected": true,
+        "unsupported_requirement_rejected": true,
+        "fixed_suite_scope": "registered static-web task-list contract only"
+      },
+      "duration_ms": 4
+    },
+    {
+      "id": "roles_and_cancellation",
+      "status": "PASS",
+      "details": {
+        "run_id": "69de5e86-14c8-4bc0-81ee-a50f799c4183",
+        "state": "CANCELLED",
+        "stale_build_rejected": true,
+        "effect_dispatch_blocked": true,
+        "real_external_action_performed": false
+      },
+      "duration_ms": 132
+    },
+    {
+      "id": "evidence_revision_and_artifact_binding",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "Trusted Docker/browser suite rejected the valid fixture",
+      "duration_ms": 102
+    },
+    {
+      "id": "bad_candidate_fails_browser",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "Negative fixture must fail executed browser behavior checks, not unavailable infrastructure",
+      "duration_ms": 124
+    },
+    {
+      "id": "worker_crash_and_lease_recovery",
+      "status": "PASS",
+      "details": {
+        "run_id": "90d6dd37-da62-44ee-afbe-8a63f3167953",
+        "worker_exit_code": 137,
+        "expired_reservation_charged": 13,
+        "new_epoch": 3,
+        "stale_submission_rejected": true,
+        "replacement_artifact_submitted": true
+      },
+      "duration_ms": 1253
+    },
+    {
+      "id": "controller_restart_preserves_state",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "A genuinely browser-verified fixture run is required for the restart check",
+      "duration_ms": 0
+    }
+  ],
+  "claims": {
+    "model_quality_measured": false,
+    "production_readiness_established": false,
+    "scope": "PostgreSQL HTTP control plane and Docker static-web verification"
+  },
+  "limits": [
+    "One supported static-web profile",
+    "Deterministic fixtures are not AI generation",
+    "No live deployment or financial execution",
+    "No statistical accuracy estimate",
+    "Controller restart is not a database disaster-recovery test"
+  ],
+  "live_model": {
+    "status": "BLOCKED",
+    "reason": "No model gateway credential configured",
+    "model_quality_measured": false
+  },
+  "finished_at": "2026-11-07T15:32:02.428943+00:00",
+  "summary": {
+    "pass": 4,
+    "fail": 4,
+    "not_run": 0,
+    "blocked": 0
+  },
+  "coverage": {
+    "configured_fixture_cases": 8,
+    "browser_reports_with_image_identity": 0,
+    "verifier_image_ids": [],
+    "suite_hash": "98437b38bef1c18a0e077631f1474aecdcfc10d025005961f0a15be9a4dc8c8c",
+    "policy_hash": "6cefcebb51aa75bd904815d04cc3522b8d4272bb1a8e2e0b6738e47043c2f832",
+    "controller_restart_requested": true,
+    "database_disaster_recovery_tested": false,
+    "real_external_effects_tested": false,
+    "statistical_model_benchmark_completed": false
+  }
+}

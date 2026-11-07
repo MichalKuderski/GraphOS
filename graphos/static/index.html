@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>GraphOS — Run console</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M10%2010L30%2010L20%2030Z%22%20fill%3D%22none%22%20stroke%3D%22%23087e75%22%20stroke-width%3D%222%22%2F%3E%3Cg%20fill%3D%22%23087e75%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%3E%3Ccircle%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2210%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2230%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/dashboard.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to run console</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="GraphOS home">
+      <svg viewBox="0 0 40 40" width="36" height="36" aria-hidden="true"><path d="M10 10L30 10L20 30Z"/><circle cx="10" cy="10" r="4"/><circle cx="30" cy="10" r="4"/><circle cx="20" cy="30" r="4"/></svg>
+      <span>GraphOS</span><span class="brand-caption">Run console</span>
+    </a>
+    <div class="header-status"><span id="connection-dot" class="status-dot"></span><span id="connection-label">Not connected</span></div>
+  </header>
+
+  <main id="main" class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">Evidence before acceptance</p><h1 id="page-title">See what is built.<br>Know what is verified.</h1><p class="intro-copy">Follow each run from requirements to an exact artifact and its verification evidence.</p></div>
+      <div class="scope-note"><span class="scope-label">First supported contract</span><strong>Task-list web application</strong><p>The registered task-list behavior is checked in an isolated browser. Other profiles remain unavailable until their implementation and validation are complete.</p></div>
+    </section>
+
+    <section class="panel connection-panel" aria-labelledby="connection-heading">
+      <div><h2 id="connection-heading">Connect to your workspace</h2><p class="muted">Your operator token stays in this tab’s memory and is cleared when you disconnect or close the page.</p></div>
+      <form id="connect-form" class="connect-form">
+        <label class="sr-only" for="operator-token">Operator token</label>
+        <input id="operator-token" name="operator-token" type="password" placeholder="Operator token" autocomplete="off" spellcheck="false" required minlength="32" aria-describedby="token-help">
+        <button id="connect-button" type="submit" class="button primary">Connect</button>
+        <button id="disconnect-button" type="button" class="button quiet" hidden>Disconnect</button>
+        <span id="token-help" class="sr-only">Use your operator credential. Builder and verifier credentials cannot manage runs.</span>
+      </form>
+    </section>
+
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <div class="workspace-grid">
+      <section class="panel run-panel" aria-labelledby="runs-heading">
+        <div class="panel-heading"><div><p class="eyebrow">Workspace</p><h2 id="runs-heading">Runs <span id="run-count" class="count">0</span></h2></div><button id="refresh-button" class="button quiet small" type="button" disabled>Refresh</button></div>
+        <div id="runs-list" class="runs-list"><p class="empty-state">Connect to load your runs.</p></div>
+        <button id="new-run-button" class="button primary full-width" type="button" disabled>New run</button>
+      </section>
+
+      <section id="run-detail" class="panel detail-panel" aria-labelledby="detail-heading" aria-busy="false">
+        <div id="detail-empty" class="detail-empty"><div class="empty-symbol" aria-hidden="true">◇</div><h2 id="detail-heading">Your evidence trail starts here</h2><p>Select a run to inspect its requirements, progress, artifacts, and checks.</p></div>
+        <div id="detail-content" hidden>
+          <div class="detail-heading"><div><p id="run-profile" class="eyebrow"></p><h2 id="run-name"></h2><p id="run-id" class="mono muted small-copy"></p></div><span id="run-state" class="badge neutral"></span></div>
+          <p id="run-progress-note" class="progress-note"></p>
+          <div class="metrics" aria-label="Run accounting"><div><span>Budget</span><strong id="budget-value">—</strong></div><div><span>Accounted spend</span><strong id="spent-value">—</strong></div><div><span>Reserved</span><strong id="reserved-value">—</strong></div><div><span>Revision</span><strong id="revision-value">—</strong></div></div>
+          <div class="run-actions"><button id="revise-button" class="button quiet small" type="button">Revise specification</button><button id="release-button" class="button primary small" type="button">Download release evidence</button><button id="cancel-button" class="button danger small" type="button">Cancel run</button></div>
+          <p class="small-copy muted">Release evidence describes accepted artifacts. Downloading it does not deploy or execute them.</p>
+          <details class="requirements-box" open><summary>Requirements</summary><ul id="requirements-list"></ul><dl class="binding-list"><div><dt>Specification</dt><dd id="spec-hash" class="mono digest"></dd></div><div><dt>Verification suite</dt><dd id="suite-hash" class="mono digest"></dd></div><div><dt>Acceptance policy</dt><dd id="policy-hash" class="mono digest"></dd></div></dl></details>
+          <div class="section-heading"><h3>Work and verification</h3><span id="task-count" class="muted small-copy"></span></div>
+          <div id="tasks-list" class="tasks-list"></div>
+          <div class="section-heading"><h3>Event trail</h3><span class="muted small-copy">Recorded transitions</span></div>
+          <ol id="events-list" class="events-list"></ol>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel profiles-panel" aria-labelledby="profiles-heading"><div class="panel-heading"><div><p class="eyebrow">Capability boundaries</p><h2 id="profiles-heading">Profiles</h2></div><span class="small-copy muted">Availability is explicit</span></div><div id="profiles-list" class="profiles-list"><p class="muted">Connect to inspect available profiles and their acceptance criteria.</p></div></section>
+    <footer>GraphOS 0.1 · Acceptance applies to an exact artifact, requirement revision, suite, and policy.</footer>
+  </main>
+
+  <dialog id="run-dialog" aria-labelledby="run-dialog-title">
+    <form id="run-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Specify the outcome</p><h2 id="run-dialog-title">Create a run</h2></div><button class="icon-button" type="button" data-close="run-dialog" aria-label="Close new run dialog">×</button></div>
+      <label for="run-title-input">Run name</label><input id="run-title-input" required maxlength="160" value="A reliable task-list app">
+      <label for="profile-input">Capability profile</label><select id="profile-input" required></select>
+      <label for="objective-input">Registered build objective</label><textarea id="objective-input" rows="3" readonly required maxlength="8000">Build a polished task-list app satisfying every fixed static-web profile requirement.</textarea>
+      <label for="requirements-input">Verified contract for this profile</label><textarea id="requirements-input" rows="7" readonly required maxlength="24000"></textarea>
+      <p id="profile-contract-note" class="small-copy muted"></p>
+      <div class="form-columns"><div><label for="budget-input">Model budget ceiling (USD)</label><input id="budget-input" type="number" min="0.000001" max="5" step="0.000001" required value="1"></div><div><label for="attempts-input">Maximum build attempts</label><input id="attempts-input" type="number" min="1" max="10" step="1" required value="3"></div></div>
+      <p class="dialog-note">Creating a run queues work. It does not start a model call. A configured worker must execute it; a deterministic fixture run is always labeled as such.</p>
+      <p id="run-form-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button class="button quiet" type="button" data-close="run-dialog">Back</button><button id="create-submit" class="button primary" type="submit">Create run</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="revise-dialog" aria-labelledby="revise-dialog-title"><form id="revise-form"><div class="dialog-heading"><div><p class="eyebrow">New specification revision</p><h2 id="revise-dialog-title">Revise the specification</h2></div><button class="icon-button" type="button" data-close="revise-dialog" aria-label="Close revision dialog">×</button></div><p class="dialog-note warning-note">This creates a new revision, invalidates this run’s current verification, and stops older worker attempts from submitting results. Outstanding reservations are charged conservatively; unresolved provider costs still require reconciliation.</p><label for="revision-title">Run name</label><input id="revision-title" required maxlength="160"><label for="revision-objective">Registered build objective</label><textarea id="revision-objective" rows="3" readonly required maxlength="8000"></textarea><label for="revision-requirements">Verified contract for this profile</label><textarea id="revision-requirements" rows="8" readonly required maxlength="24000"></textarea><p class="small-copy muted">The registered task, objective, and acceptance criteria are preserved. This milestone supports only the fixed task-list contract; arbitrary build requirements are not accepted.</p><p id="revision-error" class="form-error" role="alert" hidden></p><div class="dialog-actions"><button class="button quiet" type="button" data-close="revise-dialog">Back</button><button id="revise-submit" class="button primary" type="submit">Create revision</button></div></form></dialog>
+
+  <dialog id="cancel-dialog" aria-labelledby="cancel-title"><form id="cancel-form"><div class="dialog-heading"><h2 id="cancel-title">Cancel this run?</h2><button class="icon-button" type="button" data-close="cancel-dialog" aria-label="Close cancellation dialog">×</button></div><p>New work will stop and older attempts will no longer be allowed to submit results. Existing artifacts and evidence remain in the history.</p><p class="dialog-note warning-note">Outstanding reservations are charged conservatively; unresolved provider costs still require reconciliation. Cancellation cannot undo an external action that already occurred.</p><p id="cancel-error" class="form-error" role="alert" hidden></p><div class="dialog-actions"><button class="button quiet" type="button" data-close="cancel-dialog">Keep run</button><button id="cancel-submit" class="button danger" type="submit">Cancel run</button></div></form></dialog>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "id": "static-web",
+  "version": 1,
+  "status": "active",
+  "description": "A dependency-free accessible task-list web app; this milestone validates this specific product contract, not arbitrary websites.",
+  "required_files": ["index.html", "app.js", "styles.css"],
+  "required_checks": ["accessible_structure", "add_task", "toggle_completion", "filter_tasks", "delete_task", "local_storage_reload", "reject_empty_input", "literal_html_input"],
+  "acceptance_criteria": [
+    "The page has a main landmark and a visible heading.",
+    "A text input labeled New task and a button named Add task add nonempty tasks.",
+    "Each task is in an element with data-testid=task-item and has a checkbox labeled with the task text.",
+    "Checking a task marks it complete; unchecking makes it active.",
+    "Buttons named All, Active, and Completed filter visible tasks correctly.",
+    "Each task has a button named Delete followed by the task text; deleting removes that task only.",
+    "Tasks and completion state persist in localStorage and survive a page reload.",
+    "Empty and whitespace-only input adds no task.",
+    "HTML-looking task input is displayed literally and cannot create DOM elements or execute script."
+  ],
+  "selector_contract": {
+    "input": "get_by_role('textbox', name='New task', exact=True)",
+    "add": "get_by_role('button', name='Add task', exact=True)",
+    "row": "[data-testid='task-item']",
+    "toggle": "get_by_role('checkbox', name=task_text, exact=True)",
+    "delete": "get_by_role('button', name='Delete ' + task_text, exact=True)",
+    "filters": ["All", "Active", "Completed"]
+  },
+  "limitations": [
+    "The acceptance suite is fixed, disclosed, and finite. Passing it is not proof of arbitrary correctness or resistance to deliberate test gaming.",
+    "No server-side code, dependency install, backend, external network, deployment, or user identity service is supported.",
+    "Other project families require additional trusted profiles and suites before execution."
+  ]
+}

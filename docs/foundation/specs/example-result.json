@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.1.0",
+  "kind": "task_result",
+  "record_id": "result.example.1",
+  "project_id": "project.example",
+  "run_id": "run.example.1",
+  "created_at": "2026-11-07T00:01:00Z",
+  "bindings": {
+    "task_id": "task.example.sort",
+    "plan_version": 1,
+    "spec_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "input_manifest_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "policy_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "attempt_id": "attempt.example.1",
+  "lease_epoch": 1,
+  "expected_state_version": 3,
+  "producer_id": "worker.example.producer",
+  "status": "submitted",
+  "artifacts": [
+    {
+      "artifact_id": "artifact.example.code",
+      "uri": "urn:graphos:example:code",
+      "content_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "media_type": "text/x-python"
+    }
+  ],
+  "evidence": [
+    {
+      "artifact_id": "artifact.example.log",
+      "uri": "urn:graphos:example:log",
+      "content_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "media_type": "text/plain"
+    }
+  ],
+  "claims": [
+    {
+      "criterion_id": "criterion.sort",
+      "evidence_artifact_ids": ["artifact.example.log"],
+      "limitations": ["Illustrative contract only: referenced artifacts do not exist and no sorting implementation was executed."]
+    }
+  ],
+  "unresolved_items": ["Independent verification is required before acceptance."],
+  "usage": {
+    "cost_usd": 0,
+    "tokens": 0,
+    "elapsed_seconds": 0,
+    "external_effects": 0
+  }
+}

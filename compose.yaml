@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:17-bookworm@sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994
+    environment:
+      POSTGRES_USER: graphos
+      POSTGRES_PASSWORD: ${GRAPHOS_DB_PASSWORD:?Set a private database password}
+      POSTGRES_DB: graphos
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graphos -d graphos"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GRAPHOS_DATABASE_URL: postgresql://graphos:${GRAPHOS_DB_PASSWORD}@db:5432/graphos
+      GRAPHOS_ARTIFACT_ROOT: /data/artifacts
+      GRAPHOS_OPERATOR_TOKEN: ${GRAPHOS_OPERATOR_TOKEN:?Set operator token}
+      GRAPHOS_BUILDER_TOKEN: ${GRAPHOS_BUILDER_TOKEN:?Set builder token}
+      GRAPHOS_VERIFIER_TOKEN: ${GRAPHOS_VERIFIER_TOKEN:?Set verifier token}
+      GRAPHOS_VERIFIER_IMAGE_DIGEST: ${GRAPHOS_VERIFIER_IMAGE_DIGEST:?Build and pin verifier image}
+      GRAPHOS_ALLOW_FIXTURE: ${GRAPHOS_ALLOW_FIXTURE:-0}
+    ports:
+      - "127.0.0.1:8030:8000"
+    volumes:
+      - artifact-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 768m
+    restart: unless-stopped
+volumes:
+  postgres-data:
+  artifact-data:

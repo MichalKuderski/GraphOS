@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GraphOS — Evidence-controlled engineering</title>
+<style>
+:root{--ink:#182331;--muted:#586779;--paper:#f5f6f8;--line:#dce2e8;--navy:#112232;--teal:#007b76;--accent:#9df6d7}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:var(--navy);color:white;padding:70px max(6vw,24px) 56px}header .eyebrow{color:var(--accent);letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:750}h1{font-size:clamp(46px,7vw,86px);line-height:1.03;letter-spacing:-.055em;margin:18px 0}header p{max-width:850px;font-size:22px;color:#d7e4ed}.meta{font-size:13px;color:#b2c7d7}.layout{display:grid;grid-template-columns:245px minmax(0,1000px);gap:40px;max-width:1360px;margin:auto;padding:38px 30px}nav{position:sticky;top:20px;align-self:start;font-size:13px}nav a{display:block;text-decoration:none;color:var(--muted);padding:7px 12px;border-left:2px solid var(--line)}nav a:hover,nav a:focus{color:var(--teal);border-color:var(--teal);background:white}nav strong{display:block;margin:0 12px 12px}main{min-width:0}section{margin-bottom:28px;background:white;border:1px solid var(--line);border-radius:12px;padding:30px 34px;scroll-margin-top:20px}h2{font-size:28px;letter-spacing:-.03em;line-height:1.25;margin:0 0 22px}h3{font-size:19px;margin:28px 0 10px}p{margin:12px 0}a{color:var(--teal)}.lead{font-size:20px}.note{border-left:4px solid var(--teal);padding:12px 18px;background:#eff9f6;margin:22px 0}.status{display:inline-block;font-size:11px;letter-spacing:.08em;font-weight:750;text-transform:uppercase;border-radius:4px;padding:3px 8px;background:#eaf0f5;color:#40576d}.proposal{background:#fff4d7;color:#785b12}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line)}th{color:#38536a;background:#f0f4f7;font-size:12px;text-transform:uppercase;letter-spacing:.05em}code{font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;background:#eff2f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{white-space:pre-wrap;background:#102230;color:#d4edeb;padding:20px;border-radius:8px;overflow:auto;font:13px/1.65 ui-monospace,Consolas,monospace}pre code{background:none;color:inherit;padding:0}ul,ol{padding-left:24px}li{margin:7px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.card{border:1px solid var(--line);border-radius:8px;padding:16px}.card strong{display:block}.small{font-size:13px;color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.flow button{border:1px solid #bad8d1;border-radius:9px;background:#eff9f6;padding:18px 12px;color:var(--ink);font:inherit;text-align:left;cursor:pointer}.flow button[aria-pressed=true]{background:var(--navy);color:white;border-color:var(--navy)}.flow button span{display:block;font-size:11px;opacity:.7}.flow button:focus-visible{outline:3px solid #21ac9b;outline-offset:3px}#node-detail{min-height:125px;background:#f1f5f8;padding:18px;border-radius:8px}.tag{font-size:12px;font-weight:700;color:var(--teal)}footer{padding:20px 0 40px;color:var(--muted);font-size:13px}button.print{margin:15px 12px;background:var(--navy);color:white;border:0;border-radius:6px;padding:9px 15px;cursor:pointer}details{border-top:1px solid var(--line);padding:15px 0}summary{font-weight:700;cursor:pointer}sup{font-size:10px} @media(max-width:950px){.layout{display:block;padding:20px}nav{position:static;display:flex;flex-wrap:wrap;margin-bottom:20px}nav strong{width:100%}nav a{padding:6px 9px}.flow{grid-template-columns:1fr 1fr}section{padding:24px}.grid{grid-template-columns:1fr}table{display:block;overflow:auto}header{padding:45px 24px}}@media print{body{background:white;font-size:11px}header{padding:20px;background:white;color:black}header p,.meta{color:#333}header .eyebrow{color:#333}h1{font-size:40px}.layout{display:block;padding:0}nav,button.print{display:none}section{border:0;padding:10px 0;break-inside:auto}h2,h3{break-after:avoid}tr,.card,pre{break-inside:avoid}.flow button{padding:10px}a{color:#111;text-decoration:underline}#node-detail{min-height:0}footer{padding:5px}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Architecture proposal · research-grounded · executable reference</div><h1>GraphOS</h1><p>A graph-based engineering platform that turns an idea into versioned work, produces inspectable artifacts, and permits delivery only when the required evidence is current.</p><div class="meta">Prepared November 7, 2026 · For Michal Kuderski · Design version 0.1 · No production performance claims</div></header>
+<div class="layout"><nav aria-label="Contents"><strong>Inside the blueprint</strong><a href="#decision">The design decision</a><a href="#research">What current evidence supports</a><a href="#architecture">Architecture explorer</a><a href="#graphs">Graph engineering</a><a href="#runtime">Durable execution</a><a href="#communication">Communication and context</a><a href="#verification">Verification and repair</a><a href="#routing">Adaptive orchestration</a><a href="#domains">Domain expansion</a><a href="#example">A complete run</a><a href="#evaluation">Evaluation and promotion</a><a href="#stack">Implementation choices</a><a href="#roadmap">Delivery roadmap</a><a href="#research-agenda">Research agenda</a><a href="#package">This package and limits</a><a href="#sources">Primary sources</a><button class="print" onclick="window.print()">Print / Save PDF</button></nav>
+<main>
+<section id="decision"><span class="status proposal">Proposed architecture</span><h2>Build an engineering system whose claims can be checked.</h2>
+<p class="lead">GraphOS should combine a deterministic execution controller, replaceable agent workers, and a graph connecting requirements to artifacts and verification evidence.</p>
+<p>The most valuable ambition is consistent delivery across an expanding, explicitly supported set of project types. That requires a reliable way to specify work, choose an appropriate team, preserve state, evaluate results, recover from failures, and recognize when evidence is insufficient. Intelligence is supplied by models; the platform makes their work accountable.</p>
+<p>The supplied diagram provides the right high-level pattern: task routing, single-agent or parallel work, shared evidence, independent verification, and targeted repair. This proposal supplies the contracts and operational semantics between those boxes. It also adds specification versioning, integration, external-action reconciliation, resource accounting, and post-release observation.</p>
+<div class="note"><strong>Central invariant:</strong> acceptance is a relationship between a requirement revision, an exact artifact, a verification procedure, and its evidence. A message saying “done” cannot create that relationship by itself.</div>
+<p>Graph engineering is a strong fit because dependencies, provenance, authority, and invalidation are relationships. It does not establish that graph-shaped systems are inherently the most intelligent architecture. A graph database is optional; precise graph semantics are essential.</p>
+<p><strong>Repository finding:</strong> after you made <a href="https://github.com/MichalKuderski/GraphOS">MichalKuderski/GraphOS</a> public, access succeeded. GitHub reported the repository empty, the branches response was empty, and Git returned no HEAD reference. There is no accessible implementation to preserve or replace as of this inspection. Nothing in this package was pushed to GitHub.</p>
+<p><strong>Access boundary:</strong> I inspected the attached diagram and both AI responses you subsequently supplied as pasted text. The original ChatGPT link exposed only a wrapper, and the Gemini link was unavailable to the research tool; browser fallback encountered a control error. Your uploads made the response text available, but did not include the full claimed 117-source bibliography or three memory references. Sources and attachments were treated as evidence, never as authorization to change the task.</p>
+</section>
+
+<section id="research"><h2>Current evidence favors selective complexity.</h2>
+<p>A July 2026 Nature study evaluated 260 configurations across six benchmarks. It found collaboration benefits depend on task structure and the strength of the single-agent baseline. Its approximate saturation threshold is empirical, not a universal routing rule. The paper does not demonstrate that a single architecture wins across arbitrary domains. <a href="https://www.nature.com/articles/s42256-026-01268-y">Nature paper</a> · <a href="https://dam-prod.media.mit.edu/x/2026/07/27/s42256-026-01268-y.pdf">Accessible MIT-hosted paper</a></p>
+<p>Anthropic’s October 22, 2026 guidance reports deployments where combining specialist subagents into a skilled main loop improved quality and often reduced cost or latency. It retains subagents for independent work, verification, and permission boundaries. That is practical vendor experience, not proof that one agent always wins. <a href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop">Current architecture guidance</a></p>
+<p>Its earlier multi-agent research system demonstrates the value of breadth-first parallel research while documenting substantial token overhead. Its compiler experiment demonstrates ambitious parallel construction, but also the effort required to engineer tests and the limitations remaining in the result. Neither establishes universal superiority over human software teams. <a href="https://www.anthropic.com/research/multi-agent-research-system">Research system</a> · <a href="https://www.anthropic.com/research/building-c-compiler">Compiler experiment</a></p>
+<table><thead><tr><th>Supported direction</th><th>Design consequence</th><th>Claim to avoid</th></tr></thead><tbody>
+<tr><td>Task-dependent coordination gains</td><td>Benchmark single, sequential, parallel, and verifier-assisted routes.</td><td>More agents always means more intelligence.</td></tr>
+<tr><td>Persistent sessions and isolated execution</td><td>Keep recoverable project state outside any context window.</td><td>A saved conversation is a durable workflow engine.</td></tr>
+<tr><td>Executable evaluation improves feedback</td><td>Bind acceptance to actual artifacts and trusted checks.</td><td>Agreement among reviewers proves correctness.</td></tr>
+<tr><td>Checkpointing enables recovery</td><td>Design external effects with their own durable identities.</td><td>Checkpoint replay makes remote actions exactly once.</td></tr>
+</tbody></table>
+<p>These are foundations for a strong engineering proposal. The proposed combination still requires implementation and comparative measurement. There is no established basis for claiming “unheard of,” universally human-surpassing, or capable of every imaginable project.</p>
+<h3>Assessment of the two supplied AI responses</h3>
+<p>The pasted ChatGPT response provides a sensible foundation: conditional delegation, focused contexts, structured handoffs, verification, bounded repair, and matched-budget comparisons. The pasted Gemini response also identifies useful patterns, but overstates what they guarantee. Neither response is treated as a primary research source.</p>
+<table><thead><tr><th>Recommendation or claim</th><th>Assessment</th><th>GraphOS decision</th></tr></thead><tbody>
+<tr><td>ChatGPT: adaptive hierarchy with independent verification</td><td>Reasonable design synthesis; hierarchy is one available route.</td><td>Retain adaptive routing and evidence gates; benchmark against a strong single-agent loop.</td></tr>
+<tr><td>ChatGPT: Python / LangGraph first</td><td>A credible fit for Python-heavy analytical work, not proof of general superiority. The assumed existing GraphOS implementation was not found in the supplied empty repository.</td><td>Keep contracts portable. Use the selected harness only after the first workload establishes the language and runtime needs.</td></tr>
+<tr><td>Gemini: a single most advanced, proven architecture</td><td>Unsupported universal ranking; contradicts the task-dependent evidence.</td><td>Select architecture by measured results and constraints.</td></tr>
+<tr><td>Gemini: narrow workers avoid cognitive overload</td><td>Focused contexts can help, but workers still omit details and make errors.</td><td>Measure omissions and coordination failures; preserve authoritative artifacts.</td></tr>
+<tr><td>Gemini: typed shared state prevents corruption or loss</td><td>Types check structure. They do not provide truth, transactions, durable writes, concurrency control, or recovery.</td><td>Use schemas plus a transactional ledger, fencing, immutable artifacts, and fault tests.</td></tr>
+<tr><td>Gemini: hand off only a short research summary</td><td>Compression can lose assumptions and evidence needed downstream.</td><td>Send a compact brief with retrievable source and artifact references; allow deeper context on demand.</td></tr>
+<tr><td>Gemini: DAG planning plus cyclic graph workflows</td><td>These need distinct semantics, not an unexplained mixture.</td><td>Keep artifact derivation acyclic; represent retry and repair as explicitly bounded control loops.</td></tr>
+</tbody></table>
+<p>The quoted research gains in the ChatGPT output are task-specific: 80.8% is a relative improvement in the reported Finance Agent setting, not percentage points; 90.2% is from Anthropic's internal research evaluation; and the 17.2× error-amplification measure is additional execution work associated with coordination failures, not a final-answer error probability. None is a forecast for GraphOS.</p>
+</section>
+
+<section id="architecture"><h2>One control system, several kinds of intelligence.</h2><p>Select a component to inspect its responsibility. Numbered stages describe the main path; repair and revision can return work to earlier stages under explicit limits.</p>
+<div class="flow" aria-label="GraphOS architecture components">
+<button type="button" data-node="intent" aria-pressed="true"><span>01 · SPECIFY</span><strong>Intent &amp; acceptance</strong></button>
+<button type="button" data-node="compiler" aria-pressed="false"><span>02 · COMPILE</span><strong>Plan validator</strong></button>
+<button type="button" data-node="controller" aria-pressed="false"><span>03 · CONTROL</span><strong>Durable scheduler</strong></button>
+<button type="button" data-node="workers" aria-pressed="false"><span>04 · PRODUCE</span><strong>Scoped workers</strong></button>
+<button type="button" data-node="integration" aria-pressed="false"><span>05 · INTEGRATE</span><strong>Artifact integration</strong></button>
+<button type="button" data-node="verification" aria-pressed="false"><span>06 · VERIFY</span><strong>Evidence gates</strong></button>
+<button type="button" data-node="release" aria-pressed="false"><span>07 · DELIVER</span><strong>Release controller</strong></button>
+<button type="button" data-node="learning" aria-pressed="false"><span>08 · IMPROVE</span><strong>Measured learning</strong></button>
+</div><div id="node-detail" aria-live="polite"><strong>Intent &amp; acceptance</strong><p>Translate the request into requirements, constraints, assumptions, deliverables, acceptance checks, and action permissions. Preserve the user's goal; record uncertainty rather than silently inventing requirements.</p></div>
+<h3>Separate proposal from authority</h3><p>The planning model can propose tasks, dependencies, tools, and revisions. Controller code decides whether a proposal is valid, affordable, authorized, and schedulable. Workers can submit candidate artifacts. Verification services can submit evidence. Only the acceptance controller can mark a requirement satisfied, and only the release controller can authorize a consequential external effect within the user's established scope.</p>
+<p>This separation is not an organizational chart of permanent agents. A “role” is a contract, capability set, context scope, and evaluation profile. A single capable model may perform several compatible roles in sequence. Fresh workers are created where parallelism, context separation, or independent review has measurable value.</p>
+<h3>The control plane and the execution plane</h3><p>The control plane owns durable admission, plan versions, state transitions, budgets, and evidence requirements. The execution plane contains disposable model sessions, tool processes, sandboxes, test runners, and domain adapters. An agent crash should discard a worker, not the project's meaning. This is consistent with contemporary architectures that separate session storage, harnesses, and sandboxes. <a href="https://www.anthropic.com/research/managed-agents">Anthropic's session / harness / sandbox design</a></p>
+<p>The user interface should expose decisions, current artifacts, blocked criteria, costs, and next actions. It should make it possible to answer “Why is this accepted?”, “What changed?”, “What remains uncertain?”, and “What will this action affect?”</p>
+</section>
+
+<section id="graphs"><h2>Make graph semantics executable.</h2>
+<p>Use six typed views over a common project ledger. These are logical models, not a requirement to operate six storage systems.</p>
+<table><thead><tr><th>Graph</th><th>Examples</th><th>Invariant</th></tr></thead><tbody>
+<tr><td>Intent</td><td>Requirement, assumption, acceptance criterion; refines, conflicts-with</td><td>Each mandatory deliverable has a stated acceptance method.</td></tr>
+<tr><td>Execution</td><td>Task, input, reservation; depends-on, consumes, produces</td><td>A task starts only with current accepted inputs and a valid resource reservation.</td></tr>
+<tr><td>Artifact</td><td>Commit, build, data snapshot, asset; derived-from, supersedes</td><td>Inputs reference immutable revisions; derivation contains no causal cycle.</td></tr>
+<tr><td>Evidence</td><td>Claim, test run, source, review; supports, refutes, verifies</td><td>Evidence applies only to the exact manifest it evaluated.</td></tr>
+<tr><td>Authority</td><td>Principal, capability, operation; may-execute, scoped-to</td><td>Permissions are checked outside the model and cannot be expanded by retrieved text.</td></tr>
+<tr><td>Operations</td><td>Run, attempt, action, release, incident; caused-by, reconciles</td><td>Every external operation has a stable identity and a recorded outcome or uncertainty.</td></tr>
+</tbody></table>
+<h3>Compile a specification into a valid plan</h3><ol>
+<li>Validate all schemas, reference types, and required identifiers.</li>
+<li>Map deliverables to requirements and verification procedures; retain unresolved assumptions explicitly.</li>
+<li>Identify dependencies, semantic interface boundaries, and shared write conflicts.</li>
+<li>Detect strongly connected components. Reject control loops without an exit condition, deadline, and retry budget.</li>
+<li>Check reachability: mandatory work must be able to terminate as accepted, failed, blocked, or cancelled.</li>
+<li>Check capabilities and compute a feasible budget envelope, including integration and verification.</li>
+<li>Record a versioned plan and input manifest before dispatch.</li>
+</ol>
+<p>Dynamic planning remains available through a <code>PlanPatch</code> proposal that follows the same validation process. A plan change creates a new version and invalidates affected work. The planner cannot silently remove failing tests or lower acceptance standards to achieve a success flag.</p>
+<h3>Content and semantic identity</h3><p>Hash a canonical manifest containing the requirement revision, input artifact hashes, interface/schema versions, source base commit, policy revision, and relevant environment configuration. Store artifact bytes by content hash. Keep a separate stable logical ID for “the checkout API” across revisions. Byte equality and semantic validity answer different questions.</p>
+<p>When a requirement or input changes, traverse dependency edges to mark descendants stale. Keep historical artifacts and evidence, but remove their eligibility to certify the current result. Recompute only the affected region when dependency coverage is trustworthy. Run broader integration checks when dependencies may be missing or a public interface changes.</p>
+<h3>Formal verification where it pays</h3><p>Model-check the small controller state machine and critical concurrent transitions. Useful properties include no accepted stale attempt, no oversubscribed reservation, and no release using superseded verification. Temporal-logic liveness assumptions must include eventual infrastructure availability and finite retries. Formal methods can verify those modeled mechanics; they do not prove an arbitrary generated app meets an ambiguous human goal.</p>
+</section>
+
+<section id="runtime"><h2>Recovery is a protocol, not a retry button.</h2>
+<pre>PROPOSED → READY → CLAIMED → RUNNING → SUBMITTED → VERIFYING → ACCEPTED
+                       ↘ RETRY_WAIT                 ↘ REPAIR_REQUIRED
+                       ↘ BLOCKED / EFFECT_UNKNOWN
+
+ACCEPTED → STALE when required inputs or acceptance policy change
+Any eligible state → CANCEL_REQUESTED → CANCELLED or reconciliation</pre>
+<p>The production task record needs <code>task_id</code>, <code>plan_version</code>, <code>input_manifest_hash</code>, <code>attempt_id</code>, <code>lease_epoch</code>, <code>state_version</code>, <code>deadline</code>, <code>reserved_cost</code>, and scoped capabilities. Admission is durably recorded before returning an accepted request to the caller.</p>
+<h3>Claims, leases, and fencing</h3><p>Claim work in a transaction using compare-and-swap or equivalent serialization. Lease expiry does not mean the old worker stopped. Each new claim receives a higher fencing epoch. Artifact writes, tool dispatch, and completion records must be rejected if their epoch is stale. A worker that wakes after a network partition cannot overwrite a newer worker's result.</p>
+<p>Completion and its outgoing notification commit together to the task ledger and transactional outbox. Delivery can repeat; consumers deduplicate by message ID and logical operation ID. The database transition, rather than the order messages happen to arrive, determines authoritative state.</p>
+<h3>External effects have separate state</h3>
+<pre>PREPARED → AUTHORIZED → DISPATCHED → CONFIRMED
+                              ↘ UNKNOWN → RECONCILING
+                                          ├→ CONFIRMED
+                                          ├→ CONFIRMED_ABSENT
+                                          └→ MANUAL_RESOLUTION</pre>
+<p>Persist a logical operation key, canonical payload hash, authority scope, and target before dispatch. Every retry of that same operation must reuse the same key and payload. A new worker attempt must not create a fresh payment, deployment, or order identity.</p>
+<p>If an external service commits an action and its response is lost, the correct local state is <strong>unknown</strong>. Query authoritative remote state or retry through receiver-enforced idempotency. If neither is available, pause the action for resolution. A local outbox cannot establish exactly-once effects in a remote system.</p>
+<p>LangGraph documentation explicitly describes at-least-once node execution and the need for application-level idempotency. Checkpoint durability and external-effect safety are different concerns. Its time-travel feature re-executes downstream work; it does not reverse external reality. <a href="https://docs.langchain.com/oss/python/langgraph/fault-tolerance">Fault tolerance</a> · <a href="https://docs.langchain.com/oss/python/langgraph/checkpointers">Checkpointers</a> · <a href="https://docs.langchain.com/oss/python/langgraph/use-time-travel">Time travel</a></p>
+<h3>Cancellation and compensation</h3><p>Cancellation revokes permission to start new work and asks current workers to stop. It does not erase effects already committed. Reconcile in-flight actions before declaring the run cancelled. A compensating action is another operation with its own permission, outcome, and possible failure; some effects cannot be undone.</p>
+<h3>Bounded resources</h3><p>Reserve funds and execution capacity atomically before dispatch. Include model calls, tool calls, verification, failed branches, and retries. Maintain limits for money, tokens, elapsed time, attempts, parallelism, and external actions. Reconcile actual usage and unresolved provider charges before releasing reservations. A worker's voluntary estimate is insufficient to enforce a hard spend ceiling.</p>
+<p>Use deadlines, a cancellation token, bounded exponential backoff with jitter, and a provider circuit breaker. Record model fallback as a configuration change because it can change output behavior. Pin workflow versions for paused runs, and migrate or drain incompatible workflows explicitly.</p>
+</section>
+
+<section id="communication"><h2>Agents exchange contracts and evidence.</h2>
+<p>A task handoff contains an objective, required inputs and versions, allowed tools, write scope, output schema, acceptance criteria, budget, deadline, and known uncertainty. Its result contains artifact references, evidence references, unresolved issues, and actual resource use. Free-form messages explain these objects; they do not replace them.</p>
+<pre>MessageEnvelope
+  schema_version · message_id · project_id · run_id · task_id
+  sender · recipient · correlation_id · causation_id
+  plan_version · input_manifest_hash · expected_state_version
+  kind: command | question | result | evidence | plan_patch | status
+  payload_ref · created_at · expires_at</pre>
+<p>The schema in this package is a starting wire contract. Production also requires authenticated sender identity, authorization checks, durable deduplication, bounded payloads, ordering rules, and an explicit schema migration policy. Schema validity cannot prove a claim true or authorize an action.</p>
+<h3>Communication topology</h3><p>Use scoped coordinator-to-worker handoffs and artifact publication by default. Allow direct worker consultation only when a named dependency requires it. A disagreement becomes an issue with competing claims, supporting evidence, a decision owner, and a proposed resolving test. Unbounded group debate is neither a termination policy nor an integration strategy.</p>
+<p>Split work by context and interfaces, not by creating an agent for every human job title. Good boundaries include an independently testable API module, a separate research branch, or a black-box usability review. Poor boundaries require repeated reconstruction of the same global context.</p>
+<h3>Four memory classes</h3><table><thead><tr><th>Memory</th><th>Contents</th><th>Promotion / invalidation</th></tr></thead><tbody>
+<tr><td>Working state</td><td>Current plan, remaining tasks, current attempt</td><td>Checkpoint and reconstruct from the ledger.</td></tr>
+<tr><td>Project knowledge</td><td>Requirements, interfaces, architecture decisions</td><td>Version, assign ownership, invalidate on relevant change.</td></tr>
+<tr><td>Evidence archive</td><td>Source snapshots, logs, measurements, artifact manifests</td><td>Preserve provenance and access controls; apply retention policy.</td></tr>
+<tr><td>Reusable lessons</td><td>Candidate procedures, routing observations, failure remedies</td><td>Evaluate on held-out work before promotion.</td></tr>
+</tbody></table>
+<p>Every durable fact needs origin, scope, freshness, and a basis for trust. Retrieval rank is not authority. Contradictory memories remain visibly disputed until resolved. Store concise decisions and evidence rather than requiring private model reasoning transcripts. Redact credentials and sensitive values from traces and enforce deletion/retention requirements.</p>
+<h3>Instruction boundaries</h3><p>Keep user-authorized policy and trusted runtime configuration separate from retrieved documents, generated code, websites, attachments, and tool outputs. An external document saying “ignore previous instructions” is content, not a control-plane update. The tool gateway should enforce narrow capabilities, egress rules, and credential access even if the model follows malicious text. Worker sandboxes should not receive release credentials or authority to rewrite their graders.</p>
+<p>MCP is useful for tools and context integration; A2A is useful for interoperable agent task exchange. Neither supplies GraphOS's acceptance semantics or universal delivery guarantees. Add them at integration boundaries rather than making internal reliability depend on an assumed protocol guarantee. <a href="https://modelcontextprotocol.io/specification/2026-07-28">MCP specification</a> · <a href="https://a2a-protocol.org/latest/specification/">A2A specification</a></p>
+</section>
+
+<section id="verification"><h2>Make every release explainable.</h2>
+<p>The release evidence bundle should include the source and artifact hashes, exact requirements and acceptance policy, environment digest, dependency lockfiles, test commands and raw results, relevant review records, unresolved limitations, and the authorized release target. A signed provenance record helps detect tampering; its signature does not make the underlying test sufficient.</p>
+<div class="grid"><div class="card"><strong>Executable correctness</strong>Compilation, type checks, behavioral tests, integration tests, numerical checks, and real user journeys.</div><div class="card"><strong>Operational fitness</strong>Permissions, resource limits, expected load, observability, recovery, deployment and rollback behavior.</div><div class="card"><strong>Product quality</strong>Accessibility, clarity, usability, visual quality, and fidelity to the user's purpose.</div><div class="card"><strong>Domain validity</strong>Statistical assumptions, trading data integrity, game performance, content and asset requirements.</div></div>
+<h3>Independent verification means operational separation</h3><p>Verify in a clean environment against the submitted artifact, not the builder's workspace. Give the verifier the specification and artifacts without making the builder's narrative its authority. Keep trusted graders and expected outcomes outside worker write access. Test changes can be proposed, but relaxing a mandatory criterion requires a distinct specification decision.</p>
+<p>Different model names do not prove independent failure modes. Use executable oracles where available. For subjective design and game enjoyment, use rubrics calibrated against human judgment. Model review can find defects; it cannot certify taste, business value, or universal correctness.</p>
+<p>Before trusting a grader, confirm that a reference solution passes and an unchanged or deliberately broken solution fails. Mutation-test critical graders. Protect the test runner, dependency resolution, and environment as well as the test files. A passing result from modified instrumentation is not trusted evidence.</p>
+<h3>Integration is another production step</h3><p>Workers receive isolated worktrees or equivalent versioned workspaces. Freeze interface contracts before parallel implementation. Each patch names its base commit. A single integration authority serializes merges, resolves semantic conflicts, and verifies the resulting integration revision. Two locally passing patches can still produce a broken application.</p>
+<p>Verification of a feature branch does not automatically certify the merged commit. Reuse evidence only where inputs and environment match the declared scope; run integration checks on the assembled artifact. The release controller rechecks bindings immediately before acting to prevent changes between verification and release.</p>
+<h3>Repair the cause, then retest the affected system</h3><table><thead><tr><th>Failure</th><th>Response</th></tr></thead><tbody>
+<tr><td>Transient infrastructure error</td><td>Bounded retry, backoff, same logical identity.</td></tr>
+<tr><td>Schema-invalid output</td><td>Return structured validation errors for targeted regeneration.</td></tr>
+<tr><td>Behavioral test failure</td><td>Localize the fault, propose a minimal patch, invalidate affected evidence.</td></tr>
+<tr><td>Conflicting requirements</td><td>Record the conflict and seek a decision; do not fabricate consensus.</td></tr>
+<tr><td>Unknown external effect</td><td>Reconcile before any unsafe retry.</td></tr>
+<tr><td>Repeated failure without progress</td><td>Stop at the configured limit and provide a reproducible blocked report.</td></tr>
+</tbody></table>
+<p>A repair record includes a fault signature, hypothesis, changed artifact, resulting evidence, and remaining budget. Repetition without a new hypothesis or genuinely transient cause should not consume another unlimited cycle. This is a proposed mechanism, not a demonstrated guarantee that all failures can be repaired.</p>
+</section>
+
+<section id="routing"><h2>Spend intelligence where it improves the result.</h2>
+<p>The router chooses among a small set of validated patterns: direct tool execution, one capable agent, sequential stages, parallel independent workers, generator–verifier, or a bounded combination. It uses task coupling, uncertainty, available graders, consequence of error, context size, and historical performance. Initial rules should be explicit; learn a routing policy only after enough representative data exists.</p>
+<table><thead><tr><th>Task shape</th><th>Initial route</th><th>Reason to expand</th></tr></thead><tbody>
+<tr><td>Small change with clear tests</td><td>One builder + deterministic checks</td><td>Measured missed defects justify a reviewer.</td></tr>
+<tr><td>Broad research</td><td>Independent source branches + synthesis</td><td>Additional branches yield distinct evidence.</td></tr>
+<tr><td>Modular application</td><td>Shared contracts, parallel modules, serialized integration</td><td>Interface stability supports low-conflict parallel work.</td></tr>
+<tr><td>Highly coupled debugging</td><td>One main context, targeted specialist probes</td><td>A bounded probe can reduce uncertainty without fragmenting context.</td></tr>
+<tr><td>High-consequence action</td><td>Extra verification and strict action protocol</td><td>Evidence or authority is missing; pause rather than increase agent count.</td></tr>
+</tbody></table>
+<p>A useful proposed objective is to maximize expected verified utility subject to minimum quality, spending, latency, and authority constraints. In early versions, compare measured quality–cost–latency frontiers instead of hiding tradeoffs in an arbitrary weighted score.</p>
+<pre>Choose route a from the approved route set:
+  maximize estimated verified utility(a | task features)
+  subject to cost ≤ budget, time ≤ deadline,
+             permissions satisfied, mandatory gates unchanged.
+
+Escalate effort only when the expected value of new evidence exceeds its cost.</pre>
+<p>Estimates need uncertainty bounds, task-specific calibration, and monitoring after model upgrades. Model self-reported confidence is not a calibrated probability of correctness. Keep a fallback route for unfamiliar tasks. Log why a route was selected and compare it to alternatives offline before allowing automatic adaptation.</p>
+<p>Novel design exploration can use a small portfolio of contrasting concepts before implementation. Separate novelty, feasibility, quality, and cost in evaluation. Retain genuinely different candidates; ten superficial variants are not a useful search portfolio. The user should be able to select aesthetic or product tradeoffs that automated tests cannot decide.</p>
+</section>
+
+<section id="domains"><h2>One platform, explicit domain contracts.</h2>
+<p>“Build anything” is best implemented as an extensible system with declared capability profiles. Each profile defines inputs, tools, artifact formats, environments, evaluation methods, and release requirements. Unsupported requirements remain visible instead of being silently replaced with a superficial approximation.</p>
+<table><thead><tr><th>Profile</th><th>Necessary evidence</th><th>What remains a judgment</th></tr></thead><tbody>
+<tr><td>Apps and websites</td><td>Build, persistence, authorization, browser journeys, accessibility, responsive behavior, declared load.</td><td>Product desirability, design quality, long-term maintenance cost.</td></tr>
+<tr><td>Bots and integrations</td><td>Webhook deduplication, rate limits, reconnect behavior, permission checks, action reconciliation.</td><td>Appropriate behavior in ambiguous social contexts.</td></tr>
+<tr><td>Games</td><td>Seeded simulations where applicable, level reachability, save/load migration, input latency, frame time on named hardware.</td><td>Fun, pacing, balance, art direction; require playtesting.</td></tr>
+<tr><td>Data projects</td><td>Data provenance, grain and missingness checks, reproducibility, held-out validation, statistical assumptions.</td><td>Business usefulness and interpretation of uncertain findings.</td></tr>
+<tr><td>Media projects</td><td>Asset provenance, edit/project files, render integrity, timing, sound and visual continuity.</td><td>Creative quality and fit to a brief.</td></tr>
+<tr><td>Trading research</td><td>Point-in-time data, leakage checks, costs/slippage, locked out-of-sample tests, full experiment history, paper execution.</td><td>Whether evidence supports a robust investable strategy.</td></tr>
+</tbody></table>
+<h3>The trading-bot profile deserves its own acceptance system</h3><p>Separate research, simulation, paper execution, and live execution as distinct capabilities. Research agents can propose hypotheses and implementations. They cannot convert a positive backtest into evidence of future profitability.</p>
+<p>Record the entire strategy search, including rejected experiments. Use point-in-time data and corporate-action handling, avoid look-ahead and survivorship bias, and keep final evaluation periods untouched during selection. Include fees, slippage, liquidity assumptions, and operational constraints. Multiple-testing-aware statistics can help assess selection bias, but cannot repair leaked or incorrect data. <a href="https://doi.org/10.3905/jpm.2014.40.5.094">Deflated Sharpe Ratio research</a></p>
+<p>A future execution adapter additionally needs position and order limits, stale-feed handling, reconciliation with broker state, and a kill switch. Lost order acknowledgements must enter the unknown-effect protocol. No live trading is implemented or authorized by this package.</p>
+<p>Your statistics background is directly useful in evaluation design, uncertainty estimation, strategy-selection bias, and detecting performance regressions. A carefully measured GraphOS case study would make that expertise visible without relying on exaggerated capability claims.</p>
+</section>
+
+<section id="example"><h2>What a complete GraphOS run looks like.</h2>
+<p>Example request: build a small analytics application with CSV import, editable filters, a chart, and an export. This is an illustrative workflow, not a claim that this app has been generated.</p>
+<ol>
+<li><strong>Specify:</strong> define supported file sizes and formats, empty/error states, filter semantics, privacy constraints, export behavior, browser targets, and required user journeys. Unknown choices become explicit assumptions.</li>
+<li><strong>Compile:</strong> create tasks for data parsing, API/storage if required, UI, and integration. Define one shared data contract. Associate every required behavior with a grader.</li>
+<li><strong>Route:</strong> use one builder for tightly coupled work, or two workers for independent parsing and UI surfaces if the contract is stable and the budget supports integration.</li>
+<li><strong>Execute:</strong> each worker consumes exact input revisions, works in its sandbox, and submits artifacts and evidence. Workers cannot mark themselves accepted.</li>
+<li><strong>Integrate:</strong> assemble one candidate commit. Detect API mismatches even when separate branch tests passed.</li>
+<li><strong>Verify:</strong> a clean browser journey imports a representative file, changes filters, checks the rendered data, exports it, and confirms expected values. Accessibility and failure-state checks use declared criteria.</li>
+<li><strong>Repair:</strong> if export ignores a filter, attach that failure to the requirement and candidate hash; repair the affected module and rerun its dependent checks.</li>
+<li><strong>Deliver:</strong> produce the application, reproducible build instructions, acceptance report, limitations, and preview artifact. Production release uses the scoped action policy.</li>
+<li><strong>Observe:</strong> later defects attach to the released manifest and become regression cases. Candidate lessons enter evaluation before changing future behavior.</li>
+</ol>
+<p>If the user changes “CSV” to “CSV and Excel” during verification, the specification version changes. GraphOS identifies affected parsers, UI validation, export assumptions, and tests. Unaffected design work may be reused, but the old acceptance certificate cannot certify the new requirement.</p>
+<p>If the integrator crashes after an artifact upload, its deterministic operation identity permits recovery. If a deployment succeeds but the response is lost, GraphOS queries deployment state rather than launching an untracked second release.</p>
+</section>
+
+<section id="evaluation"><h2>Prove the advantage at the system level.</h2>
+<p>Begin with 30–50 representative private tasks and repeated runs as a diagnostic pilot. This is a proposed starting sample, not a production reliability certificate. Partition by repository or project into development, validation, and untouched release sets. Public coding benchmarks supplement this suite; they do not replace the projects GraphOS is meant to build.</p>
+<p>Compare one capable agent with the same tools and persistence, one agent plus an independent verifier, a fixed multi-agent graph, and the adaptive GraphOS route. Include all planning, judging, failed attempts, repairs, integration, and infrastructure spend. Interleave experiments over time and hold resource limits constant. Infrastructure differences can materially affect benchmark results. <a href="https://www.anthropic.com/research/infrastructure-noise">Infrastructure sensitivity study</a></p>
+<table><thead><tr><th>Metric</th><th>Definition</th></tr></thead><tbody>
+<tr><td>Verified completion</td><td>Runs satisfying every mandatory acceptance criterion / attempted runs.</td></tr>
+<tr><td>Cost per verified completion</td><td>Total cost of all attempts / number of accepted results.</td></tr>
+<tr><td>Time to verification</td><td>p50 and p95 completion time, with unsuccessful and timed-out runs reported separately.</td></tr>
+<tr><td>Repeated-run reliability</td><td>Per-task probability all k runs succeed; report uncertainty and dependence assumptions.</td></tr>
+<tr><td>Escaped defects</td><td>Accepted artifacts later found to violate a requirement.</td></tr>
+<tr><td>Human intervention</td><td>Minutes and decisions required per accepted result.</td></tr>
+<tr><td>Recovery integrity</td><td>Lost work, duplicated actions, stale commits, and correct recovery after injected faults.</td></tr>
+<tr><td>Evidence coverage</td><td>Mandatory requirements with current applicable evidence / mandatory requirements.</td></tr>
+</tbody></table>
+<p>Distinguish <code>pass@k</code>, at least one success among k attempts, from <code>pass^k</code>, success across all k attempts. For a task with c successful runs among n, the combinatorial estimator for all-k success is C(c,k)/C(n,k), under the relevant repeated-trial assumptions. Do not raise an aggregate completion rate to the kth power and call it a reliability estimate. Use task- or repository-clustered uncertainty. <a href="https://arxiv.org/abs/2406.12045">τ-bench</a> · <a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents">Agent evaluation guidance</a></p>
+<h3>Promotion policy</h3><p>Predeclare whether a change aims for higher completion, lower cost at comparable quality, or lower latency. An example policy is a positive lower confidence bound for paired completion improvement with no critical regression; an efficiency policy could require noninferiority within a selected margin plus a material cost reduction. Those margins are engineering choices. A small pilot may be inconclusive, which should trigger more measurement rather than a superiority claim.</p>
+<h3>Fault-injection gate</h3><ul>
+<li>Kill a worker after an external effect succeeds but before acknowledgement is recorded.</li>
+<li>Resume an expired worker after a replacement has claimed the same task.</li>
+<li>Change an input, test suite, or candidate after verification begins.</li>
+<li>Deliver duplicate, delayed, malformed, and out-of-order messages.</li>
+<li>Integrate two locally valid but semantically incompatible patches.</li>
+<li>Exhaust a shared budget while several workers request reservations.</li>
+<li>Restart the controller before its first checkpoint and during a paused workflow upgrade.</li>
+<li>Inject instructions into retrieved material that attempt to change policy or expose secrets.</li>
+<li>Cancel while an action is in flight, and verify reconciliation before final status.</li>
+</ul>
+<p>Zero observed failures is not proof of zero risk. With zero failures in n independent representative trials, a rough 95% upper failure-rate bound is 3/n. Correlated repeats of a few tasks do not provide the equivalent evidence of thousands of representative trials.</p>
+<p>Long-horizon evaluation needs dependent projects, revisions, context loss, and interruptions. Many independent small tasks do not establish multi-day engineering reliability. METR's time-horizon page explicitly limits extrapolation and, as accessed, says estimates beyond 16 hours are unreliable with its current suite. <a href="https://metr.org/time-horizons/">METR time horizons</a></p>
+</section>
+
+<section id="stack"><h2>A practical implementation without premature infrastructure.</h2>
+<p>Because the supplied repository is empty, there is no demonstrated reason to migrate an existing runtime. For a fresh agent harness, use <strong>eve with TypeScript as the initial candidate</strong>, following its installed-version documentation. Keep GraphOS's graph contracts and acceptance controller independent of the harness. Evaluate LangGraph if explicit Python graph execution better fits the first domain or materially simplifies the controller. The runtime decision is a testable implementation choice, not the platform's differentiator. <a href="https://eve.dev/docs/getting-started">eve documentation</a> · <a href="https://docs.langchain.com/oss/python/langgraph/overview">LangGraph documentation</a></p>
+<table><thead><tr><th>Component</th><th>Initial recommendation</th><th>Reason / boundary</th></tr></thead><tbody>
+<tr><td>Graph contracts and policy</td><td>Versioned schemas + typed controller code</td><td>Own the semantics independently of models and vendors.</td></tr>
+<tr><td>Agent harness</td><td>One chosen runtime; eve is the greenfield candidate</td><td>Use documented sessions, tools and workers; do not assume every GraphOS invariant is supplied.</td></tr>
+<tr><td>Authoritative project state</td><td>PostgreSQL ledger with indexed typed edges and transactional outbox</td><td>Transactions for claims, budgets, acceptance and outgoing events.</td></tr>
+<tr><td>Artifacts</td><td>Git plus content-addressed object storage</td><td>Immutable references, reproducible manifests and binary assets.</td></tr>
+<tr><td>Execution</td><td>Isolated workers, per-task workspaces, narrow tool gateway</td><td>Separate generated code from credentials and release authority.</td></tr>
+<tr><td>Models</td><td>Provider-neutral adapter and pinned model/configuration records</td><td>Measure candidates; log fallback and upgrades as evaluation-relevant changes.</td></tr>
+<tr><td>Observability</td><td>Structured events, traces, cost accounting, evidence explorer</td><td>Debug causal failures and audit accepted outputs.</td></tr>
+<tr><td>Evaluation</td><td>Versioned task packs and trusted isolated graders</td><td>Measure complete outcomes and comparative benefit.</td></tr>
+</tbody></table>
+<p>A dedicated graph database, vector index, message broker, and second workflow engine are optional additions. Introduce them only for measured traversal, retrieval, throughput, or lifecycle needs. A graph can initially be represented by relational nodes and edges.</p>
+<p>If long-lived cross-service coordination later requires Temporal, give it ownership of the outer lifecycle and put nondeterministic model/tool work in activities. Avoid two workflow engines independently retrying the same effect. Durable activity systems still need idempotent external operations. <a href="https://docs.temporal.io/workflow-definition">Temporal workflow semantics</a> · <a href="https://docs.temporal.io/activity-definition">Activity semantics</a></p>
+<p><strong>Current-source discrepancy:</strong> the pasted ChatGPT response correctly points to an October 30, 2026 Temporal announcement of generally available AI framework integrations. However, the checked LangGraph integration documentation and repository still label that integration Public Preview. Verify the exact package release and support status before production adoption; the announcement alone does not resolve those conflicting labels. <a href="https://temporal.io/blog/ai-framework-integrations">Announcement</a> · <a href="https://docs.temporal.io/develop/python/integrations/langgraph">Integration documentation</a> · <a href="https://github.com/temporalio/ai-integrations/blob/main/README.md">Repository README</a></p>
+<h3>Production storage outline</h3><pre>projects · specification_versions · requirements · plan_versions
+tasks · task_attempts · task_dependencies · budget_reservations
+artifacts · artifact_inputs · claims · verification_runs
+capability_grants · effect_intents · effect_receipts
+events · outbox_messages · received_message_ids
+releases · incidents · memory_candidates · evaluation_runs</pre>
+<p>Use unique constraints for message and operation identities, foreign keys for typed references where possible, and transaction isolation appropriate to contested claims and reservations. The ledger owns business acceptance; runtime checkpoints own internal execution progress. Bridge them with idempotent commands and recorded results rather than assuming a distributed transaction exists.</p>
+</section>
+
+<section id="roadmap"><h2>Build capability through evidence-based milestones.</h2>
+<p>These milestones are ordered by dependency rather than promised calendar dates. A credible duration and budget require the first real workload, resource limits, and deployment requirements.</p>
+<table><thead><tr><th>Milestone</th><th>Deliverable</th><th>Exit gate</th></tr></thead><tbody>
+<tr><td>0 · Contracts and baseline</td><td>One app stack, task specification, trusted graders, one capable builder and evidence bundle.</td><td>Reproducible result and honest single-agent baseline.</td></tr>
+<tr><td>1 · Durable vertical slice</td><td>Admission ledger, one builder, separate verifier, immutable artifacts, bounded repair, restart support.</td><td>Crash/restart tests preserve work and acceptance semantics.</td></tr>
+<tr><td>2 · Reliable parallelism</td><td>Two or three workers, frozen interfaces, fencing, serialized integration, invalidation.</td><td>Same-budget comparison shows benefit on chosen task families; fault gate passes.</td></tr>
+<tr><td>3 · Controlled delivery</td><td>Effect ledger, scoped release authority, reconciliation, preview/canary and rollback.</td><td>No unresolved effect can be reported as confirmed; release manifest is verifiable.</td></tr>
+<tr><td>4 · Domain profiles</td><td>Game and trading-research adapters with separate tests and acceptance policies.</td><td>Each profile passes its own held-out suite; unsupported capabilities remain explicit.</td></tr>
+<tr><td>5 · Adaptive improvement</td><td>Measured routing, memory promotion, risk-based verification and regression monitoring.</td><td>Held-out gains with no unacceptable quality/cost regression.</td></tr>
+</tbody></table>
+<h3>The first useful public demonstration</h3><p>Build one modest but complete application from a specification. Show the requirements graph, actual commits, passing user journeys, a deliberately injected worker crash, recovery, and a user-requested revision that invalidates only affected evidence. Publish the cost and limitations alongside the result when you choose to release it. This would demonstrate real engineering depth and your statistical evaluation skills more effectively than an enormous unvalidated agent roster.</p>
+<h3>Definition of a production-capable first version</h3><p>It supports one declared project family, survives the documented fault suite, enforces budgets and authority outside the model, delivers reproducible artifacts, exposes blocked work honestly, and demonstrates its quality/cost tradeoff against a strong baseline. Universal application coverage is not a first-version acceptance criterion.</p>
+</section>
+
+<section id="research-agenda"><span class="status proposal">Unproven hypotheses</span><h2>Where GraphOS could develop a meaningful advantage.</h2>
+<p>The following ideas are candidates for experimentation. They are not claimed inventions, guaranteed improvements, or established results.</p>
+<table><thead><tr><th>Hypothesis</th><th>Mechanism</th><th>Falsification test</th></tr></thead><tbody>
+<tr><td>Verification should follow dependency impact</td><td>Spend more effort on components with large downstream consequences or observed defect risk.</td><td>Compare with uniform verification at equal total spend; measure escaped defects.</td></tr>
+<tr><td>Context boundaries can be chosen from the dependency graph</td><td>Partition tasks where few interface facts must cross worker boundaries.</td><td>Compare against role-based decomposition; measure omissions, integration cost and completion.</td></tr>
+<tr><td>Reviewer diversity should be empirical</td><td>Select reviewers using observed complementary failures, not provider labels alone.</td><td>Check additional defect detection on held-out tasks at matched budget.</td></tr>
+<tr><td>Selective invalidation can reduce repair cost</td><td>Trace exact input dependencies and reuse only still-applicable evidence.</td><td>Compare with full revalidation; reject if escaped defects increase beyond policy.</td></tr>
+<tr><td>Counterfactual routing can improve planning</td><td>Replay alternative plans in read-only snapshots or simulated adapters.</td><td>Test whether offline route gains transfer to new live tasks; never replay real side effects.</td></tr>
+<tr><td>Memory can become a validated engineering asset</td><td>Promote version-scoped procedures after repeated successful transfer.</td><td>Compare with no memory and unfiltered memory; measure stale-knowledge regressions.</td></tr>
+</tbody></table>
+<p>Freeze the controller, permissions, and release policy outside autonomous self-modification. Agents may propose improvements as reviewed changes, evaluated on a held-out suite and rolled out gradually. Allowing the optimizer to change its own success criteria would invalidate the experiment.</p>
+<p>The defensible differentiator is the integrated system: evidence controls acceptance; dependency graphs control invalidation; measured outcomes control routing; scoped authority controls effects. Its value must be established in working software.</p>
+</section>
+
+<section id="package"><h2>What exists in this package.</h2>
+<table><thead><tr><th>Artifact</th><th>Status</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><a href="reference/graphos_kernel.py">Reference kernel</a></td><td>Implemented; standard-library Python</td><td>Executable model of selected orchestration invariants.</td></tr>
+<tr><td><a href="reference/test_kernel.py">Fault-scenario tests</a></td><td>Executable tests</td><td>Exercise invalidation, fencing, budgets, retries and unknown effects.</td></tr>
+<tr><td><a href="reference/demo-output.json">Demonstration trace</a></td><td>Generated local output</td><td>Illustrate rejected unsafe transitions; no real external actions.</td></tr>
+<tr><td><a href="specs/protocol.schema.json">Protocol schema</a></td><td>Proposed draft 2020-12 JSON Schema</td><td>Typed task, result, verification, effect and message contracts.</td></tr>
+<tr><td><a href="specs/example-task.json">Example task</a> / <a href="specs/example-result.json">result</a></td><td>Synthetic fixtures</td><td>Show wire format; hashes are examples, not real build evidence.</td></tr>
+<tr><td><a href="sources.json">Source ledger</a></td><td>Research provenance</td><td>Inspected sources, limitations and access status.</td></tr>
+</tbody></table>
+<p><strong>The reference kernel is an in-memory executable specification.</strong> It does not implement an LLM agent, database, concurrent scheduler, authentication, sandbox, production queue, real test runner, deployment, or trading execution. Its identities and effect outcomes are supplied by the caller. Budget enforcement assumes declared costs. These limits are documented in <a href="reference/README.txt">its README</a>.</p>
+<p>The contracts likewise do not enforce cross-record consistency, authorization, or truthful evidence. The architecture describes how those production services should be built. This package is a concrete starting point and design specification, not a finished universal development system.</p>
+<pre>cd /workspace/graphos/reference
+python3 -m unittest -q
+python3 graphos_kernel.py</pre>
+<p>Future implementation should first port or wrap the demonstrated invariants in the chosen durable runtime and transactional store, then connect one real builder and verifier. Do not use the small model as a production coordinator merely because its unit tests pass.</p>
+</section>
+
+<section id="sources"><h2>Primary sources and provenance.</h2>
+<p>Research checked November 7, 2026. Publication dates below are included where verified. The detailed ledger records access limitations. Documentation establishes documented behavior; vendor case studies and empirical papers have different evidentiary scope. The architecture's original synthesis is labeled as a proposal throughout.</p>
+<ol>
+<li><a href="https://www.nature.com/articles/s42256-026-01268-y">Capable language models can outgrow the benefits of collaboration</a> — July 24, 2026; read via <a href="https://dam-prod.media.mit.edu/x/2026/07/27/s42256-026-01268-y.pdf">MIT-hosted PDF</a>. Also <a href="https://www.media.mit.edu/projects/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/overview/">MIT project explanation</a>.</li>
+<li><a href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop">When to fold subagents into your main agent loop</a> — October 22, 2026.</li>
+<li><a href="https://www.anthropic.com/research/building-effective-agents">Building effective agents</a> — December 19, 2024; foundational patterns.</li>
+<li><a href="https://claude.com/resources/articles/common-workflow-patterns-for-ai-agents-and-when-to-use-them">Common workflow patterns for AI agents</a> — March 5, 2026.</li>
+<li><a href="https://www.anthropic.com/research/multi-agent-research-system">How we built our multi-agent research system</a> — June 13, 2025.</li>
+<li><a href="https://www.anthropic.com/research/managed-agents">Scaling Managed Agents: Decoupling the brain from the hands</a> — April 8, 2026.</li>
+<li><a href="https://www.anthropic.com/research/harness-design-long-running-apps">Harness design for long-running application development</a> — March 24, 2026.</li>
+<li><a href="https://www.anthropic.com/research/building-c-compiler">Building a C compiler with a team of parallel Claudes</a> — February 5, 2026.</li>
+<li><a href="https://papers.nips.cc/paper_files/paper/2025/hash/b1041e52d3be19f0a9bc491657488e4a-Abstract-Datasets_and_Benchmarks_Track.html">Why Do Multi-Agent LLM Systems Fail?</a> — NeurIPS 2025; failure taxonomy.</li>
+<li><a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents">Demystifying evals for AI agents</a> — January 9, 2026.</li>
+<li><a href="https://www.anthropic.com/research/infrastructure-noise">Infrastructure noise in agentic coding evaluations</a> — controlled infrastructure matters.</li>
+<li><a href="https://arxiv.org/abs/2406.12045">τ-bench</a> — repeated-run reliability and tool-agent evaluation.</li>
+<li><a href="https://metr.org/time-horizons/">METR time horizons</a> — task-suite and extrapolation limitations.</li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/overview">LangGraph overview</a>, <a href="https://docs.langchain.com/oss/python/langgraph/checkpointers">checkpointers</a>, <a href="https://docs.langchain.com/oss/python/langgraph/fault-tolerance">fault tolerance</a>, <a href="https://docs.langchain.com/oss/python/langgraph/interrupts">interrupts</a>, <a href="https://docs.langchain.com/oss/python/langgraph/use-time-travel">time travel</a>.</li>
+<li><a href="https://github.com/langchain-ai/langgraph/blob/main/libs/checkpoint-postgres/README.md">LangGraph PostgreSQL checkpointer README</a> — persisted execution state; not end-to-end effect guarantees.</li>
+<li><a href="https://eve.dev/docs/getting-started">eve documentation</a> — candidate greenfield harness; verify APIs against installed-version docs.</li>
+<li><a href="https://docs.temporal.io/workflow-definition">Temporal workflows</a> and <a href="https://docs.temporal.io/activity-definition">activities</a> — replay and retry semantics.</li>
+<li><a href="https://modelcontextprotocol.io/specification/2026-07-28">MCP</a> and <a href="https://a2a-protocol.org/latest/specification/">A2A</a> — integration protocols, not correctness guarantees.</li>
+<li><a href="https://doi.org/10.3905/jpm.2014.40.5.094">The Deflated Sharpe Ratio</a> — statistical selection effects in strategy evaluation.</li>
+</ol>
+</section>
+<footer>GraphOS design 0.1 · Proposed architecture + executable reference · No measured GraphOS superiority, production deployment, or live financial activity is claimed.</footer>
+</main></div>
+<script>
+const descriptions={
+intent:['Intent & acceptance',"Translate the request into requirements, constraints, assumptions, deliverables, acceptance checks, and action permissions. Preserve the user's goal; record uncertainty rather than silently inventing requirements."],
+compiler:['Plan validator','Validate typed dependencies, required evidence, shared write conflicts, loop limits, budgets, and capabilities. An LLM proposes the plan; deterministic code admits it. Revisions create new plan versions.'],
+controller:['Durable scheduler','Own task admission, claims, leases, fencing, reservations, cancellation, and state transitions. Persist critical state before dispatch. Workers are replaceable; the project ledger remains authoritative.'],
+workers:['Scoped workers','Run model sessions and tools with bounded context and capabilities in isolated workspaces. Submit versioned artifacts, unresolved issues, and evidence references. A worker cannot accept its own work.'],
+integration:['Artifact integration','Serialize shared writes and merge candidate patches against recorded base revisions. Recheck interface compatibility and build the exact integrated candidate that verification will evaluate.'],
+verification:['Evidence gates','Use trusted execution checks, real user journeys, domain tests, and calibrated qualitative review. Bind outcomes to exact artifacts, requirements, and suite versions. Missing evidence remains unknown.'],
+release:['Release controller','Check current evidence and scoped authorization immediately before an external action. Persist operation identity and payload, enforce idempotency where supported, and reconcile ambiguous outcomes.'],
+learning:['Measured learning','Convert incidents into regression cases. Evaluate proposed routing, memory, and workflow changes on held-out tasks before promotion. Preserve frozen policy and acceptance standards.']};
+for(const button of document.querySelectorAll('[data-node]')) button.addEventListener('click',()=>{for(const b of document.querySelectorAll('[data-node]'))b.setAttribute('aria-pressed',String(b===button));const [title,body]=descriptions[button.dataset.node];const panel=document.getElementById('node-detail');panel.replaceChildren();const heading=document.createElement('strong');heading.textContent=title;const p=document.createElement('p');p.textContent=body;panel.append(heading,p);});
+</script>
+</body></html>

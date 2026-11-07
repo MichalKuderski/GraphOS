@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scope": "Actual current-release CLI export; deterministic fixture, not AI generation",
+  "run_id": "f98b5d89-03c9-406e-ae0d-ecf953535be1",
+  "revision": 1,
+  "manifest_hash": "5ac9313f0aa60a2c6572ff3f38ea3e55e478cda799c0a107e8c6243b41b1b35a",
+  "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+  "checks": [
+    "Current API release gate accepted",
+    "Manifest hash recomputed",
+    "Candidate content hash recomputed",
+    "Atomic no-replace directory export completed"
+  ],
+  "model_calls": 0,
+  "deployment_performed": false
+}

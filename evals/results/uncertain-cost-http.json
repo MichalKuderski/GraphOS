@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "mode": "integration-fixture",
+  "observed_at": "2026-11-07T16:05:20.398695+00:00",
+  "case": {
+    "id": "worker_crash_and_lease_recovery",
+    "status": "PASS",
+    "details": {
+      "run_id": "8b077373-fe80-459a-881a-8bb40427b7e8",
+      "worker_exit_code": 137,
+      "expired_reservation_conservatively_charged": 13,
+      "uncertainty_paused_dispatch": true,
+      "authoritative_fixture_cost_after_reconciliation": 0,
+      "new_epoch": 3,
+      "stale_submission_rejected": true,
+      "replacement_artifact_submitted": true
+    },
+    "duration_ms": 1403
+  },
+  "scope": "HTTP cost uncertainty pause, authoritative zero-cost fixture reconciliation, stale worker fencing and replacement submission",
+  "browser_checks_executed": false,
+  "model_calls_executed": false,
+  "production_readiness_established": false
+}
