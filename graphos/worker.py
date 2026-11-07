@@ -102,15 +102,24 @@ def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dic
                                   cwd=ROOT / "agents" / "eve")
     if code:
         known_cost = None
+        failure_code = "unclassified_adapter_failure"
         try:
             error = json.loads(stderr)
+            # Preserve actionable adapter failures, never raw provider messages.
+            allowed_codes = {"invalid_generated_files", "eve_turn_not_completed",
+                             "reservation_exceeded", "unreconciled_model_usage",
+                             "eve_timeout", "eve_transport_or_runtime_error",
+                             "invalid_task_contract", "request_too_large", "response_too_large"}
+            if (isinstance(error, dict) and isinstance(error.get("error"), str)
+                    and error["error"] in allowed_codes):
+                failure_code = error["error"]
             if (isinstance(error, dict) and error.get("cost_known") is True
                     and type(error.get("actual_cost_microdollars")) is int
                     and error["actual_cost_microdollars"] >= 0):
                 known_cost = error["actual_cost_microdollars"]
         except (ValueError, UnicodeError):
             pass
-        raise BuildFailure("eve adapter failed; no fixture fallback was attempted", known_cost)
+        raise BuildFailure(f"eve adapter failed ({failure_code}); no fixture fallback was attempted", known_cost)
     try:
         output = json.loads(stdout)
     except (ValueError, UnicodeError) as exc:

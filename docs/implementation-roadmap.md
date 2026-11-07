@@ -49,12 +49,13 @@ observed capability once, not a success rate. At least one controlled repair
 exercise must demonstrate that repairs preserve provenance and cannot reuse
 stale evidence or exceed the authorized attempt/spend boundary.
 
-**Current Phase 0 progress (2026-11-07):** Credential authentication and a $1
-non-resetting soft budget are verified. The bounded live harness is implemented;
-its first request was rejected by Gateway payment verification and retained.
-Scoped repair feedback and receipt-ID capture are implemented and regression
-tested. Successful live generation, controlled live repair, and evaluation remain
-open; see [the run record and resume procedure](live-validation.md).
+**Current Phase 0 progress (2026-11-07):** A genuine task-list build and a
+controlled persistence repair passed all eight trusted browser checks, with
+immutable exports and read-only provider receipts. Payment/model-tier rejection
+and adapter failures remain in the record. Explicit model selection, retained
+session evidence and exact retirement receipts resolved the observed blockers.
+The successful slice is one narrow capability; representative evaluation and
+production operating controls remain open. See [live validation](live-validation.md).
 
 ## Phase 1 — Widen contracts before widening promises
 

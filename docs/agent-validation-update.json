@@ -1,16 +1,18 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-11-07T18:35:32.941266+00:00",
-  "source_digest": "ca47abec2b2d1ac3e181bf5d800a16f2713f9bb5efc6b3fb601cb1100b3e516e",
-  "scope": "Current adapter repair/receipt changes; offline only",
+  "verified_at": "2026-11-07T18:58:50.968662+00:00",
+  "source_digest": "92fb41c98bae5b8cf527606858ff407dd5a9cee3fe07013cd62ed2eb6876f9e8",
+  "scope": "Current adapter, explicit model selection, retained lifecycle evidence, real generation and controlled repair",
   "checks": {
     "typecheck": "PASS",
-    "node_tests": 16,
+    "node_tests": 20,
     "node_failures": 0,
     "complete_eve_build": "PASS",
-    "compiled_runtime_authentication_smoke": "PASS"
+    "compiled_runtime_authentication_and_retirement_smoke": "PASS",
+    "offline_retirement_model_calls": 0
   },
-  "live_generation": "First actual request rejected403 customer_verification_required; see live-blocker-20261107.json",
-  "provider_receipt_lookup_tested_live": false,
+  "live_generation_result": "evals/results/live-20261107T185333-be67cfb4.json",
+  "controlled_repair_result": "evals/results/controlled-repair-b1f44a1b1f0a4a3ba472194c5919a3cc.json",
+  "provider_receipt_lookup_tested_live": true,
   "production_certification": false
 }

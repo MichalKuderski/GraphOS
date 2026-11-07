@@ -1,4 +1,5 @@
 import { Client, type ClientSession, type SessionStreamEvent } from "eve/client";
+import {setTimeout as delay} from "node:timers/promises";
 import { GeneratedSchema, type TaskRequest } from "./contracts.js";
 
 export interface ModelDelivery {status: string; data?: unknown; sessionId: string; deliveryId: string}
@@ -11,6 +12,29 @@ export interface AgentSession {
 }
 export interface AgentTransport { create(request: TaskRequest, signal: AbortSignal): Promise<AgentSession> }
 
+export async function waitForRetirement(
+  session: {snapshot(options: {signal: AbortSignal}): Promise<{events: readonly SessionStreamEvent[]}>},
+  deliveryId: string, signal: AbortSignal,
+): Promise<void> {
+  // eve 0.91 end receipts use a non-following stream. An immediate result read
+  // can precede settlement. Require retained evidence for this exact delivery.
+  while (!signal.aborted) {
+    const {events} = await session.snapshot({signal});
+    const settled = events.find(event => event.type === "delivery.settled" && event.data.deliveryId === deliveryId);
+    const ended = events.find(event => event.type === "session.ended" &&
+      event.data.cause && "deliveryId" in event.data.cause && event.data.cause.deliveryId === deliveryId);
+    if (settled?.type === "delivery.settled" && settled.data.outcome !== "applied") {
+      throw new Error("retirement_delivery_not_applied");
+    }
+    if (settled && ended?.type === "session.ended") {
+      if (ended.data.outcome !== "completed") throw new Error("retirement_not_completed");
+      return;
+    }
+    await delay(25, undefined, {signal});
+  }
+  throw signal.reason;
+}
+
 /** The production implementation uses eve's documented public HTTP client. */
 export function eveTransport(baseUrl: string, token: string): AgentTransport {
   const client = new Client({baseUrl, auth: {bearer: token}, redirect: "error"});
@@ -21,6 +45,10 @@ export function eveTransport(baseUrl: string, token: string): AgentTransport {
       });
       const settleControl = async (kind: "cancel" | "end", controlSignal: AbortSignal) => {
         const command = await (session as ClientSession)[kind]({signal: controlSignal});
+        if (kind === "end") {
+          await waitForRetirement(session, command.deliveryId, controlSignal);
+          return;
+        }
         const result = await command.result({signal: controlSignal});
         if (result.status === "failed" || result.status === "awaiting-input") throw new Error("control_not_settled");
       };

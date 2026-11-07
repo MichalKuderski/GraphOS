@@ -12,14 +12,11 @@ GraphOS artifact store -> separate Docker/browser verifier -> ledger acceptance
 
 ## Status and versions
 
-Verified locally on 2026-11-07: TypeScript compilation, full eve build, eleven unit
-tests, and a running compiled eve server exercised through its public client.
-The server rejected anonymous inspection, malformed authentication, and model
-generation without Gateway credentials. `eve info --json` reported no tools,
-subagents, skills, or schedules. Tests mock transport only where model output is
-needed. **One real Gateway attempt was rejected with HTTP403
-`customer_verification_required`; no model-generated artifact or successful live
-end-to-end acceptance exists.** See `../../docs/live-validation.md`.
+A real provider-backed build has now generated a task-list app, passed all eight
+independent Docker/Chromium checks, and exported an evidence-bound release.
+The retained attempt history includes Gateway access rejections and adapter
+retirement failures; these are not omitted from the record. See
+`../../docs/live-validation.md` for exact runs, receipts and limitations.
 
 Dependencies and lockfile are pinned: Node 24, eve `0.91.0`, AI SDK `7.0.164`,
 Zod `4.6.7`, just-bash `3.6.0`. At verification, npm's latest tag pointed to
@@ -151,7 +148,7 @@ Exit zero emits exactly one JSON object on stdout:
     "cost_source": "eve_gateway_usage_events"
   },
   "provenance": {
-    "mode": "eve", "model": "openai/gpt-6-luna",
+    "mode": "eve", "model": "openai/gpt-5.1-codex-mini",
     "independent_verification": "pending"
   }
 }
@@ -192,15 +189,17 @@ The full unauthenticated live Gateway catalog was fetched from
 snapshot is `model-catalog.json`; `model-selection.json` records its SHA-256,
 the selected entry's full tiered pricing, limits, and rationale.
 
-`openai/gpt-6-luna` advertises structured output and efficient focused coding.
-We select low reasoning for this narrow profile. Standard catalog pricing was
-$0.10/million input tokens and $0.50/million output tokens; cache-read was
-$0.01/million, cache-write $0.125/million. Long-context, region, and service-tier
-prices differ. These are selection metadata, not an invoice calculator. The
-adapter neither claims this model is universally best nor silently switches
-models. Availability, quality on this suite, live output schema behavior, live
-usage events, cancellation behavior, and actual paid cost still require a bounded
-provider-backed acceptance run after credentials and spending controls exist.
+The initial selection, `openai/gpt-6-luna`, was rejected by the team's free tier
+after payment-card verification. Its original selection record is retained as
+`model-selection-gpt6.json`. The explicitly selected replacement is
+`openai/gpt-5.1-codex-mini`, listed by Vercel as available to the free tier and
+advertising structured output and coding capabilities. Its standard catalog rates
+are $0.25/million input and $2/million output tokens, with a 400,000-token context.
+Actual Gateway receipts, not this catalog estimate, settle usage. No billing
+settings, top-ups or automatic model fallbacks were enabled.
+
+The successful live result demonstrates this one disclosed product contract
+once; it is not a success-rate estimate or evidence of superiority over a baseline.
 
 ## Scoped repair and receipts
 
@@ -221,3 +220,18 @@ The worker preflights the complete serialized request against 128 KiB before
 spawning the adapter. Oversized repair inputs fail with known zero cost; candidate
 files are never truncated. The live harness rebuilds the adapter from current
 source before enabling its model service and rejects source changes during build.
+
+## Runtime retirement evidence
+
+Private eve sessions otherwise default to deleting their history on completion.
+GraphOS explicitly uses `experimental.workflow.retention: "default"` so its
+private Workflow store retains completion and usage evidence. The actual retention
+period follows the World configuration; production retention and cleanup policy
+remain operational work, and transcript files must stay private.
+
+In eve 0.91, end-receipt reads use a non-following stream and can finish before
+settlement. The broker polls retained snapshots within its existing deadline for
+both the exact end delivery's applied receipt and its matching completed
+`session.ended` event. Neither HTTP409 nor HTTP410 is treated as successful cleanup.
+The offline runtime test exercises immediate retirement observation and a wrong-ID
+rejection without model credentials.

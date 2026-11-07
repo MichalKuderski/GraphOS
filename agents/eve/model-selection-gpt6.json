@@ -1,0 +1,296 @@
+{
+  "verified_date": "2026-11-07",
+  "catalog_url": "https://ai-gateway.vercel.sh/v1/models",
+  "catalog_entries": 498,
+  "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+  "model_id": "openai/gpt-6-luna",
+  "selection_reason": "Current economical text reasoning model advertising structured output and tool use; selected for this bounded static-web profile, not established best performer.",
+  "reasoning": "low",
+  "pricing_unit": "USD per token",
+  "pricing": {
+    "input": "0.0000001",
+    "input_tiers": [
+      {
+        "cost": "0.0000001",
+        "min": 0,
+        "max": 272001
+      },
+      {
+        "cost": "0.0000002",
+        "min": 272001
+      }
+    ],
+    "output": "0.0000005",
+    "output_tiers": [
+      {
+        "cost": "0.0000005",
+        "min": 0,
+        "max": 272001
+      },
+      {
+        "cost": "0.00000075",
+        "min": 272001
+      }
+    ],
+    "input_cache_read": "0.00000001",
+    "input_cache_read_tiers": [
+      {
+        "cost": "0.00000001",
+        "min": 0,
+        "max": 272001
+      },
+      {
+        "cost": "0.00000002",
+        "min": 272001
+      }
+    ],
+    "input_cache_write": "0.000000125",
+    "input_cache_write_tiers": [
+      {
+        "cost": "0.000000125",
+        "min": 0,
+        "max": 272001
+      },
+      {
+        "cost": "0.00000025",
+        "min": 272001
+      }
+    ],
+    "web_search": "10",
+    "service_tiers": {
+      "flex": {
+        "input": "0.00000005",
+        "output": "0.00000025",
+        "input_cache_read": "0.000000005",
+        "long_context": {
+          "threshold": 272001,
+          "input": "0.0000001",
+          "output": "0.000000375",
+          "input_cache_read": "0.00000001"
+        }
+      },
+      "priority": {
+        "input": "0.0000002",
+        "output": "0.000001",
+        "input_cache_read": "0.00000002",
+        "long_context": {
+          "threshold": 272001,
+          "input": "0.0000004",
+          "output": "0.0000015",
+          "input_cache_read": "0.00000004"
+        }
+      }
+    },
+    "fast": {
+      "input": "0.0000002",
+      "input_tiers": [
+        {
+          "cost": "0.0000002",
+          "min": 0,
+          "max": 272001
+        },
+        {
+          "cost": "0.0000004",
+          "min": 272001
+        }
+      ],
+      "output": "0.000001",
+      "output_tiers": [
+        {
+          "cost": "0.000001",
+          "min": 0,
+          "max": 272001
+        },
+        {
+          "cost": "0.0000015",
+          "min": 272001
+        }
+      ],
+      "input_cache_read": "0.00000002",
+      "input_cache_read_tiers": [
+        {
+          "cost": "0.00000002",
+          "min": 0,
+          "max": 272001
+        },
+        {
+          "cost": "0.00000004",
+          "min": 272001
+        }
+      ],
+      "input_cache_write": "0.00000025",
+      "input_cache_write_tiers": [
+        {
+          "cost": "0.00000025",
+          "min": 0,
+          "max": 272001
+        },
+        {
+          "cost": "0.0000005",
+          "min": 272001
+        }
+      ]
+    },
+    "regional": {
+      "eu": {
+        "input": "0.00000011",
+        "input_tiers": [
+          {
+            "cost": "0.00000011",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.00000022",
+            "min": 272001
+          }
+        ],
+        "output": "0.00000055",
+        "output_tiers": [
+          {
+            "cost": "0.00000055",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000825",
+            "min": 272001
+          }
+        ],
+        "input_cache_read": "0.000000011",
+        "input_cache_read_tiers": [
+          {
+            "cost": "0.000000011",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000022",
+            "min": 272001
+          }
+        ],
+        "input_cache_write": "0.0000001375",
+        "input_cache_write_tiers": [
+          {
+            "cost": "0.0000001375",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000275",
+            "min": 272001
+          }
+        ]
+      },
+      "us": {
+        "input": "0.00000011",
+        "input_tiers": [
+          {
+            "cost": "0.00000011",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.00000022",
+            "min": 272001
+          }
+        ],
+        "output": "0.00000055",
+        "output_tiers": [
+          {
+            "cost": "0.00000055",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000825",
+            "min": 272001
+          }
+        ],
+        "input_cache_read": "0.000000011",
+        "input_cache_read_tiers": [
+          {
+            "cost": "0.000000011",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000022",
+            "min": 272001
+          }
+        ],
+        "input_cache_write": "0.0000001375",
+        "input_cache_write_tiers": [
+          {
+            "cost": "0.0000001375",
+            "min": 0,
+            "max": 272001
+          },
+          {
+            "cost": "0.000000275",
+            "min": 272001
+          }
+        ],
+        "fast": {
+          "input": "0.00000022",
+          "input_tiers": [
+            {
+              "cost": "0.00000022",
+              "min": 0,
+              "max": 272001
+            },
+            {
+              "cost": "0.00000044",
+              "min": 272001
+            }
+          ],
+          "output": "0.0000011",
+          "output_tiers": [
+            {
+              "cost": "0.0000011",
+              "min": 0,
+              "max": 272001
+            },
+            {
+              "cost": "0.00000165",
+              "min": 272001
+            }
+          ],
+          "input_cache_read": "0.000000022",
+          "input_cache_read_tiers": [
+            {
+              "cost": "0.000000022",
+              "min": 0,
+              "max": 272001
+            },
+            {
+              "cost": "0.000000044",
+              "min": 272001
+            }
+          ],
+          "input_cache_write": "0.000000275",
+          "input_cache_write_tiers": [
+            {
+              "cost": "0.000000275",
+              "min": 0,
+              "max": 272001
+            },
+            {
+              "cost": "0.00000055",
+              "min": 272001
+            }
+          ]
+        }
+      }
+    }
+  },
+  "context_window": 1050000,
+  "max_model_output_tokens": 16384,
+  "logical_model_run_limit": 3,
+  "min_reservation_microdollars": 1000000,
+  "eve_version": "0.91.0",
+  "version_note": "Latest non-prerelease package observed; framework documentation still labels eve preview. Tag latest was 1.0.0-rc.6.",
+  "live_validation": "pending_credentials_and_provider_side_budget",
+  "budget_limit_usd": 5,
+  "budget_enforcement": "Dedicated Gateway key-side budget must be configured and verified externally; env acknowledgment is not verification. Ledger reservation is not provider spend enforcement."
+}

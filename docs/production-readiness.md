@@ -16,7 +16,7 @@ test from being promoted into an unsupported capability claim.
 | Authorization | Builder cannot verify; reads require active scoped lease | Single tenant, shared credential per trusted service role |
 | Budget accounting | Reservations, unknown-cost consumption, overrun incidents | Provider invoice limits require provider-side controls |
 | External effects | Durable state, lost-token reconciliation, stale receipt rejection | Record/state machine tested; no real deployment/broker adapter |
-| Model harness | eve build, types, unit tests, authenticated server smoke; real Gateway attempt retained | Live request rejected by Vercel payment verification; no generated acceptance result |
+| Model harness | eve build, types, unit tests, authenticated server smoke; real Gateway attempt retained | Real model build and controlled repair passed the fixed suite |
 | Targeted repair | PostgreSQL lease, stale-evidence and worker tests | Latest rejected candidate plus bounded diagnostics; every repair needs fresh verification |
 | Operator UI | Browser UI actions and responsive behavior | Control plane; candidate HTML is never embedded here |
 
@@ -43,21 +43,28 @@ Failed candidates can be replaced within bounded attempt limits. A retry receive
 the latest rejected candidate and bounded verifier diagnostics only for the same
 revision, input, suite and policy. Artifact reads require its current build lease.
 Diagnostics are untrusted context, not acceptance evidence; the replacement must
-pass a new independent verification. Live model repair remains unmeasured.
+pass a new independent verification. One controlled persistence repair has passed; natural repair success rates remain unmeasured.
 
-The dedicated credential authenticates. Its $1 non-resetting Gateway budget is
-a soft cap, not a guaranteed invoice ceiling; the total session authorization
-remains $5. The first live request reached Gateway and was rejected with HTTP403
-`customer_verification_required`. The team must complete payment-card verification
-before another request. Gateway reports $0 used; GraphOS conservatively retains
-a $1 uncertain reservation pending reconciliation. See [live validation](live-validation.md).
-No generated artifact, model-quality measurement, or accepted-app cost exists yet.
+The dedicated credential and billing verification now permit live generation.
+GPT-6 Luna was unavailable on the team's free tier; the explicit replacement,
+GPT-5.1 Codex Mini, completed a genuine build and one controlled repair. Both
+passed eight independent checks and exported evidence-bound releases. Total
+provider-reported spend including failed attempts was $0.05466171; the unchanged
+$1 Gateway budget is a soft cap, with $5 total session authorization. The two earlier
+Gateway rejections were reconciled to zero from their pre-provider rejection
+responses and matching settled usage; their failed attempt records remain. See [live validation](live-validation.md) for all attempts,
+receipts, adapter fixes and limitations. These observations do not establish a
+model success rate, broad production readiness, or superiority over a baseline.
+
+The initial app's separate visual review found low text contrast that the current
+eight-check suite misses. This concrete grader gap remains open; passing release
+evidence certifies only the declared checks, not complete accessibility.
 
 ## Required before wider production use
 
-1. **Live vertical slice:** generate a candidate using the real configured model,
-   run the independent suite, inspect the output, record usage/provider receipts,
-   and repeat with bounded repair. Keep failures in the denominator.
+1. **Extend live evidence:** the initial fixed-contract build and controlled repair
+   have passed. Preserve all failed attempts; expand to representative tasks and
+   repeat trials before estimating reliability.
 2. **Representative evaluation:** versioned held-out task families, matched-budget
    single-agent and multi-agent comparisons, repeated runs, uncertainty intervals,
    escaped-defect measurement and human product review.

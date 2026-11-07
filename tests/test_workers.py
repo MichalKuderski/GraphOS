@@ -383,6 +383,15 @@ class WorkerTests(unittest.TestCase):
         self.assertEqual(caught.exception.actual_cost, 17)
         self.assertNotIn("private detail", str(caught.exception))
 
+    def test_known_adapter_error_code_remains_actionable(self):
+        error = {"error": "invalid_generated_files", "cost_known": True,
+                 "actual_cost_microdollars": 17}
+        with patch("graphos.worker._eve_environment", return_value={}), \
+             patch("graphos.worker.run_bounded", return_value=(1, b"", json.dumps(error).encode())):
+            with self.assertRaisesRegex(BuildFailure, "invalid_generated_files") as caught:
+                _eve_build(self.claim(), get_profile("static-web"), [])
+        self.assertEqual(caught.exception.actual_cost, 17)
+
     def test_adapter_forwards_repair_once_without_mutating_or_truncating_claim(self):
         files = fixture_files()
         feedback = {"candidate_hash": bundle_digest(files), "checks": [

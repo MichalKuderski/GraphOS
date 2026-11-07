@@ -1,15 +1,19 @@
 import { defineAgent, defineDynamic } from "eve";
 import { runs, turns } from "eve/events";
 import { boundedModel } from "../src/model.js";
-import { AdapterError, MAX_MODEL_CALLS, MAX_OUTPUT_TOKENS } from "../src/contracts.js";
+import { AdapterError, MAX_MODEL_CALLS, MAX_OUTPUT_TOKENS, MODEL_CONTEXT_TOKENS } from "../src/contracts.js";
 
 export default defineAgent({
+  // Private sessions otherwise request deletion at end, racing the broker's
+  // completion receipt and destroying the evidence needed for reconciliation.
+  // Retain in the private Workflow store under its configured default policy.
+  experimental: {workflow: {retention: "default"}},
   model: defineDynamic(ctx => {
     // Durable observations survive process restarts. Never rely on an in-memory counter.
     if (turns(ctx.view).length > 1 || runs(ctx.view).filter(run => run.status === "settled").length >= MAX_MODEL_CALLS) {
       throw new AdapterError("model_call_limit");
     }
-    return {model: boundedModel(), reasoning: "low", modelContextWindowTokens: 1_050_000};
+    return {model: boundedModel(), reasoning: "low", modelContextWindowTokens: MODEL_CONTEXT_TOKENS};
   }),
   defaultTools: false,
   tool: false,

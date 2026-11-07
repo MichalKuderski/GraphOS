@@ -3,294 +3,93 @@
   "catalog_url": "https://ai-gateway.vercel.sh/v1/models",
   "catalog_entries": 498,
   "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
-  "model_id": "openai/gpt-6-luna",
-  "selection_reason": "Current economical text reasoning model advertising structured output and tool use; selected for this bounded static-web profile, not established best performer.",
+  "model_id": "openai/gpt-5.1-codex-mini",
+  "selection_reason": "Explicit switch after GPT-6 Luna free-tier rejection: economical coding-focused model advertising structured output and availableToFreeTier=true in the current Vercel model directory. Not an automatic fallback or a quality ranking.",
   "reasoning": "low",
+  "context_window": 400000,
   "pricing_unit": "USD per token",
   "pricing": {
-    "input": "0.0000001",
-    "input_tiers": [
-      {
-        "cost": "0.0000001",
-        "min": 0,
-        "max": 272001
-      },
-      {
-        "cost": "0.0000002",
-        "min": 272001
-      }
+    "input": "0.00000025",
+    "output": "0.000002",
+    "input_cache_read": "0.00000003",
+    "web_search": "14"
+  },
+  "model_metadata": {
+    "id": "openai/gpt-5.1-codex-mini",
+    "object": "model",
+    "created": 1755815280,
+    "released": 1762905600,
+    "owned_by": "openai",
+    "name": "GPT 5.1 Codex Mini",
+    "description": "GPT-5.1 Codex mini is a smaller, faster, and cheaper version of GPT-5.1 Codex.",
+    "context_window": 400000,
+    "max_tokens": 128000,
+    "type": "language",
+    "zdr": "all",
+    "no_training": "all",
+    "tags": [
+      "file-input",
+      "implicit-caching",
+      "reasoning",
+      "tool-use",
+      "vision",
+      "web-search",
+      "structured-output"
     ],
-    "output": "0.0000005",
-    "output_tiers": [
-      {
-        "cost": "0.0000005",
-        "min": 0,
-        "max": 272001
-      },
-      {
-        "cost": "0.00000075",
-        "min": 272001
-      }
+    "supported_specifications": [
+      "v2",
+      "v3",
+      "v4"
     ],
-    "input_cache_read": "0.00000001",
-    "input_cache_read_tiers": [
-      {
-        "cost": "0.00000001",
-        "min": 0,
-        "max": 272001
-      },
-      {
-        "cost": "0.00000002",
-        "min": 272001
-      }
-    ],
-    "input_cache_write": "0.000000125",
-    "input_cache_write_tiers": [
-      {
-        "cost": "0.000000125",
-        "min": 0,
-        "max": 272001
-      },
-      {
-        "cost": "0.00000025",
-        "min": 272001
-      }
-    ],
-    "web_search": "10",
-    "service_tiers": {
-      "flex": {
-        "input": "0.00000005",
-        "output": "0.00000025",
-        "input_cache_read": "0.000000005",
-        "long_context": {
-          "threshold": 272001,
-          "input": "0.0000001",
-          "output": "0.000000375",
-          "input_cache_read": "0.00000001"
-        }
-      },
-      "priority": {
-        "input": "0.0000002",
-        "output": "0.000001",
-        "input_cache_read": "0.00000002",
-        "long_context": {
-          "threshold": 272001,
-          "input": "0.0000004",
-          "output": "0.0000015",
-          "input_cache_read": "0.00000004"
-        }
-      }
-    },
-    "fast": {
-      "input": "0.0000002",
-      "input_tiers": [
-        {
-          "cost": "0.0000002",
-          "min": 0,
-          "max": 272001
-        },
-        {
-          "cost": "0.0000004",
-          "min": 272001
-        }
+    "modalities": {
+      "input": [
+        "text",
+        "image",
+        "pdf"
       ],
-      "output": "0.000001",
-      "output_tiers": [
-        {
-          "cost": "0.000001",
-          "min": 0,
-          "max": 272001
-        },
-        {
-          "cost": "0.0000015",
-          "min": 272001
-        }
-      ],
-      "input_cache_read": "0.00000002",
-      "input_cache_read_tiers": [
-        {
-          "cost": "0.00000002",
-          "min": 0,
-          "max": 272001
-        },
-        {
-          "cost": "0.00000004",
-          "min": 272001
-        }
-      ],
-      "input_cache_write": "0.00000025",
-      "input_cache_write_tiers": [
-        {
-          "cost": "0.00000025",
-          "min": 0,
-          "max": 272001
-        },
-        {
-          "cost": "0.0000005",
-          "min": 272001
-        }
+      "output": [
+        "text"
       ]
     },
-    "regional": {
-      "eu": {
-        "input": "0.00000011",
-        "input_tiers": [
-          {
-            "cost": "0.00000011",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.00000022",
-            "min": 272001
-          }
-        ],
-        "output": "0.00000055",
-        "output_tiers": [
-          {
-            "cost": "0.00000055",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000825",
-            "min": 272001
-          }
-        ],
-        "input_cache_read": "0.000000011",
-        "input_cache_read_tiers": [
-          {
-            "cost": "0.000000011",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000022",
-            "min": 272001
-          }
-        ],
-        "input_cache_write": "0.0000001375",
-        "input_cache_write_tiers": [
-          {
-            "cost": "0.0000001375",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000275",
-            "min": 272001
-          }
-        ]
+    "supported_parameters": [
+      "max_tokens",
+      "temperature",
+      "stop",
+      "tools",
+      "tool_choice",
+      "reasoning",
+      "include_reasoning",
+      "response_format",
+      "structured_outputs"
+    ],
+    "temperature": true,
+    "reasoning_options": [
+      {
+        "type": "toggle"
       },
-      "us": {
-        "input": "0.00000011",
-        "input_tiers": [
-          {
-            "cost": "0.00000011",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.00000022",
-            "min": 272001
-          }
-        ],
-        "output": "0.00000055",
-        "output_tiers": [
-          {
-            "cost": "0.00000055",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000825",
-            "min": 272001
-          }
-        ],
-        "input_cache_read": "0.000000011",
-        "input_cache_read_tiers": [
-          {
-            "cost": "0.000000011",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000022",
-            "min": 272001
-          }
-        ],
-        "input_cache_write": "0.0000001375",
-        "input_cache_write_tiers": [
-          {
-            "cost": "0.0000001375",
-            "min": 0,
-            "max": 272001
-          },
-          {
-            "cost": "0.000000275",
-            "min": 272001
-          }
-        ],
-        "fast": {
-          "input": "0.00000022",
-          "input_tiers": [
-            {
-              "cost": "0.00000022",
-              "min": 0,
-              "max": 272001
-            },
-            {
-              "cost": "0.00000044",
-              "min": 272001
-            }
-          ],
-          "output": "0.0000011",
-          "output_tiers": [
-            {
-              "cost": "0.0000011",
-              "min": 0,
-              "max": 272001
-            },
-            {
-              "cost": "0.00000165",
-              "min": 272001
-            }
-          ],
-          "input_cache_read": "0.000000022",
-          "input_cache_read_tiers": [
-            {
-              "cost": "0.000000022",
-              "min": 0,
-              "max": 272001
-            },
-            {
-              "cost": "0.000000044",
-              "min": 272001
-            }
-          ],
-          "input_cache_write": "0.000000275",
-          "input_cache_write_tiers": [
-            {
-              "cost": "0.000000275",
-              "min": 0,
-              "max": 272001
-            },
-            {
-              "cost": "0.00000055",
-              "min": 272001
-            }
-          ]
-        }
+      {
+        "type": "effort",
+        "values": [
+          "none",
+          "low",
+          "medium",
+          "high"
+        ]
       }
+    ],
+    "knowledge": "2024-09-30",
+    "pricing": {
+      "input": "0.00000025",
+      "output": "0.000002",
+      "input_cache_read": "0.00000003",
+      "web_search": "14"
     }
   },
-  "context_window": 1050000,
-  "max_model_output_tokens": 16384,
-  "logical_model_run_limit": 3,
-  "min_reservation_microdollars": 1000000,
-  "eve_version": "0.91.0",
-  "version_note": "Latest non-prerelease package observed; framework documentation still labels eve preview. Tag latest was 1.0.0-rc.6.",
-  "live_validation": "pending_credentials_and_provider_side_budget",
-  "budget_limit_usd": 5,
-  "budget_enforcement": "Dedicated Gateway key-side budget must be configured and verified externally; env acknowledgment is not verification. Ledger reservation is not provider spend enforcement."
+  "access_evidence": {
+    "url": "https://vercel.com/ai-gateway/models?freeTier=true",
+    "availableToFreeTier": true,
+    "directory_snapshot_sha256": "e14fd57536a9edd2146ce255cf6b84d1ae518438de3ff09f7bae4be2ecafb94e"
+  },
+  "previous_selection": "model-selection-gpt6.json",
+  "previous_rejection": "HTTP403 no_providers_available: free tier users do not have access to GPT-6 Luna"
 }

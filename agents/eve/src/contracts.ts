@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const MODEL_ID = "openai/gpt-6-luna";
+export const MODEL_ID = "openai/gpt-5.1-codex-mini";
+export const MODEL_CONTEXT_TOKENS = 400_000;
 export const MAX_REQUEST_BYTES = 128 * 1024;
 export const MAX_FILE_BYTES = 64 * 1024;
 export const MAX_OUTPUT_TOKENS = 16_384;

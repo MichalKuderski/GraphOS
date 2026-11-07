@@ -5,10 +5,10 @@ for the bounded implementation scope, not certification of a universal platform.
 
 | Check | Observed result | Evidence |
 |---|---|---|
-| Python/platform suite | 138 tests and 18 subtests passed; zero failures, errors or skips | `evals/results/checks.json` |
+| Python/platform suite | 148 tests and 18 subtests passed; zero failures, errors or skips | `evals/results/checks.json` |
 | Real HTTP/PostgreSQL/Docker acceptance | All eight configured cases passed; three actual browser reports carry image identity | `evals/results/pytest-acceptance.json` |
 | Original reference kernel | 25 tests passed | `evals/results/checks.json` |
-| Agent adapter | 16 tests, typecheck, complete build, authenticated compiled-server smoke passed | `docs/agent-validation-update.json` |
+| Agent adapter | 20 tests, typecheck, complete build, authenticated compiled-server smoke passed | `docs/agent-validation-update.json` |
 | Dashboard | Actual-backend creation, revision, cancellation, release download, responsive layout and credential checks | `docs/dashboard-validation.json` and screenshots |
 | CLI delivery | Current release manifest and candidate hashes verified; atomic export completed | `docs/cli-validation.json` |
 | Packaged API | 18 non-root/read-only service checks passed; exact tested image/source identities recorded | `docs/container-validation.json` |
@@ -21,8 +21,8 @@ to the corresponding commit and should be checked on the pull request.
 
 `checks.json` records a SHA-256 identity over the tested Python/runtime assets,
 profiles, verifier, tests, scripts, eve source/instructions and dependency declarations, plus start/end
-times and a source-unchanged check. Its 156 JUnit cases include the 18 subtests;
-they are not 156 independent product trials. Node checks and the restore drill
+times and a source-unchanged check. Its 166 JUnit cases include the 18 subtests;
+they are not 166 independent product trials. Node checks and the restore drill
 are separately scoped evidence, not additional model-success observations.
 
 ## Failed infrastructure runs remain visible
@@ -40,15 +40,20 @@ that GraphOS automatically repairs host storage or implements disk admission.
 
 ## What remains unmeasured
 
-One real Gateway request was attempted and rejected with HTTP403
-`customer_verification_required`; no model artifact was generated. Gateway reported
-$0 spend, while the ledger retained a $1 uncertain reservation. The failed attempt
-and provider observation are preserved in [live validation](live-validation.md).
-The observed accepted applications remain explicit deterministic fixtures. Successful live generation,
-provider usage/cancellation, model success rates, matched-budget comparisons,
-long-horizon service reliability, and the other domain profiles remain unverified.
-The authorized implementation-session model budget remains $5; the credential authenticates and a $1 soft budget is verified. Vercel team payment
-verification and accounting review now block the next live attempt.
+A genuine model-generated app and a separate controlled persistence repair now
+passed all eight trusted checks and exported release manifests. Provider generation
+receipts confirm the observed usage. Total key spend including adapter failures
+was $0.05466171; the session authorization remains $5 and the unchanged $1 Gateway
+budget is soft. The two earlier Gateway rejections were subsequently reconciled to zero using
+their explicit pre-provider responses and matching settled usage. All failed attempts remain in
+[live validation](live-validation.md).
+
+This does not establish natural success rates, held-out performance, long-horizon
+reliability or other domain capabilities. Independent visual review of the first
+accepted app found low text contrast in delete buttons and completed tasks,
+which the current eight-check suite does not measure. See
+[live visual review](live-visual-review.json); this is a concrete coverage gap for
+the next profile revision, not a complete accessibility sign-off.
 
 See `implementation-roadmap.md` for deliverables and exit evidence, and
 `production-readiness.md` for the current trust and deployment boundaries.

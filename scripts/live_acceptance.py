@@ -126,6 +126,9 @@ def run_attempts(run_id: str, env: dict[str, str], maximum: int, report: dict, p
         built = build_once(env["GRAPHOS_API_URL"], env["GRAPHOS_BUILDER_TOKEN"], run_id,
                            builder="eve", worker_id="live-acceptance-builder", reserve=1_000_000)
         attempt["build_status"] = built["status"]
+        if built.get("reason"):
+            # The worker sanitizes adapter errors before they reach this boundary.
+            attempt["failure_reason"] = built["reason"]
         claim = built.get("claim") or {}
         attempt["build_identity"] = {k: claim[k] for k in
             ("attempt_id", "task_id", "epoch", "revision", "input_hash") if k in claim}
