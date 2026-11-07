@@ -51,6 +51,22 @@ test("unsupported profiles and excessive input fail before transport", () => {
   assert.throws(()=>parseRequest(JSON.stringify(input)), /invalid_task_contract/);
   assert.throws(()=>parseRequest(" ".repeat(128*1024+1)), /request_too_large/);
 });
+test("repair feedback is bounded and bound to the current verification contract", () => {
+  const repair = {candidate_hash:hash,evidence_hash:hash,verifier_attempt_id:"v1",revision:1,
+    input_hash:hash,suite_hash:hash,policy_hash:hash,truncated:false,files,
+    checks:[{name:"local_storage_reload",passed:false,detail:"Task disappeared after reload"}]};
+  const input = {...requestInput(), repair};
+  const parsed = parseRequest(JSON.stringify(input));
+  assert.deepEqual(parsed.repair,repair);
+  assert.ok(!JSON.stringify(parsed).includes("PRIVATE_LEASE"));
+  for (const change of [{revision:2},{input_hash:"b".repeat(64)},
+      {suite_hash:"b".repeat(64)},{policy_hash:"b".repeat(64)},
+      {checks:[{name:"reload",passed:true,detail:"OK"}]},
+      {checks:[{name:"reload",passed:false,detail:"x".repeat(1025)}]},
+      {files:{...files,"../secrets":"forbidden"}}]) {
+    assert.throws(()=>parseRequest(JSON.stringify({...input,repair:{...repair,...change}})), /invalid_task_contract/);
+  }
+});
 test("generated filenames and byte limits are enforced", () => {
   assert.throws(()=>validateGenerated({files:{...files,"../secret":"oops"}}), /invalid_generated_files/);
   assert.throws(()=>validateGenerated({files:{...files,"app.js":"é".repeat(MAX_FILE_BYTES)}}), /invalid_generated_files/);

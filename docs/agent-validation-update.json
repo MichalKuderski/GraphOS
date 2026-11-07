@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-11-07T18:35:32.941266+00:00",
+  "source_digest": "ca47abec2b2d1ac3e181bf5d800a16f2713f9bb5efc6b3fb601cb1100b3e516e",
+  "scope": "Current adapter repair/receipt changes; offline only",
+  "checks": {
+    "typecheck": "PASS",
+    "node_tests": 16,
+    "node_failures": 0,
+    "complete_eve_build": "PASS",
+    "compiled_runtime_authentication_smoke": "PASS"
+  },
+  "live_generation": "First actual request rejected403 customer_verification_required; see live-blocker-20261107.json",
+  "provider_receipt_lookup_tested_live": false,
+  "production_certification": false
+}

@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
-  "started_at": "2026-11-07T16:08:05.611003+00:00",
+  "started_at": "2026-11-07T18:34:51.443215+00:00",
   "mode": "integration-fixture",
   "cases": [
     {
       "id": "happy_fixture_release",
       "status": "PASS",
       "details": {
-        "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+        "run_id": "08319ec0-a1ec-42b4-8ead-f90ef4484ff5",
         "release": {
-          "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+          "run_id": "08319ec0-a1ec-42b4-8ead-f90ef4484ff5",
           "revision": 1,
           "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
           "profile": "static-web",
           "tasks": [
             {
-              "task_id": "f46cddfc-0e15-489e-8ca9-961968df0023",
+              "task_id": "96385e7f-7f2b-4a3e-876e-5b27e0fcf0e9",
               "task_key": "app",
               "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
-              "evidence_hash": "96a70781ee1d0cd629f500d4ccef598847d6f6456d3524386c7fc6f0c1710b1f",
+              "evidence_hash": "7b3079d33f7d189a5ed3904a42ff5b8454505fb588fb956c12157f473741db4f",
               "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
               "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
               "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
@@ -34,8 +34,8 @@
               }
             }
           ],
-          "manifest_hash": "b7b2256e0284f1f20e3b881ab513317b0b2f163791db9c2937b772e8071131e0",
-          "release_id": "69f97e71-21ea-4cb2-8e07-9c5903e3ec81",
+          "manifest_hash": "7572b2da4798e13b6f328db60ffff860d9a8f35418ccc9097f7f42fc8a2fbced",
+          "release_id": "495dfda7-5d50-4cbd-981f-9e62f0948204",
           "deployment_performed": false,
           "scope": "Acceptance applies only to the registered capability profile",
           "fixture_enabled_on_service": true
@@ -86,7 +86,7 @@
           ],
           "runner": "docker-trusted-playwright-static-web-v1",
           "browser_process_sandbox": false,
-          "duration_ms": 14393,
+          "duration_ms": 13490,
           "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
           "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
           "image": "graphos-verifier:local",
@@ -98,16 +98,16 @@
           "docker-verifier"
         ]
       },
-      "duration_ms": 14660
+      "duration_ms": 13727
     },
     {
       "id": "duplicate_admission_and_submission",
       "status": "PASS",
       "details": {
-        "run_id": "2e37f1c8-c274-42ab-bb38-3bc0fa58e794",
+        "run_id": "b0a14361-e000-4be0-87c3-ab4c38fd2036",
         "duplicate_charge": false
       },
-      "duration_ms": 128
+      "duration_ms": 122
     },
     {
       "id": "registered_profile_boundary",
@@ -117,36 +117,36 @@
         "unsupported_requirement_rejected": true,
         "fixed_suite_scope": "registered static-web task-list contract only"
       },
-      "duration_ms": 4
+      "duration_ms": 7
     },
     {
       "id": "roles_and_cancellation",
       "status": "PASS",
       "details": {
-        "run_id": "fbdbb5ca-1c47-42a0-bf9d-352511640f08",
+        "run_id": "51e44938-4def-4c51-81c6-20f82cc7a839",
         "state": "CANCELLED",
         "stale_build_rejected": true,
         "effect_dispatch_blocked": true,
         "real_external_action_performed": false
       },
-      "duration_ms": 141
+      "duration_ms": 131
     },
     {
       "id": "evidence_revision_and_artifact_binding",
       "status": "PASS",
       "details": {
-        "run_id": "c84295f9-72f7-481d-acbd-a45402972af7",
+        "run_id": "6f52bf9a-ba75-49c0-ada2-d758b8a85be8",
         "previous_release": {
-          "run_id": "c84295f9-72f7-481d-acbd-a45402972af7",
+          "run_id": "6f52bf9a-ba75-49c0-ada2-d758b8a85be8",
           "revision": 1,
           "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
           "profile": "static-web",
           "tasks": [
             {
-              "task_id": "106e7028-d83d-4ed3-8279-4ea9dd347aa2",
+              "task_id": "ae5c14ff-0101-47bc-92d4-5aa093feed16",
               "task_key": "app",
               "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
-              "evidence_hash": "5b8c184ee739a28a695382266d65633ce8db772287c6f06d11f1110172845364",
+              "evidence_hash": "31d5c79acccc1ed1b3acec2ea373c3355c4ac0de788261f8fcc58362fad1df22",
               "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
               "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
               "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
@@ -159,8 +159,8 @@
               }
             }
           ],
-          "manifest_hash": "3bf7bb82faac23581a31a93374bd7ce30eca0a623fc7119d9d53e47ca2f69d8f",
-          "release_id": "91c7f3ed-51ea-472f-85b6-101a2ccd29c1",
+          "manifest_hash": "6a3bf81d3b701a73ded89691f8701fff9a660395d0090fc055e1421103067ec3",
+          "release_id": "7feda0a4-f1c4-419f-897a-09a9b304d35f",
           "deployment_performed": false,
           "scope": "Acceptance applies only to the registered capability profile",
           "fixture_enabled_on_service": true
@@ -212,7 +212,7 @@
           ],
           "runner": "docker-trusted-playwright-static-web-v1",
           "browser_process_sandbox": false,
-          "duration_ms": 11624,
+          "duration_ms": 11621,
           "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
           "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
           "image": "graphos-verifier:local",
@@ -221,13 +221,13 @@
         "stale_receipt_rejected": true,
         "incomplete_certificate_rejected": true
       },
-      "duration_ms": 11993
+      "duration_ms": 11962
     },
     {
       "id": "bad_candidate_fails_browser",
       "status": "PASS",
       "details": {
-        "run_id": "4763f61c-c8ae-4e6a-9c5c-e67246068fb8",
+        "run_id": "424cd572-3d38-4c9f-95de-136a868d0050",
         "verifier_report": {
           "passed": false,
           "checks": [
@@ -274,7 +274,7 @@
           ],
           "runner": "docker-trusted-playwright-static-web-v1",
           "browser_process_sandbox": false,
-          "duration_ms": 32292,
+          "duration_ms": 30103,
           "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
           "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
           "image": "graphos-verifier:local",
@@ -282,13 +282,13 @@
         },
         "provenance": "broken-fixture"
       },
-      "duration_ms": 32478
+      "duration_ms": 30290
     },
     {
       "id": "worker_crash_and_lease_recovery",
       "status": "PASS",
       "details": {
-        "run_id": "0d5c3635-9696-4121-835c-2d0e8d431b07",
+        "run_id": "f11e74e2-3c78-4e6d-b97d-ca6ad0015549",
         "worker_exit_code": 137,
         "expired_reservation_conservatively_charged": 13,
         "uncertainty_paused_dispatch": true,
@@ -297,13 +297,13 @@
         "stale_submission_rejected": true,
         "replacement_artifact_submitted": true
       },
-      "duration_ms": 1509
+      "duration_ms": 1381
     },
     {
       "id": "controller_restart_preserves_state",
       "status": "PASS",
       "details": {
-        "run_id": "bed75faf-e13c-41f9-8625-48e5a3103622",
+        "run_id": "08319ec0-a1ec-42b4-8ead-f90ef4484ff5",
         "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
         "process_restarted": true,
         "preserved": [
@@ -315,7 +315,7 @@
           "release bindings"
         ]
       },
-      "duration_ms": 707
+      "duration_ms": 652
     }
   ],
   "claims": {
@@ -331,11 +331,11 @@
     "Controller restart is not a database disaster-recovery test"
   ],
   "live_model": {
-    "status": "BLOCKED",
-    "reason": "No model gateway credential configured",
+    "status": "NOT_RUN",
+    "reason": "Live model evaluation not requested",
     "model_quality_measured": false
   },
-  "finished_at": "2026-11-07T16:09:07.231478+00:00",
+  "finished_at": "2026-11-07T18:35:49.715531+00:00",
   "summary": {
     "pass": 8,
     "fail": 0,

@@ -34,15 +34,32 @@ const ProfileSchema = z.object({
   selector_contract: z.record(z.string(), z.union([z.string().max(2_000), z.array(z.string().max(200)).max(30)])),
   suite_hash: hash, policy_hash: hash,
 });
+const RepairSchema = z.object({
+  candidate_hash: hash, evidence_hash: hash,
+  verifier_attempt_id: z.string().min(1).max(128),
+  revision: z.number().int().nonnegative(), input_hash: hash,
+  suite_hash: hash, policy_hash: hash,
+  checks: z.array(z.object({name: z.string().min(1).max(128),
+    passed: z.boolean(), detail: z.string().max(1024)}).strict()).max(32),
+  truncated: z.boolean(), files: GeneratedSchema.shape.files,
+}).strict();
 export const RequestSchema = z.object({
   claim: ClaimSchema, profile: ProfileSchema,
   dependencies: z.array(z.object({candidate_hash: hash, files: GeneratedSchema.shape.files}).strict()).max(8).default([]),
+  repair: RepairSchema.optional(),
 }).strict().superRefine((value, ctx) => {
   if (value.claim.suite_hash !== value.profile.suite_hash || value.claim.policy_hash !== value.profile.policy_hash) {
     ctx.addIssue({code: "custom", message: "profile hashes do not match claimed task"});
   }
   if (new Set(value.profile.required_files).size !== 3) {
     ctx.addIssue({code: "custom", message: "required files must be distinct"});
+  }
+  if (value.repair && (value.repair.revision !== value.claim.revision ||
+      value.repair.input_hash !== value.claim.input_hash ||
+      value.repair.suite_hash !== value.claim.suite_hash ||
+      value.repair.policy_hash !== value.claim.policy_hash ||
+      !value.repair.checks.some(check => !check.passed))) {
+    ctx.addIssue({code: "custom", message: "repair evidence does not match claimed task"});
   }
 });
 export type TaskRequest = z.infer<typeof RequestSchema>;

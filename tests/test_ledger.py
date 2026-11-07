@@ -323,6 +323,106 @@ def test_repair_attempts_are_bounded(ledger):
     assert ledger.claim_build(current["id"], "builder", 10) is None
 
 
+def test_repair_feedback_is_scoped_latest_evidence_and_requires_new_verification(ledger):
+    current = run(ledger)
+    first = ledger.claim_build(current["id"], "builder", 10)
+    assert "repair" not in first
+    submit(ledger, first)
+    checker = ledger.claim_verify(current["id"], "verifier")
+    checks = [{"name": "add_task", "passed": False, "detail": "Expected new task to appear"}]
+    verify(ledger, checker, passed=False, report={"passed": False, "checks": checks})
+    second = ledger.claim_build(current["id"], "builder", 10)
+    feedback = second["repair"]
+    assert feedback == {"candidate_hash": CANDIDATE, "evidence_hash": EVIDENCE,
+                        "verifier_attempt_id": checker["attempt_id"], "revision": 1,
+                        "input_hash": second["input_hash"], "suite_hash": H, "policy_hash": H,
+                        "checks": checks, "truncated": False}
+    ledger.authorize_artifact(current["id"], second["task_id"], second["token"], second["epoch"], CANDIDATE, "BUILD")
+    for digest in (EVIDENCE, "9" * 64):
+        with pytest.raises(Conflict):
+            ledger.authorize_artifact(current["id"], second["task_id"], second["token"], second["epoch"], digest, "BUILD")
+    with pytest.raises(Conflict):
+        ledger.authorize_artifact(current["id"], first["task_id"], first["token"], first["epoch"], CANDIDATE, "BUILD")
+    replacement = "4" * 64
+    submit(ledger, second, candidate=replacement)
+    with pytest.raises(Conflict):
+        ledger.release_manifest(current["id"])
+    verify(ledger, ledger.claim_verify(current["id"], "verifier"), passed=False)
+    third = ledger.claim_build(current["id"], "builder", 10)
+    assert third["repair"]["candidate_hash"] == replacement
+    ledger.authorize_artifact(current["id"], third["task_id"], third["token"], third["epoch"], replacement, "BUILD")
+    with pytest.raises(Conflict):
+        ledger.authorize_artifact(current["id"], third["task_id"], third["token"], third["epoch"], CANDIDATE, "BUILD")
+    submit(ledger, third, candidate=replacement)
+    verify(ledger, ledger.claim_verify(current["id"], "verifier"))
+    assert ledger.release_manifest(current["id"])["tasks"][0]["candidate_hash"] == replacement
+
+
+def test_repair_feedback_cannot_cross_revision_or_lease_expiry(ledger, ledger_dsn):
+    current = run(ledger)
+    submit(ledger, ledger.claim_build(current["id"], "builder", 10))
+    verify(ledger, ledger.claim_verify(current["id"], "verifier"), passed=False)
+    retry = ledger.claim_build(current["id"], "builder", 10)
+    with psycopg.connect(ledger_dsn) as conn:
+        conn.execute("UPDATE graphos_attempts SET expires_at=clock_timestamp()-interval '1 second' WHERE id=%s", (retry["attempt_id"],))
+    with pytest.raises(Conflict):
+        ledger.authorize_artifact(current["id"], retry["task_id"], retry["token"], retry["epoch"], CANDIDATE, "BUILD")
+    # Revisions fence even unexpired leases and create fresh task identities.
+    ledger.revise_run(current["id"], spec(), 1)
+    snapshot = ledger.get_run(current["id"])
+    for attempt in snapshot["uncertain_cost_attempts"]:
+        ledger.reconcile_cost(current["id"], attempt["attempt_id"], uuid.uuid4().hex, 0)
+    revised = ledger.claim_build(current["id"], "builder", 10)
+    assert "repair" not in revised
+    with pytest.raises(Conflict):
+        ledger.authorize_artifact(current["id"], revised["task_id"], revised["token"], revised["epoch"], CANDIDATE, "BUILD")
+
+
+def test_repair_diagnostics_are_bounded_and_exclude_unrelated_report_fields(ledger):
+    current = run(ledger)
+    submit(ledger, ledger.claim_build(current["id"], "builder", 10))
+    checks = [{"name": "失" * 100, "passed": False, "detail": "敗" * 800}] * 40
+    verify(ledger, ledger.claim_verify(current["id"], "verifier"), passed=False,
+           report={"passed": False, "checks": checks, "arbitrary": "do not forward"})
+    feedback = ledger.claim_build(current["id"], "builder", 10)["repair"]
+    assert feedback["truncated"] and len(feedback["checks"]) == 32
+    assert all(len(c["name"].encode()) <= 128 and len(c["detail"].encode()) <= 1024
+               for c in feedback["checks"])
+    assert "arbitrary" not in feedback
+
+
+def test_repair_keeps_late_failure_and_explains_missing_diagnostics(ledger):
+    for checks in ([{"name": "ok", "passed": True}] * 32 + [
+            {"name": "late_failure", "passed": False, "detail": "Missing persistence"}], []):
+        current = run(ledger)
+        submit(ledger, ledger.claim_build(current["id"], "builder", 10))
+        verify(ledger, ledger.claim_verify(current["id"], "verifier"), passed=False,
+               report={"passed": False, "checks": checks})
+        feedback = ledger.claim_build(current["id"], "builder", 10)["repair"]
+        assert feedback["truncated"]
+        assert feedback["checks"][0]["passed"] is False
+        assert feedback["checks"][0]["name"] == ("late_failure" if checks else "verification_rejected")
+
+
+@pytest.mark.parametrize("field,value", [("input_hash", "9" * 64), ("suite_hash", "9" * 64),
+                                        ("policy_hash", "9" * 64), ("passed", True)])
+def test_repair_does_not_authorize_mismatched_or_accepted_evidence(ledger, ledger_dsn, field, value):
+    current = run(ledger)
+    submit(ledger, ledger.claim_build(current["id"], "builder", 10))
+    checker = ledger.claim_verify(current["id"], "verifier")
+    verify(ledger, checker, passed=False)
+    # Corrupt a stored binding in an isolated test schema: fail closed instead
+    # of reusing a candidate on the authority of unrelated/passing evidence.
+    from psycopg.types.json import Jsonb
+    with psycopg.connect(ledger_dsn) as conn:
+        conn.execute("UPDATE graphos_attempts SET result=result || %s WHERE id=%s",
+                     (Jsonb({field: value}), checker["attempt_id"]))
+    retry = ledger.claim_build(current["id"], "builder", 10)
+    assert "repair" not in retry
+    with pytest.raises(Conflict):
+        ledger.authorize_artifact(current["id"], retry["task_id"], retry["token"], retry["epoch"], CANDIDATE, "BUILD")
+
+
 def test_exhausted_sibling_does_not_strand_current_build_lease(ledger):
     current = run(ledger, tasks=[{"key": "a", "objective": "a", "depends_on": []}, {"key": "b", "objective": "b", "depends_on": []}], attempts=1)
     a = ledger.claim_build(current["id"], "worker-a", 10)

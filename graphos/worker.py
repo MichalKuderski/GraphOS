@@ -14,6 +14,7 @@ from .sandbox import ProcessError, run_bounded, verify_bundle
 from .transport import WorkerError, validate_api_url
 
 MAX_RESPONSE = 4 * 1024 * 1024
+MAX_EVE_REQUEST_BYTES = 128 * 1024  # agents/eve/src/cli.ts stdin contract
 
 
 class BuildFailure(WorkerError):
@@ -79,11 +80,24 @@ def _eve_environment() -> dict[str, str]:
     return {name: value for name, value in os.environ.items() if name in allowed}
 
 
-def _eve_build(claim: dict, profile: dict, dependencies: list[dict]) -> dict:
+def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dict | None = None) -> dict:
     environment = _eve_environment()
     command = ["node", str(ROOT / "agents" / "eve" / "dist" / "src" / "cli.js")]
-    request = {"claim": claim, "profile": profile, "dependencies": dependencies}
-    code, stdout, stderr = run_bounded(command, stdin=canonical(request), timeout=150,
+    # The resolved top-level context carries the same diagnostics as the claim.
+    # Avoid doubling it, while preserving the original claim for ledger calls.
+    request = {"claim": {key: value for key, value in claim.items() if key != "repair"},
+               "profile": profile, "dependencies": dependencies}
+    if repair is not None:
+        request["repair"] = repair
+    try:
+        encoded = canonical(request)
+    except ArtifactError as exc:
+        raise BuildFailure("eve request could not be serialized before generation", actual_cost=0) from exc
+    # Check serialized bytes, including JSON escaping and UTF-8 expansion. Never
+    # truncate candidate files: that would break their evidence/hash binding.
+    if len(encoded) > MAX_EVE_REQUEST_BYTES:
+        raise BuildFailure("eve request exceeds the 128 KiB adapter input limit before generation", actual_cost=0)
+    code, stdout, stderr = run_bounded(command, stdin=encoded, timeout=150,
                                   output_limit=3 * 1024 * 1024, env=environment,
                                   cwd=ROOT / "agents" / "eve")
     if code:
@@ -134,6 +148,7 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
     if claim is None:
         return {"status": "idle", "claim": None}
     task_route = route + "/tasks/" + _segment(claim["task_id"])
+    model_started = False
     try:
         profile = require_active(claim["profile"])
         if (claim["suite_hash"] != profile["suite_hash"] or claim["policy_hash"] != profile["policy_hash"]
@@ -157,15 +172,29 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
                 if bundle.get("manifest_hash") != digest or bundle_digest(bundle["files"]) != digest:
                     raise WorkerError("dependency content does not match its accepted manifest")
                 dependencies.append({"candidate_hash": digest, "files": bundle["files"]})
-            output = _eve_build(claim, profile, dependencies)
+            repair = claim.get("repair")
+            if repair is not None:
+                if (not isinstance(repair, dict)
+                        or any(repair.get(key) != claim[key] for key in
+                               ("revision", "input_hash", "suite_hash", "policy_hash"))):
+                    raise WorkerError("repair feedback does not match the current input")
+                digest = validate_digest(repair["candidate_hash"])
+                bundle = _request(api_url, token, "/artifacts/" + digest,
+                                  lease_headers=_lease_headers(run_id, claim))
+                validate_files(bundle["files"])
+                if bundle.get("manifest_hash") != digest or bundle_digest(bundle["files"]) != digest:
+                    raise WorkerError("repair candidate content does not match its rejected manifest")
+                repair = {**repair, "files": bundle["files"]}
+            model_started = True
+            output = _eve_build(claim, profile, dependencies, repair)
         payload = {**_identity(claim), "files": output["files"],
                    "actual_cost": output["usage"]["actual_cost_microdollars"],
                    "provenance": {**output["provenance"], "usage": output["usage"]}}
     except (WorkerError, ArtifactError, ProcessError, OSError, KeyError, ValueError) as exc:
         # Live work may have incurred unreported spend. Never refund uncertainty.
         charge = (exc.actual_cost if isinstance(exc, BuildFailure) and exc.actual_cost is not None
-                  else claim["reservation"] if builder == "eve" else 0)
-        cost_known = builder == "fixture" or (isinstance(exc, BuildFailure) and exc.actual_cost is not None)
+                  else claim["reservation"] if model_started else 0)
+        cost_known = not model_started or (isinstance(exc, BuildFailure) and exc.actual_cost is not None)
         result = _request(api_url, token, task_route + "/fail",
                           {"token": claim["token"], "epoch": claim["epoch"],
                            "reason": str(exc)[:300], "actual_cost": charge, "cost_known": cost_known})
@@ -174,7 +203,7 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
     # A transport failure here is ambiguous: do not issue a compensating fail.
     result = _request(api_url, token, task_route + "/submit", payload)
     return {"status": "submitted", "claim": claim, "result": result,
-            "provenance": output["provenance"]}
+            "provenance": output["provenance"], "usage": output["usage"]}
 
 
 def verify_once(api_url: str, token: str, run_id: str, worker_id: str = "verifier", *,

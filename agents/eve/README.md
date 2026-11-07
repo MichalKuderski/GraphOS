@@ -17,7 +17,9 @@ tests, and a running compiled eve server exercised through its public client.
 The server rejected anonymous inspection, malformed authentication, and model
 generation without Gateway credentials. `eve info --json` reported no tools,
 subagents, skills, or schedules. Tests mock transport only where model output is
-needed. **No paid generation or provider-backed end-to-end acceptance has run.**
+needed. **One real Gateway attempt was rejected with HTTP403
+`customer_verification_required`; no model-generated artifact or successful live
+end-to-end acceptance exists.** See `../../docs/live-validation.md`.
 
 Dependencies and lockfile are pinned: Node 24, eve `0.91.0`, AI SDK `7.0.164`,
 Zod `4.6.7`, just-bash `3.6.0`. At verification, npm's latest tag pointed to
@@ -76,7 +78,7 @@ never executed by this service. Only GraphOS's independent verifier executes it.
 
 This session authorizes at most **$5 total** model spend. Before enabling live
 work, an operator must configure and verify a dedicated Gateway credential's
-provider-side spending restriction, account for prior session spend, and verify
+provider-side soft spending restriction, account for prior session spend, and verify
 the selected model is accessible. The adapter has not performed those checks.
 Then set server environment variables:
 
@@ -106,7 +108,9 @@ framework's idle timeout does not stop an active call.
 eve's public agent configuration has no `maxRetries` option. Interrupted durable
 steps may be replayed after a crash, and a provider may bill accepted work after a
 timeout or failed cancellation. No local counter can resolve that ambiguity. A
-fresh model instance can follow a durable replay. Do not claim the run limits,
+fresh model instance can follow a durable replay. Gateway budgets are soft caps:
+a request crossing the threshold can finish, and updates may be delayed.
+Do not claim the run limits,
 timeouts, reservation, or environment declaration independently enforce $5.
 
 ## Broker contract
@@ -197,3 +201,23 @@ adapter neither claims this model is universally best nor silently switches
 models. Availability, quality on this suite, live output schema behavior, live
 usage events, cancellation behavior, and actual paid cost still require a bounded
 provider-backed acceptance run after credentials and spending controls exist.
+
+## Scoped repair and receipts
+
+The broker accepts optional `repair` context with candidate/evidence hashes,
+verifier attempt ID, revision/input/suite/policy bindings, bounded checks and the
+previous three-file candidate. The worker fetches that candidate under its new
+lease and verifies its content hash. The adapter rejects mismatched bindings and
+all-passing feedback. Instructions treat diagnostics and candidate content as
+untrusted data. A new independent verification is mandatory.
+
+Usage includes `generations`: runtime model run IDs, Gateway generation IDs when
+provided, and finish reasons. Missing IDs are explicit nulls; no receipt is
+fabricated. `costUsd` comes from Gateway metadata. The IDs permit a separate
+read-only Gateway generation lookup; event cost and actual account debit must not
+be conflated.
+
+The worker preflights the complete serialized request against 128 KiB before
+spawning the adapter. Oversized repair inputs fail with known zero cost; candidate
+files are never truncated. The live harness rebuilds the adapter from current
+source before enabling its model service and rejects source changes during build.

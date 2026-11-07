@@ -19,7 +19,8 @@ export function boundedModel() {
     specificationVersion: "v4",
     transformParams: async ({params}) => {
       // Block SDK/harness retries through this resolved instance. A crash/replay
-      // can create another instance: only a provider-side key budget caps spend.
+      // can create another instance. Provider budgets are soft caps; uncertain
+      // work must pause dispatch and be reconciled before another live attempt.
       if (invoked) throw new AdapterError("model_retry_blocked");
       invoked = true;
       const timeout = AbortSignal.timeout(90_000);

@@ -292,6 +292,59 @@ class WorkerTests(unittest.TestCase):
                 verify_once("http://localhost:8000", "secret", "run")
         verifier.assert_not_called()
 
+    def test_repair_resolves_rejected_candidate_with_current_lease_and_passes_feedback(self):
+        files = fixture_files()
+        digest = bundle_digest(files)
+        claim = self.claim()
+        feedback = {key: claim[key] for key in ("revision", "input_hash", "suite_hash", "policy_hash")}
+        feedback.update(candidate_hash=digest, evidence_hash="e" * 64,
+                        verifier_attempt_id="prior-verifier", truncated=False,
+                        checks=[{"name": "add_task", "passed": False, "detail": "Missing task"}])
+        claim["repair"] = feedback
+        output = {"files": files, "usage": {"actual_cost_microdollars": 0}, "provenance": {"mode": "eve"}}
+        def api(url, token, path, data=None, **kwargs):
+            if path.endswith("claim/build"):
+                return claim
+            if path == "/artifacts/" + digest:
+                self.assertEqual(kwargs["lease_headers"]["X-GraphOS-Lease-Token"], claim["token"])
+                return {"manifest_hash": digest, "files": files}
+            return {"state": "SUBMITTED"}
+        with patch("graphos.worker._request", side_effect=api), \
+             patch("graphos.worker._eve_environment", return_value={}), \
+             patch("graphos.worker._eve_build", return_value=output) as live:
+            result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=1)
+        self.assertEqual(result["status"], "submitted")
+        self.assertEqual(live.call_args.args[3], {**feedback, "files": files})
+        self.assertNotIn("files", claim["repair"])
+
+    def test_invalid_repair_is_rejected_before_model_work_and_charged_zero(self):
+        files = fixture_files()
+        digest = bundle_digest(files)
+        for defect in ("stale", "tampered"):
+            with self.subTest(defect=defect):
+                claim = self.claim(reservation=100)
+                feedback = {key: claim[key] for key in ("revision", "input_hash", "suite_hash", "policy_hash")}
+                feedback.update(candidate_hash=digest)
+                if defect == "stale":
+                    feedback["revision"] = 0
+                claim["repair"] = feedback
+                calls = []
+                def api(url, token, path, data=None, **kwargs):
+                    calls.append((path, data))
+                    if path.endswith("claim/build"):
+                        return claim
+                    if path == "/artifacts/" + digest:
+                        return {"manifest_hash": digest, "files": {**files, "app.js": "tampered"}}
+                    return {"state": "PENDING"}
+                with patch("graphos.worker._request", side_effect=api), \
+                     patch("graphos.worker._eve_environment", return_value={}), \
+                     patch("graphos.worker._eve_build") as live:
+                    result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=100)
+                self.assertEqual(result["status"], "failed")
+                self.assertEqual(calls[-1][1]["actual_cost"], 0)
+                self.assertIs(calls[-1][1]["cost_known"], True)
+                live.assert_not_called()
+
     def test_live_failure_consumes_reservation_without_fixture(self):
         calls = []
         def api(url, token, path, data=None):
@@ -329,6 +382,53 @@ class WorkerTests(unittest.TestCase):
                 _eve_build(self.claim(), get_profile("static-web"), [])
         self.assertEqual(caught.exception.actual_cost, 17)
         self.assertNotIn("private detail", str(caught.exception))
+
+    def test_adapter_forwards_repair_once_without_mutating_or_truncating_claim(self):
+        files = fixture_files()
+        feedback = {"candidate_hash": bundle_digest(files), "checks": [
+            {"name": "persistence", "passed": False, "detail": "Expected saved task"}]}
+        claim = self.claim(repair=feedback)
+        repair = {**feedback, "files": files}
+        output = {"files": files, "usage": {"actual_cost_microdollars": 0}, "provenance": {"mode": "eve"}}
+        with patch("graphos.worker._eve_environment", return_value={}), \
+             patch("graphos.worker.run_bounded", return_value=(0, canonical(output), b"")) as runner:
+            _eve_build(claim, get_profile("static-web"), [], repair)
+        request = json.loads(runner.call_args.kwargs["stdin"])
+        self.assertNotIn("repair", request["claim"])
+        self.assertEqual(request["repair"], repair)
+        self.assertEqual(claim["repair"], feedback)
+        self.assertEqual(bundle_digest(request["repair"]["files"]), feedback["candidate_hash"])
+
+    def test_oversized_repair_refuses_before_spawn_and_records_known_zero_cost(self):
+        # Each file fits its artifact limit; the serialized request does not.
+        for content in ('"\\\n' * 16000, "界" * 20000):
+            with self.subTest(kind="escaped" if content.startswith('"') else "non_ascii"):
+                files = {name: content for name in ("index.html", "app.js", "styles.css")}
+                validate_files(files)
+                digest = bundle_digest(files)
+                claim = self.claim(reservation=100)
+                feedback = {key: claim[key] for key in ("revision", "input_hash", "suite_hash", "policy_hash")}
+                feedback.update(candidate_hash=digest, evidence_hash="e" * 64,
+                                verifier_attempt_id="prior-verifier", truncated=False,
+                                checks=[{"name": "persistence", "passed": False, "detail": "Missing task"}])
+                claim["repair"] = feedback
+                calls = []
+                def api(url, token, path, data=None, **kwargs):
+                    calls.append((path, data))
+                    if path.endswith("claim/build"):
+                        return claim
+                    if path == "/artifacts/" + digest:
+                        return {"manifest_hash": digest, "files": files}
+                    return {"state": "PENDING"}
+                with patch("graphos.worker._request", side_effect=api), \
+                     patch("graphos.worker._eve_environment", return_value={}), \
+                     patch("graphos.worker.run_bounded") as runner:
+                    result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=100)
+                runner.assert_not_called()
+                self.assertEqual(result["status"], "failed")
+                self.assertIn("128 KiB", result["reason"])
+                self.assertEqual(calls[-1][1]["actual_cost"], 0)
+                self.assertIs(calls[-1][1]["cost_known"], True)
 
     def test_unknown_domains_are_contract_only(self):
         for name in ("games", "bots", "data", "media", "trading-research"):

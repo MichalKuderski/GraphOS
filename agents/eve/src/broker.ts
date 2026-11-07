@@ -7,6 +7,8 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
   let input_tokens = 0, output_tokens = 0, cache_read_tokens = 0, cache_write_tokens = 0;
   let actual_cost_microdollars = 0;
   const started = new Set<string>(), reported = new Set<string>();
+  const settled = new Map<string, {generation_id: string | null; finish_reason: string | null}>();
+  const generationIds = new Set<string>();
   for (const event of events) {
     if (event.type === "model.started") {
       if (event.data.modelId !== MODEL_ID || event.data.attempt !== 0) throw new AdapterError("unreconciled_model_usage");
@@ -14,6 +16,17 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
     }
     // A retry can have incurred provider cost without reporting usage; never call it free.
     if (event.type === "model.retried") throw new AdapterError("unreconciled_model_usage");
+    if (event.type === "model.settled") {
+      const {runId, outcome, generationId, finishReason} = event.data;
+      if (settled.has(runId) || outcome !== "completed" ||
+          (generationId !== undefined && (typeof generationId !== "string" ||
+            generationId.length === 0 || generationId.length > 512 || generationIds.has(generationId))) ||
+          (finishReason !== undefined && (typeof finishReason !== "string" || finishReason.length > 128))) {
+        throw new AdapterError("unreconciled_model_usage");
+      }
+      if (generationId !== undefined) generationIds.add(generationId);
+      settled.set(runId, {generation_id: generationId ?? null, finish_reason: finishReason ?? null});
+    }
     if (event.type !== "usage.recorded") continue;
     const {kind, usage, owner} = event.data;
     if (kind !== "model" || !owner || !("runId" in owner) || reported.has(owner.runId)) {
@@ -31,9 +44,15 @@ export function usageFromEvents(events: readonly SessionStreamEvent[]) {
     actual_cost_microdollars += Math.ceil(usage.costUsd * 1_000_000);
   }
   if (!started.size || started.size !== reported.size || [...started].some(id => !reported.has(id)) ||
+      [...settled.keys()].some(id => !started.has(id)) ||
       !Number.isSafeInteger(actual_cost_microdollars)) throw new AdapterError("unreconciled_model_usage");
+  // Missing Gateway lookup IDs remain explicit. Runtime usage is not a fetched
+  // provider receipt, and a missing ID must never be synthesized from a run ID.
+  const generations = [...started].map(run_id => ({run_id,
+    generation_id: settled.get(run_id)?.generation_id ?? null,
+    finish_reason: settled.get(run_id)?.finish_reason ?? null}));
   return {input_tokens, output_tokens, cache_read_tokens, cache_write_tokens,
-    actual_cost_microdollars, model_runs: started.size, cost_source: "eve_gateway_usage_events"};
+    actual_cost_microdollars, model_runs: started.size, cost_source: "eve_gateway_usage_events", generations};
 }
 
 export async function generate(request: TaskRequest, transport: AgentTransport, timeoutMs = TIMEOUT_MS) {

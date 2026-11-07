@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-11-07T18:31:10.298739+00:00",
+  "run_id": "06f2fd61-3838-4011-a1da-d27c4547b16f",
+  "eve_session_id": "wrun_01M6VMBY05N0FWPH1C00WMBQS2",
+  "provider_response": {
+    "http_status": 403,
+    "code": "customer_verification_required",
+    "required_action": "Vercel team owner adds a valid payment card to unlock Gateway requests"
+  },
+  "generation_completed": false,
+  "model_artifact_produced": false,
+  "provider_reported_key_spend_usd": 0,
+  "team_credits": {
+    "balance": "5",
+    "total_used": "0"
+  },
+  "key_budget": {
+    "limitAmount": 1,
+    "refreshPeriod": "none",
+    "active": true
+  },
+  "key_budget_is_soft": true,
+  "ledger_conservative_charge_microdollars": 1000000,
+  "ledger_state": "RECONCILIATION_REQUIRED",
+  "provider_invoice_receipt_obtained": false,
+  "automatic_retry_performed": false,
+  "live_services_stopped": true,
+  "result_file": "live-20261107T182936-2e2a9890.json"
+}

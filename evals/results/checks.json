@@ -1,7 +1,7 @@
 {
   "status": "PASS",
-  "started_at": "2026-11-07T16:08:04.755103+00:00",
-  "source_digest": "f61c6dc540834818c2ffb361c009d814341814fa18f09ba4f45bf5c96395c3dc",
+  "started_at": "2026-11-07T18:34:50.624330+00:00",
+  "source_digest": "ca47abec2b2d1ac3e181bf5d800a16f2713f9bb5efc6b3fb601cb1100b3e516e",
   "commands": [
     {
       "command": [
@@ -43,12 +43,12 @@
   "model_generation": "not exercised by this pipeline",
   "production_certification": false,
   "python": {
-    "tests": 133,
+    "tests": 156,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "original_reference_tests": 25,
-  "finished_at": "2026-11-07T16:09:10.876401+00:00",
+  "finished_at": "2026-11-07T18:35:54.381669+00:00",
   "source_unchanged": true
 }

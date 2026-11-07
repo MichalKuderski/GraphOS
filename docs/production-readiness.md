@@ -16,7 +16,8 @@ test from being promoted into an unsupported capability claim.
 | Authorization | Builder cannot verify; reads require active scoped lease | Single tenant, shared credential per trusted service role |
 | Budget accounting | Reservations, unknown-cost consumption, overrun incidents | Provider invoice limits require provider-side controls |
 | External effects | Durable state, lost-token reconciliation, stale receipt rejection | Record/state machine tested; no real deployment/broker adapter |
-| Model harness | eve build, types, unit tests, authenticated server smoke | No model-generated acceptance result without credentials |
+| Model harness | eve build, types, unit tests, authenticated server smoke; real Gateway attempt retained | Live request rejected by Vercel payment verification; no generated acceptance result |
+| Targeted repair | PostgreSQL lease, stale-evidence and worker tests | Latest rejected candidate plus bounded diagnostics; every repair needs fresh verification |
 | Operator UI | Browser UI actions and responsive behavior | Control plane; candidate HTML is never embedded here |
 
 Machine-readable results are in `evals/results/`. Test counts refer to finite
@@ -38,14 +39,19 @@ The deterministic fixture path uses real storage, HTTP workers, and browser
 verification. Its provenance says fixture. It is not an AI-generated project,
 and it is never a silent fallback for an unavailable model.
 
-Failed candidates can be replaced within bounded attempt limits. The current
-builder claim does not supply the previous candidate or verifier-failure report;
-targeted automatic repair needs that scoped feedback path and its own validation.
+Failed candidates can be replaced within bounded attempt limits. A retry receives
+the latest rejected candidate and bounded verifier diagnostics only for the same
+revision, input, suite and policy. Artifact reads require its current build lease.
+Diagnostics are untrusted context, not acceptance evidence; the replacement must
+pass a new independent verification. Live model repair remains unmeasured.
 
-Live generation needs a dedicated model credential, a verified provider-side
-spending cap, and a running authenticated eve server. The session's total spend
-authorization is $5. No claim about model quality, model cost per accepted app,
-or superiority over a baseline is supported until actual evaluated runs exist.
+The dedicated credential authenticates. Its $1 non-resetting Gateway budget is
+a soft cap, not a guaranteed invoice ceiling; the total session authorization
+remains $5. The first live request reached Gateway and was rejected with HTTP403
+`customer_verification_required`. The team must complete payment-card verification
+before another request. Gateway reports $0 used; GraphOS conservatively retains
+a $1 uncertain reservation pending reconciliation. See [live validation](live-validation.md).
+No generated artifact, model-quality measurement, or accepted-app cost exists yet.
 
 ## Required before wider production use
 

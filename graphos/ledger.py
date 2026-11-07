@@ -254,6 +254,61 @@ class Ledger:
     def _input(run: dict, task: dict, dependencies: dict) -> str:
         return _hash({"spec_hash": run["spec_hash"], "revision": run["revision"], "task_key": task["task_key"], "dependencies": dependencies})
 
+    @staticmethod
+    def _repair(conn, run: dict, task: dict, input_hash: str, before_epoch: int) -> dict | None:
+        """Read failed evidence for this input, never carry it across a revision.
+
+        The immutable verifier attempt survives clearing the task's candidate on
+        rebuild. Only the latest completed verification may supply context; its
+        diagnostics and candidate are data, not renewed acceptance evidence.
+        """
+        attempt = conn.execute("SELECT * FROM graphos_attempts WHERE task_id=%s AND kind='VERIFY' AND state='VERIFIED' AND epoch<%s ORDER BY epoch DESC LIMIT 1", (task["id"], before_epoch)).fetchone()
+        if not attempt:
+            return None
+        record = attempt["result"] or {}
+        if (record.get("passed") is not False or record.get("revision") != run["revision"]
+                or record.get("input_hash") != input_hash or attempt["input_hash"] != input_hash
+                or record.get("suite_hash") != run["spec"]["suite_hash"]
+                or record.get("policy_hash") != run["spec"]["policy_hash"]
+                or record.get("candidate_hash") != attempt["candidate_hash"]
+                or record.get("attempt_id") != attempt["id"]
+                or record.get("verifier_id") != attempt["worker_id"]):
+            return None
+        report = record.get("report", {})
+        raw_checks = report.get("checks", []) if isinstance(report, dict) else []
+        if not isinstance(raw_checks, list):
+            raw_checks = []
+        checks = []
+        truncated = len(raw_checks) > 32
+        # Preserve failed diagnostics first, including when a long report ends
+        # with the only failure. A failed report with no usable failed check is
+        # represented by its actual rejection decision, never as an all-pass.
+        raw_checks = sorted(raw_checks, key=lambda c: not (isinstance(c, dict) and c.get("passed") is False))
+        for check in raw_checks[:32]:
+            if (not isinstance(check, dict) or not isinstance(check.get("name"), str)
+                    or type(check.get("passed")) is not bool):
+                truncated = True
+                continue
+            detail = check.get("detail", "")
+            if not isinstance(detail, str):
+                detail = ""
+                truncated = True
+            # Byte bounds keep even non-ASCII diagnostics within the prompt cap.
+            name = check["name"].encode("utf-8")[:128].decode("utf-8", errors="ignore")
+            bounded = detail.encode("utf-8")[:1024].decode("utf-8", errors="ignore")
+            truncated = truncated or name != check["name"] or bounded != detail
+            checks.append({"name": name, "passed": check["passed"], "detail": bounded})
+        if not any(check["passed"] is False for check in checks):
+            checks = [{"name": "verification_rejected", "passed": False,
+                       "detail": "Independent verification rejected this candidate; detailed failed checks were unavailable."}, *checks[:31]]
+            truncated = True
+        return {"candidate_hash": _digest(record["candidate_hash"]),
+                "evidence_hash": _digest(record["evidence_hash"]),
+                "verifier_attempt_id": attempt["id"], "revision": run["revision"],
+                "input_hash": input_hash, "suite_hash": record["suite_hash"],
+                "policy_hash": record["policy_hash"], "checks": checks,
+                "truncated": truncated}
+
     def _claim(self, conn, run: dict, task: dict, worker: str, kind: str, reservation: int, seconds: int, dependencies: dict) -> dict:
         token = secrets.token_urlsafe(32)
         epoch = task["epoch"] + 1
@@ -271,6 +326,10 @@ class Ledger:
         result = {"run_id": run["id"], "task_id": task["id"], "task_key": task["task_key"], "attempt_id": attempt_id, "epoch": epoch, "revision": run["revision"], "token": token, "input_hash": input_hash, "expires_at": expires, "objective": task["objective"], "requirements": run["spec"]["requirements"], "profile": run["spec"]["profile"], "suite_hash": run["spec"]["suite_hash"], "policy_hash": run["spec"]["policy_hash"], "dependencies": dependencies, "reservation": reservation}
         if kind == "VERIFY":
             result.update(candidate_hash=task["candidate_hash"], producer_id=task["producer_id"])
+        else:
+            repair = self._repair(conn, run, task, input_hash, epoch)
+            if repair is not None:
+                result["repair"] = repair
         return _safe(result)
 
     def claim_build(self, run_id: str, worker_id: str, reserve: int, lease_seconds: int = 120) -> dict | None:
@@ -323,7 +382,11 @@ class Ledger:
                 allowed = task["state"] == "VERIFYING" and digest == task["candidate_hash"] == attempt["candidate_hash"]
             else:
                 dependencies = self._dependencies(conn, run, task)
-                allowed = task["state"] == "BUILDING" and dependencies is not None and digest in dependencies.values()
+                repair = self._repair(conn, run, task, attempt["input_hash"], attempt["epoch"])
+                allowed = (task["state"] == "BUILDING" and dependencies is not None
+                           and self._input(run, task, dependencies) == attempt["input_hash"]
+                           and (digest in dependencies.values()
+                                or (repair is not None and digest == repair["candidate_hash"])))
             if not allowed:
                 raise Conflict("artifact is outside this lease's scope")
 

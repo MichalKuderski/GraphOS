@@ -18,6 +18,12 @@ def source_digest():
     for folder in ("graphos", "profiles", "verifier", "scripts", "tests", "docs/foundation/reference"):
         paths.extend(path for path in (ROOT / folder).rglob("*")
                      if path.is_file() and "__pycache__" not in path.parts)
+    # Bind model behavior and adapter contracts as well as the Python controller.
+    agent = ROOT / "agents/eve"
+    paths.extend(agent / name for name in ("package.json", "package-lock.json", "tsconfig.json",
+                                           "model-catalog.json", "model-selection.json"))
+    for folder in ("agent", "src", "test"):
+        paths.extend(path for path in (agent / folder).rglob("*") if path.is_file())
     digest = hashlib.sha256()
     for path in sorted(paths):
         digest.update(str(path.relative_to(ROOT)).encode() + b"\0")
