@@ -16,7 +16,7 @@ and their limits, including retained infrastructure failures.
 ## Implemented
 
 - PostgreSQL admission, versioned specifications, DAG scheduling, transactions,
-  leases, fencing, bounded repair, event history, and transactional outbox records.
+  leases, fencing, bounded retries, event history, and transactional outbox records.
 - Independent builder/verifier credentials and lease-scoped artifact access.
 - Content-addressed artifacts with hash verification and strict path/size rules.
 - Candidate/input/suite/policy-bound evidence; revisions invalidate prior work.

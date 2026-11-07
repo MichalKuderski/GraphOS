@@ -38,6 +38,10 @@ The deterministic fixture path uses real storage, HTTP workers, and browser
 verification. Its provenance says fixture. It is not an AI-generated project,
 and it is never a silent fallback for an unavailable model.
 
+Failed candidates can be replaced within bounded attempt limits. The current
+builder claim does not supply the previous candidate or verifier-failure report;
+targeted automatic repair needs that scoped feedback path and its own validation.
+
 Live generation needs a dedicated model credential, a verified provider-side
 spending cap, and a running authenticated eve server. The session's total spend
 authorization is $5. No claim about model quality, model cost per accepted app,
