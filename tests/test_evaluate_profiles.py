@@ -44,6 +44,7 @@ def test_calibration_mutations_never_modify_the_fixture():
     assert "index.html" not in pilot.calibration_variant(files, "missing-entrypoint")
     assert pilot.calibration_variant(files, "disabled-persistence")["app.js"].startswith("Storage.prototype.setItem")
     assert "#94a3b8" in pilot.calibration_variant(files, "low-contrast-text")["styles.css"]
+    assert "outline: 3px solid" in pilot.calibration_variant(files, "always-on-focus")["styles.css"]
     assert files == original
 
 

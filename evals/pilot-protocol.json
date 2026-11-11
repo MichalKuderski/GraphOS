@@ -11,7 +11,8 @@
     {"id": "positive-fixture", "kind": "positive", "expected_pass": true},
     {"id": "missing-entrypoint", "kind": "negative", "expected_failed_check": "required_files"},
     {"id": "disabled-persistence", "kind": "negative", "expected_failed_check": "local_storage_reload"},
-    {"id": "low-contrast-text", "kind": "negative", "expected_failed_check": "axe_empty"}
+    {"id": "low-contrast-text", "kind": "negative", "expected_failed_check": "axe_empty"},
+    {"id": "always-on-focus", "kind": "negative", "expected_failed_check": "visible_focus"}
   ],
   "live_denominator": "Every dispatched trial, including generation, verification, infrastructure, and accounting failures. Undispatched trials are separately counted against the planned sample.",
   "accounting": {

@@ -18,10 +18,14 @@ def usage():
 
 def claim():
     profile = get_profile("static-web")
-    return {"task_id": "task", "token": "private-lease", "epoch": 1, "revision": 1,
+    return {"run_id": "run", "attempt_id": "attempt-1", "task_id": "task", "token": "private-lease", "epoch": 1, "revision": 1,
             "input_hash": "a" * 64, "profile": profile["id"], "reservation": 100,
             "requirements": profile["acceptance_criteria"], "suite_hash": profile["suite_hash"],
             "policy_hash": profile["policy_hash"]}
+
+
+def receipt():
+    return {"run_id": "run", "attempt_id": "attempt-1", "capture_token": "c" * 64}
 
 
 def test_failure_receipts_are_allowlisted_and_bound_to_known_cost():
@@ -57,7 +61,7 @@ def test_known_adapter_failure_keeps_receipts_and_never_returns_artifact():
     with patch("graphos.worker._eve_environment", return_value={}), \
          patch("graphos.worker.run_bounded", return_value=(1, b"", json.dumps(error).encode())):
         with pytest.raises(BuildFailure) as caught:
-            _eve_build(claim(), get_profile("static-web"), [])
+            _eve_build(claim(), get_profile("static-web"), [], receipt=receipt())
     assert caught.value.actual_cost == 17 and caught.value.usage == usage()
     assert "hidden" not in str(caught.value)
 
@@ -66,6 +70,8 @@ def test_worker_reports_settled_failure_usage_without_submitting_candidate():
     calls = []
     def api(url, token, path, data=None):
         calls.append((path, data))
+        if path.endswith("/receipt-grant"):
+            return receipt()
         return claim() if path.endswith("claim/build") else {"state": "EXHAUSTED"}
     with patch("graphos.worker._request", side_effect=api), \
          patch("graphos.worker._eve_environment", return_value={}), \
@@ -74,4 +80,30 @@ def test_worker_reports_settled_failure_usage_without_submitting_candidate():
     assert result["status"] == "failed" and result["usage"] == usage()
     assert calls[-1][0].endswith("/fail") and calls[-1][1]["cost_known"] is True
     assert calls[-1][1]["actual_cost"] == 17
+    assert calls[-1][1]["usage"] == usage()
+    assert all(not path.endswith("/submit") for path, _ in calls)
+
+
+def test_invalid_receipt_metadata_is_discarded_without_losing_known_scalar_cost():
+    raw = usage()
+    raw["generations"][0]["generation_id"] = "https://private.example/hidden"
+    raw["provider_response"] = "private response text"
+    error = {"error": "eve_turn_not_completed", "cost_known": True,
+             "actual_cost_microdollars": 17, "usage": raw}
+    calls = []
+    def api(url, token, path, data=None):
+        calls.append((path, data))
+        if path.endswith("/receipt-grant"):
+            return receipt()
+        return claim() if path.endswith("claim/build") else {"state": "EXHAUSTED"}
+    with patch("graphos.worker._request", side_effect=api), \
+         patch("graphos.worker._eve_environment", return_value={}), \
+         patch("graphos.worker.run_bounded", return_value=(1, b"", json.dumps(error).encode())):
+        result = build_once("http://localhost:8000", "test-bearer", "run", "eve", reserve=100)
+    assert result["status"] == "failed" and "usage" not in result
+    failure = calls[-1][1]
+    assert calls[-1][0].endswith("/fail")
+    assert failure["actual_cost"] == 17 and failure["cost_known"] is True
+    assert failure.get("usage") is None
+    assert "private.example" not in json.dumps(failure) and "private response" not in json.dumps(failure)
     assert all(not path.endswith("/submit") for path, _ in calls)

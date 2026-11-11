@@ -41,9 +41,23 @@ test("actual Gateway requests force the reply tool for default auto none and alt
     const request=requests.at(-1)!;
     assert.deepEqual(request.toolChoice,{type:"tool",toolName:REPLY_TOOL_NAME});
     assert.equal(request.maxOutputTokens,MAX_OUTPUT_TOKENS);
-    assert.deepEqual(request.tools,[reply]);
+    assert.deepEqual(request.tools,[{...reply,strict:true}]);
   }
   assert.equal(requests.length,5);
+});
+
+test("strict tool decoding is enforced without mutating the trusted input schema", async()=>{
+  const {requests,model}=fakeProvider();
+  for(const strict of [undefined,false,true]) {
+    const original={...reply,...strict===undefined?{}:{strict}};
+    const before=structuredClone(original);
+    const result=await model.doStream(params({tools:[original]}));
+    for await(const _chunk of result.stream) { /* Consume the fake response. */ }
+    assert.deepEqual(requests.at(-1)?.tools,[{...reply,strict:true}]);
+    assert.deepEqual(original,before);
+    assert.deepEqual((requests.at(-1)?.tools as typeof reply[])[0]?.inputSchema,inputSchema);
+  }
+  assert.equal(requests.length,3);
 });
 
 test("missing additional ambiguous or malformed reply tools fail before provider access", async()=>{

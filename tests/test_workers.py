@@ -213,11 +213,14 @@ class SandboxTests(unittest.TestCase):
 class WorkerTests(unittest.TestCase):
     def claim(self, **changes):
         profile = get_profile("static-web")
-        return {"task_id": "task-1", "task_key": "app", "token": "lease-secret", "epoch": 1,
+        return {"run_id": "run", "attempt_id": "attempt-1", "task_id": "task-1", "task_key": "app", "token": "lease-secret", "epoch": 1,
                 "revision": 1, "input_hash": "a" * 64, "profile": "static-web",
                 "suite_hash": profile["suite_hash"], "policy_hash": profile["policy_hash"],
                 "requirements": profile["acceptance_criteria"], "dependencies": {},
                 "reservation": 1, **changes}
+
+    def receipt(self, **changes):
+        return {"run_id": "run", "attempt_id": "attempt-1", "capture_token": "c" * 64, **changes}
 
     def test_fixture_is_explicitly_labeled_and_not_ai(self):
         calls = []
@@ -230,6 +233,7 @@ class WorkerTests(unittest.TestCase):
         self.assertEqual(result["provenance"]["mode"], "fixture")
         self.assertFalse(result["provenance"]["ai_generated"])
         self.assertEqual(calls[-1][1]["actual_cost"], 0)
+        self.assertFalse(any(path.endswith("/receipt-grant") for path, _ in calls))
         live.assert_not_called()
 
     def test_missing_eve_auth_never_claims_or_uses_fixture(self):
@@ -273,6 +277,9 @@ class WorkerTests(unittest.TestCase):
             if path == "/artifacts/" + digest:
                 self.assertEqual(kwargs["lease_headers"]["X-GraphOS-Lease-Token"], claim["token"])
                 return {"manifest_hash": digest, "files": files}
+            if path.endswith("/receipt-grant"):
+                self.assertEqual(data, {key: claim[key] for key in ("token", "epoch", "revision", "input_hash")})
+                return self.receipt()
             return {"state": "SUBMITTED"}
         with patch("graphos.worker._request", side_effect=api), \
              patch("graphos.worker._eve_environment", return_value={}), \
@@ -280,6 +287,7 @@ class WorkerTests(unittest.TestCase):
             result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=1)
         self.assertEqual(result["status"], "submitted")
         self.assertEqual(live.call_args.args[2], [{"candidate_hash": digest, "files": files}])
+        self.assertEqual(live.call_args.kwargs["receipt"], self.receipt())
 
     def test_verifier_rejects_wrong_bundle_despite_correct_returned_hash(self):
         good = fixture_files()
@@ -301,13 +309,16 @@ class WorkerTests(unittest.TestCase):
                         verifier_attempt_id="prior-verifier", truncated=False,
                         checks=[{"name": "add_task", "passed": False, "detail": "Missing task"}])
         claim["repair"] = feedback
-        output = {"files": files, "usage": {"actual_cost_microdollars": 0}, "provenance": {"mode": "eve"}}
+        repaired_files = {**files, "app.js": files["app.js"] + "\n// Revised after independent feedback.\n"}
+        output = {"files": repaired_files, "usage": {"actual_cost_microdollars": 0}, "provenance": {"mode": "eve"}}
         def api(url, token, path, data=None, **kwargs):
             if path.endswith("claim/build"):
                 return claim
             if path == "/artifacts/" + digest:
                 self.assertEqual(kwargs["lease_headers"]["X-GraphOS-Lease-Token"], claim["token"])
                 return {"manifest_hash": digest, "files": files}
+            if path.endswith("/receipt-grant"):
+                return self.receipt()
             return {"state": "SUBMITTED"}
         with patch("graphos.worker._request", side_effect=api), \
              patch("graphos.worker._eve_environment", return_value={}), \
@@ -315,6 +326,7 @@ class WorkerTests(unittest.TestCase):
             result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=1)
         self.assertEqual(result["status"], "submitted")
         self.assertEqual(live.call_args.args[3], {**feedback, "files": files})
+        self.assertEqual(live.call_args.kwargs["receipt"], self.receipt())
         self.assertNotIn("files", claim["repair"])
 
     def test_invalid_repair_is_rejected_before_model_work_and_charged_zero(self):
@@ -349,6 +361,8 @@ class WorkerTests(unittest.TestCase):
         calls = []
         def api(url, token, path, data=None):
             calls.append((path, data))
+            if path.endswith("/receipt-grant"):
+                return self.receipt()
             return self.claim(reservation=100) if path.endswith("claim/build") else {"state": "PENDING"}
         with patch("graphos.worker._request", side_effect=api), \
              patch("graphos.worker._eve_environment", return_value={}), \
@@ -365,6 +379,8 @@ class WorkerTests(unittest.TestCase):
         calls = []
         def api(url, token, path, data=None):
             calls.append((path, data))
+            if path.endswith("/receipt-grant"):
+                return self.receipt()
             return self.claim(reservation=100) if path.endswith("claim/build") else {"state": "BUDGET_EXCEEDED"}
         with patch("graphos.worker._request", side_effect=api), \
              patch("graphos.worker._eve_environment", return_value={}), \
@@ -379,7 +395,7 @@ class WorkerTests(unittest.TestCase):
         with patch("graphos.worker._eve_environment", return_value={}), \
              patch("graphos.worker.run_bounded", return_value=(1, b"", json.dumps(error).encode())):
             with self.assertRaises(BuildFailure) as caught:
-                _eve_build(self.claim(), get_profile("static-web"), [])
+                _eve_build(self.claim(), get_profile("static-web"), [], receipt=self.receipt())
         self.assertEqual(caught.exception.actual_cost, 17)
         self.assertNotIn("private detail", str(caught.exception))
 
@@ -389,7 +405,7 @@ class WorkerTests(unittest.TestCase):
         with patch("graphos.worker._eve_environment", return_value={}), \
              patch("graphos.worker.run_bounded", return_value=(1, b"", json.dumps(error).encode())):
             with self.assertRaisesRegex(BuildFailure, "invalid_generated_files") as caught:
-                _eve_build(self.claim(), get_profile("static-web"), [])
+                _eve_build(self.claim(), get_profile("static-web"), [], receipt=self.receipt())
         self.assertEqual(caught.exception.actual_cost, 17)
 
     def test_adapter_forwards_repair_once_without_mutating_or_truncating_claim(self):
@@ -401,8 +417,15 @@ class WorkerTests(unittest.TestCase):
         output = {"files": files, "usage": {"actual_cost_microdollars": 0}, "provenance": {"mode": "eve"}}
         with patch("graphos.worker._eve_environment", return_value={}), \
              patch("graphos.worker.run_bounded", return_value=(0, canonical(output), b"")) as runner:
-            _eve_build(claim, get_profile("static-web"), [], repair)
-        request = json.loads(runner.call_args.kwargs["stdin"])
+            _eve_build(claim, get_profile("static-web"), [], repair,
+                       receipt=self.receipt(unrelated_private_metadata="must-not-be-forwarded"))
+        envelope = json.loads(runner.call_args.kwargs["stdin"])
+        self.assertEqual(set(envelope), {"request", "receipt"})
+        self.assertEqual(envelope["receipt"], self.receipt())
+        self.assertNotIn("must-not-be-forwarded", json.dumps(envelope))
+        request = envelope["request"]
+        self.assertNotIn(self.receipt()["capture_token"], json.dumps(request))
+        self.assertNotIn(self.receipt()["capture_token"], json.dumps(runner.call_args.kwargs["env"]))
         self.assertNotIn("repair", request["claim"])
         self.assertEqual(request["repair"], repair)
         self.assertEqual(claim["repair"], feedback)
@@ -428,6 +451,8 @@ class WorkerTests(unittest.TestCase):
                         return claim
                     if path == "/artifacts/" + digest:
                         return {"manifest_hash": digest, "files": files}
+                    if path.endswith("/receipt-grant"):
+                        return self.receipt()
                     return {"state": "PENDING"}
                 with patch("graphos.worker._request", side_effect=api), \
                      patch("graphos.worker._eve_environment", return_value={}), \
@@ -436,6 +461,63 @@ class WorkerTests(unittest.TestCase):
                 runner.assert_not_called()
                 self.assertEqual(result["status"], "failed")
                 self.assertIn("128 KiB", result["reason"])
+                self.assertEqual(calls[-1][1]["actual_cost"], 0)
+                self.assertIs(calls[-1][1]["cost_known"], True)
+
+    def test_missing_or_mismatched_receipt_refuses_before_spawn_at_known_zero_cost(self):
+        for receipt in (None, {}, self.receipt(run_id="another-run"),
+                        self.receipt(attempt_id="another-attempt"),
+                        self.receipt(capture_token="")):
+            with self.subTest(receipt=receipt), \
+                 patch("graphos.worker._eve_environment", return_value={}), \
+                 patch("graphos.worker.run_bounded") as runner:
+                with self.assertRaises(BuildFailure) as caught:
+                    _eve_build(self.claim(), get_profile("static-web"), [], receipt=receipt)
+                self.assertEqual(caught.exception.actual_cost, 0)
+                runner.assert_not_called()
+
+    def test_receipt_grant_transport_failure_never_dispatches_model(self):
+        calls = []
+        def api(url, token, path, data=None):
+            calls.append((path, data))
+            if path.endswith("claim/build"):
+                return self.claim(reservation=100)
+            if path.endswith("/receipt-grant"):
+                raise WorkerError("receipt grant unavailable")
+            return {"state": "PENDING"}
+        with patch("graphos.worker._request", side_effect=api), \
+             patch("graphos.worker._eve_environment", return_value={}), \
+             patch("graphos.worker._eve_build") as live:
+            result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=100)
+        live.assert_not_called()
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(calls[-1][0].endswith("/fail"))
+        self.assertEqual(calls[-1][1]["actual_cost"], 0)
+        self.assertIs(calls[-1][1]["cost_known"], True)
+        self.assertFalse(any(path.endswith("/submit") for path, _ in calls))
+
+    def test_invalid_receipt_grant_response_is_known_zero_without_dispatch(self):
+        for grant in (None, {}, self.receipt(run_id="other-run"),
+                      self.receipt(attempt_id="other-attempt"),
+                      self.receipt(capture_token="token with whitespace")):
+            with self.subTest(grant=grant):
+                calls = []
+                def api(url, token, path, data=None):
+                    calls.append((path, data))
+                    if path.endswith("claim/build"):
+                        return self.claim(reservation=100)
+                    if path.endswith("/receipt-grant"):
+                        return grant
+                    return {"state": "PENDING"}
+                with patch("graphos.worker._request", side_effect=api), \
+                     patch("graphos.worker._eve_environment", return_value={}), \
+                     patch("graphos.worker._eve_build") as live, \
+                     patch("graphos.worker.run_bounded") as runner:
+                    result = build_once("http://localhost:8000", "secret", "run", "eve", reserve=100)
+                live.assert_not_called()
+                runner.assert_not_called()
+                self.assertEqual(result["status"], "failed")
+                self.assertTrue(calls[-1][0].endswith("/fail"))
                 self.assertEqual(calls[-1][1]["actual_cost"], 0)
                 self.assertIs(calls[-1][1]["cost_known"], True)
 

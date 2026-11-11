@@ -14,7 +14,7 @@ import uuid
 import pytest
 
 from graphos.sandbox import run_bounded
-from verifier.accessibility import AXE_VERSION, validate_axe_report
+from verifier.accessibility import AXE_VERSION, validate_axe_report, validate_focus_observation
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +56,27 @@ def test_axe_asset_matches_recorded_upstream_integrity():
     assert provenance["tarball"] == f"https://registry.npmjs.org/axe-core/-/axe-core-{AXE_VERSION}.tgz"
     for name, digest in provenance["files_sha256"].items():
         assert hashlib.sha256((directory / name).read_bytes()).hexdigest() == digest
+
+
+def test_focus_failure_identifies_checkbox_and_preserves_bounded_measurements():
+    observation = {
+        "control": {"tag": "input", "type": "checkbox", "id": "task-1",
+                    "role": "", "label": 'Long "label"\n' + "\u2603" * 80},
+        "outline": {"style": "auto", "width": 1, "offset": 0, "color": "rgb(0, 0, 0)"},
+        "adjacent_background": [255, 255, 255, 1], "contrast": 21,
+        "visible": True, "viewport": True,
+    }
+    unfocused = {"outline": {"style": "none", "width": 0, "offset": 0,
+                              "color": "rgb(0, 0, 0)"}}
+    with pytest.raises(AssertionError) as failure:
+        validate_focus_observation(observation, unfocused)
+    message = str(failure.value)
+    assert len(message) <= 600
+    detail = json.loads(message.split("; ", 1)[1])
+    assert detail["control"]["type"] == "checkbox"
+    assert detail["focused"]["width"] == 1
+    assert detail["adjacent"] == [255, 255, 255, 1]
+    assert detail["contrast"] == 21
 
 
 PROBE = '''
@@ -142,6 +163,16 @@ def accessibility_browser_results():
          "html_replace": ['id="new-task"', 'id="new-task" tabindex="-1"']},
         {"name": "negative_custom_tabindex", "checks": ["common_keyboard_navigation"],
          "html_replace": ['</main>', '<div role="button" tabindex="-1">More</div></main>']},
+        {"name": "always_on_outline", "checks": ["visible_focus"],
+         "css": "button,input{outline:3px solid #176647!important;outline-offset:3px!important}"},
+        {"name": "focus_color_change", "checks": ["visible_focus"],
+         "css": "button,input{outline:3px solid #991b1b;outline-offset:3px}"
+                "button:focus-visible,input:focus-visible{outline-color:#176647}"},
+        {"name": "checkbox_focus_missing", "checks": ["visible_focus"],
+         "css": "input[type=checkbox]:focus-visible{outline:1px solid #176647}"},
+        {"name": "offset_ring_same_control_fill", "checks": ["visible_focus"],
+         "css": "button{background:#176647;color:white}"
+                "button:focus-visible{outline:3px solid #176647;outline-offset:3px}"},
     ]
     with tempfile.TemporaryDirectory(prefix="graphos-a11y-") as temporary:
         directory = Path(temporary)
@@ -225,6 +256,27 @@ def test_structural_programmatic_focus_target_is_not_an_interactive_control(
 
 
 @pytest.mark.sandbox
+@pytest.mark.parametrize("case", ["focus_color_change", "offset_ring_same_control_fill"])
+def test_valid_focus_changes_and_adjacent_backgrounds_pass(accessibility_browser_results, case):
+    result = accessibility_browser_results[(case, "visible_focus")]
+    assert result["passed"], result
+
+
+@pytest.mark.sandbox
+def test_browser_focus_failure_identifies_the_missing_checkbox_outline(accessibility_browser_results):
+    result = accessibility_browser_results[("checkbox_focus_missing", "visible_focus")]
+    assert not result["passed"], result
+    assert "focus requires a visible outline" in result["detail"]
+    detail = json.loads(result["detail"].split("; ", 1)[1])
+    assert detail["control"]["tag"] == "input"
+    assert detail["control"]["type"] == "checkbox"
+    assert detail["control"]["label"] == "Review accessibility"
+    assert detail["focused"]["width"] == 1
+    assert detail["adjacent"] == [255, 255, 255, 1]
+    assert detail["contrast"] >= 3
+
+
+@pytest.mark.sandbox
 @pytest.mark.parametrize("case,check,reason", [
     ("red_delete", "axe_populated", "violations:color-contrast"),
     ("gray_completed", "axe_completed", "violations:color-contrast"),
@@ -238,6 +290,7 @@ def test_structural_programmatic_focus_target_is_not_an_interactive_control(
     ("incomplete_contrast", "axe_populated", "incomplete:color-contrast"),
     ("negative_native_tabindex", "common_keyboard_navigation", "cannot be reached with Tab"),
     ("negative_custom_tabindex", "common_keyboard_navigation", "cannot be reached with Tab"),
+    ("always_on_outline", "visible_focus", "unchanged between unfocused and focused states"),
 ])
 def test_defective_fixture_is_rejected_for_the_expected_reason(
         accessibility_browser_results, case, check, reason):

@@ -1,6 +1,7 @@
 import { Client, type ClientSession, type SessionStreamEvent } from "eve/client";
 import {setTimeout as delay} from "node:timers/promises";
 import { GeneratedSchema, type TaskRequest } from "./contracts.js";
+import {receiptHeaders,type ReceiptGrant} from "./receipts.js";
 
 export interface ModelDelivery {status: string; data?: unknown; sessionId: string; deliveryId: string}
 export interface AgentSession {
@@ -36,7 +37,7 @@ export async function waitForRetirement(
 }
 
 /** The production implementation uses eve's documented public HTTP client. */
-export function eveTransport(baseUrl: string, token: string): AgentTransport {
+export function eveTransport(baseUrl: string, token: string,receipt?:ReceiptGrant): AgentTransport {
   const client = new Client({baseUrl, auth: {bearer: token}, redirect: "error"});
   return {
     async create(request, signal) {
@@ -46,6 +47,7 @@ export function eveTransport(baseUrl: string, token: string): AgentTransport {
         // saved cursor; never create/send another paid turn. The caller's fixed
         // AbortSignal remains the deadline across every connection.
         message: JSON.stringify(request), outputSchema: GeneratedSchema, signal,
+        ...(receipt?{headers:receiptHeaders(receipt)}:{}),
         reconnect: {maxAttempts: 3, baseDelayMs: 25, maxDelayMs: 250},
       });
       const settleControl = async (kind: "cancel" | "end", controlSignal: AbortSignal) => {

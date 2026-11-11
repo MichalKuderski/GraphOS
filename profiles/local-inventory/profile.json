@@ -1,6 +1,6 @@
 {
   "id": "local-inventory",
-  "version": 1,
+  "version": 2,
   "status": "active",
   "display_name": "Local inventory",
   "fixture_directory": "inventory",
@@ -10,12 +10,27 @@
     "objective": "Build a polished offline inventory app satisfying every fixed local-inventory profile requirement.",
     "depends_on": []
   },
-  "required_files": ["index.html", "app.js", "styles.css"],
+  "required_files": [
+    "index.html",
+    "app.js",
+    "styles.css"
+  ],
   "required_checks": [
-    "accessible_structure", "add_inventory_item", "edit_quantity", "search_inventory",
-    "delete_inventory_item", "local_storage_reload", "reject_invalid_input",
-    "unique_item_names", "literal_html_input", "keyboard_operation", "axe_empty",
-    "axe_populated", "keyboard_navigation", "visible_focus", "mobile_reflow"
+    "accessible_structure",
+    "add_inventory_item",
+    "edit_quantity",
+    "search_inventory",
+    "delete_inventory_item",
+    "local_storage_reload",
+    "reject_invalid_input",
+    "unique_item_names",
+    "literal_html_input",
+    "keyboard_operation",
+    "axe_empty",
+    "axe_populated",
+    "keyboard_navigation",
+    "visible_focus",
+    "mobile_reflow"
   ],
   "acceptance_criteria": [
     "The page has a main landmark, a visible heading, labeled controls, and a visible status message for invalid input.",
@@ -30,7 +45,7 @@
     "The app works offline with only index.html, app.js, and styles.css, without remote assets, package installation, server-side code, or external network access.",
     "The add, edit quantity, search, and delete flow works with Tab, Enter, and Space, and every visible control is reachable by keyboard.",
     "Empty and populated states have no axe-core 4.14.0 WCAG 2 A/AA, WCAG 2.1 A/AA, or WCAG 2.2 AA automated violations or incomplete findings, including color contrast. Normal text needs at least 4.5:1 contrast; large text needs at least 3:1.",
-    "Every visible control has a keyboard focus outline at least 2 CSS pixels wide, at least 3:1 contrast against a solid adjacent background, and no clipping or obstruction. Use an opaque solid outline and a nonnegative outline offset.",
+    "Every visible control has a keyboard focus outline at least 2 CSS pixels wide, at least 3:1 contrast against a solid adjacent background, and no clipping or obstruction. Use an opaque solid outline and a nonnegative outline offset. The computed outline color, style, width, or offset must change between unfocused and keyboard-focused states; an unchanged always-on outline is insufficient.",
     "At viewport widths of 320 and 390 CSS pixels, populated states including a long unbroken item name have no horizontal page overflow or offscreen text or controls."
   ],
   "selector_contract": {
@@ -48,6 +63,7 @@
     "The disclosed finite acceptance suite is a regression gate, not proof of arbitrary correctness or resistance to deliberate test gaming.",
     "Browser localStorage is single-browser storage, not a durable database or backup. No identity, cross-device synchronization, transaction accounting, or multi-user inventory is supported.",
     "Automated accessibility checks cover only the declared states and rules. Passing does not certify WCAG conformance, assistive-technology usability, all zoom settings, all browsers, or arbitrary interaction states. Incomplete axe findings fail closed and require repair or a separately designed trusted review process.",
-    "The focus check deliberately requires an opaque 2px-or-larger outline over a solid background. Equivalent custom focus designs need a separately verified profile before acceptance."
+    "The focus check deliberately requires an opaque 2px-or-larger outline over a solid background. Equivalent custom focus designs need a separately verified profile before acceptance.",
+    "Focus-state verification compares computed outline properties and adjacent-background contrast in declared states; it is not a same-pixel area or complete WCAG focus-appearance assessment."
   ]
 }

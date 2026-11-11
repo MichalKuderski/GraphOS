@@ -99,8 +99,10 @@ def test_guard_delegates_once_and_never_fabricates_output():
     original, persist = Mock(return_value={"actual_result": True}), Mock()
     report = {"live_builds_dispatched": 0}
     guarded = repair.guarded_adapter(original, binding, report, persist)
-    assert guarded(claim, {"profile": True}, [], feedback) == {"actual_result": True}
-    original.assert_called_once_with(claim, {"profile": True}, [], feedback)
+    receipt = {"run_id": "run", "attempt_id": "attempt", "capture_token": "private-test-capability"}
+    assert guarded(claim, {"profile": True}, [], feedback, receipt=receipt) == {"actual_result": True}
+    original.assert_called_once_with(claim, {"profile": True}, [], feedback, receipt=receipt)
+    assert "private-test-capability" not in json.dumps(report)
     persist.assert_called_once()
     assert report["repair_bindings_checked_before_dispatch"] is True
     with pytest.raises(repair.worker.BuildFailure) as exc:

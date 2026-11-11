@@ -21,6 +21,7 @@ export type Generated = z.infer<typeof GeneratedSchema>;
 
 const ClaimSchema = z.object({
   run_id: z.string().min(1).max(128), task_id: z.string().min(1).max(128),
+  attempt_id: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/).optional(),
   task_key: z.string().min(1).max(128), epoch: z.number().int().nonnegative(),
   revision: z.number().int().nonnegative(), input_hash: hash,
   objective: z.string().min(1).max(8_000),

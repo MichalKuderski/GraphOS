@@ -2,6 +2,8 @@ import { gateway, wrapLanguageModel, type LanguageModelMiddleware } from "ai";
 import {isDeepStrictEqual} from "node:util";
 import {z} from "zod";
 import { AdapterError, assertLiveAuthorization, GeneratedSchema, MAX_OUTPUT_TOKENS, MAX_PROMPT_BYTES, MODEL_ID } from "./contracts.js";
+import {earlyReceiptMiddleware,receiptApiOrigin,type ReceiptInvocation} from "./receipts.js";
+import {journaledReceiptSender} from "./receipt-journal.js";
 
 // Pinned eve 0.91: protocol/reply-tool.js and harness/model-call/tools.js
 // inject this function for outputSchema. No private framework import is used.
@@ -20,12 +22,15 @@ export const boundedMiddleware: LanguageModelMiddleware = {
         reply.name !== REPLY_TOOL_NAME || !isDeepStrictEqual(reply.inputSchema, replySchema)) {
       throw new AdapterError("structured_reply_tool_required");
     }
-    return {...params, maxOutputTokens: MAX_OUTPUT_TOKENS,
+    // The native Gateway request carries this V4 function-tool flag to the
+    // provider. Keep local validation: schema-keyword support is route-specific,
+    // and refused/interrupted output must never qualify as a candidate.
+    return {...params, tools: [{...reply, strict: true}], maxOutputTokens: MAX_OUTPUT_TOKENS,
       toolChoice: {type:"tool",toolName:REPLY_TOOL_NAME}};
   },
 };
 
-export function boundedModel() {
+export function boundedModel(receiptBinding:()=>ReceiptInvocation) {
   assertLiveAuthorization();
   let invoked = false;
   const oneShot: LanguageModelMiddleware = {
@@ -40,5 +45,6 @@ export function boundedModel() {
       return {...params, abortSignal: params.abortSignal ? AbortSignal.any([params.abortSignal, timeout]) : timeout};
     },
   };
-  return wrapLanguageModel({model: gateway(MODEL_ID), middleware: [oneShot, boundedMiddleware]});
+  return wrapLanguageModel({model: gateway(MODEL_ID), middleware: [oneShot, boundedMiddleware,
+    earlyReceiptMiddleware(receiptBinding,journaledReceiptSender(receiptApiOrigin()))]});
 }

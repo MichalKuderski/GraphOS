@@ -2,6 +2,7 @@ import { defineAgent, defineDynamic } from "eve";
 import { runs, turns } from "eve/events";
 import { boundedModel } from "../src/model.js";
 import { AdapterError, MAX_MODEL_CALLS, MAX_OUTPUT_TOKENS, MODEL_CONTEXT_TOKENS } from "../src/contracts.js";
+import {currentReceiptInvocation} from "../src/receipt-context.js";
 
 export default defineAgent({
   // Private sessions otherwise request deletion at end, racing the broker's
@@ -13,7 +14,7 @@ export default defineAgent({
     if (turns(ctx.view).length > 1 || runs(ctx.view).filter(run => run.status === "settled").length >= MAX_MODEL_CALLS) {
       throw new AdapterError("model_call_limit");
     }
-    return {model: boundedModel(), reasoning: "low", modelContextWindowTokens: MODEL_CONTEXT_TOKENS};
+    return {model: boundedModel(()=>currentReceiptInvocation(ctx.session.id)), reasoning: "low", modelContextWindowTokens: MODEL_CONTEXT_TOKENS};
   }),
   defaultTools: false,
   tool: false,

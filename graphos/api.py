@@ -16,7 +16,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .artifacts import ArtifactError, ArtifactStore
 from .config import Settings
-from .ledger import Conflict, Ledger
+from .ledger import Conflict, Ledger, ReceiptAuthorizationError
 from .profiles import default_spec, get_profile, list_profiles
 
 Nonnegative = Annotated[int, Field(strict=True, ge=0, le=1_000_000_000)]
@@ -82,6 +82,23 @@ class BuildFailure(Record):
     reason: str = Field(min_length=1, max_length=2000)
     actual_cost: Nonnegative
     cost_known: StrictBool = False
+    usage: dict[str, Any] | None = None
+
+
+class AttemptReceipt(Record):
+    event_id: str = Field(min_length=1, max_length=200)
+    kind: Literal["session", "model_started", "generation", "usage", "session_terminal"]
+    session_id: str = Field(min_length=1, max_length=200)
+    task_id: str | None = Field(default=None, min_length=1, max_length=128)
+    epoch: int | None = Field(default=None, strict=True, ge=1)
+    revision: int | None = Field(default=None, strict=True, ge=1)
+    input_hash: Digest | None = None
+    model_run_id: str | None = Field(default=None, min_length=1, max_length=128)
+    model_id: str | None = Field(default=None, min_length=1, max_length=200)
+    model_attempt: int | None = Field(default=None, strict=True, ge=0, le=0)
+    generation_id: str | None = Field(default=None, min_length=1, max_length=512)
+    usage: dict[str, Any] | None = None
+    outcome: Literal["completed", "failed", "cancelled"] | None = None
 
 
 class Verification(Binding):
@@ -205,6 +222,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def conflict(request, exc):
         return JSONResponse({"detail": str(exc)}, 409)
 
+    @app.exception_handler(ReceiptAuthorizationError)
+    async def receipt_forbidden(request, exc):
+        return JSONResponse({"detail": str(exc)}, 403)
+
     @app.exception_handler(ArtifactError)
     async def artifact_error(request, exc):
         return JSONResponse({"detail": str(exc)}, 422)
@@ -310,10 +331,28 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                    body.revision, body.input_hash, candidate,
                                    body.actual_cost, body.provenance)
 
+    @app.post("/v1/runs/{run_id}/tasks/{task_id}/receipt-grant", dependencies=[Depends(builder)])
+    def receipt_grant(run_id: UUID, task_id: UUID, body: Binding):
+        return ledger.create_receipt_grant(str(run_id), str(task_id), body.token, body.epoch,
+                                           body.revision, body.input_hash)
+
+    @app.post("/v1/runs/{run_id}/attempts/{attempt_id}/receipts")
+    def capture_receipt(run_id: UUID, attempt_id: UUID, body: AttemptReceipt,
+                        authorization: Annotated[str | None, Header()] = None):
+        if not authorization or not authorization.startswith("Bearer "):
+            raise HTTPException(401, "Receipt capture capability required")
+        return ledger.capture_attempt_receipt(str(run_id), str(attempt_id),
+            authorization.removeprefix("Bearer "), body.model_dump(exclude_unset=True))
+
+    @app.get("/v1/runs/{run_id}/attempts/{attempt_id}/receipts", dependencies=[Depends(operator)])
+    def attempt_receipts(run_id: UUID, attempt_id: UUID):
+        return ledger.get_attempt_receipts(str(run_id), str(attempt_id))
+
     @app.post("/v1/runs/{run_id}/tasks/{task_id}/fail", dependencies=[Depends(builder)])
     def fail(run_id: UUID, task_id: UUID, body: BuildFailure):
         return ledger.fail_build(str(run_id), str(task_id), body.token, body.epoch,
-                                 body.reason, body.actual_cost, cost_known=body.cost_known)
+                                 body.reason, body.actual_cost, cost_known=body.cost_known,
+                                 usage=body.usage)
 
     @app.post("/v1/runs/{run_id}/tasks/{task_id}/verify", dependencies=[Depends(verifier)])
     def verify(run_id: UUID, task_id: UUID, body: Verification):

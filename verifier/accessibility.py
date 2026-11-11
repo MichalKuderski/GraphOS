@@ -4,6 +4,7 @@ Only import browser dependencies inside browser checks: pure report validation c
 be tested without running candidate JavaScript on the host. All browser execution
 belongs inside GraphOS's unprivileged, offline verifier container.
 """
+import json
 from pathlib import Path
 
 
@@ -67,16 +68,23 @@ def assert_keyboard_reachable(page, locators):
         tab_to(page, locator)
 
 
-def assert_visible_focus(page, locator):
-    """Profile contract: a >=2 CSS px focus outline, >=3:1 adjacent contrast.
-
-    This deliberately supports an explicit outline rather than treating a small
-    screenshot difference, shadow, or a scripted focus flag as sufficient proof.
-    It does not certify every WCAG focus appearance criterion.
-    """
-    tab_to(page, locator)
-    result = locator.evaluate(r"""el => {
+def _focus_snapshot(locator, measure_scene=False):
+    return locator.evaluate(r"""(el, measureScene) => {
       const style = getComputedStyle(el);
+      const labelledBy = (el.getAttribute('aria-labelledby') || '').split(/\s+/)
+        .map(id => document.getElementById(id)?.textContent || '').join(' ').trim();
+      const label = el.getAttribute('aria-label') || labelledBy ||
+        Array.from(el.labels || []).map(label => label.textContent).join(' ') ||
+        el.textContent || el.getAttribute('title') || '';
+      const observation = {
+        control: {tag: el.tagName.toLowerCase(), type: (el.type || '').slice(0, 20),
+          id: (el.id || '').slice(0, 48), role: (el.getAttribute('role') || '').slice(0, 20),
+          label: label.replace(/\s+/g, ' ').trim().slice(0, 80)},
+        outline: {style: style.outlineStyle, width: parseFloat(style.outlineWidth),
+          offset: parseFloat(style.outlineOffset), color: style.outlineColor}
+      };
+      if (!measureScene) return observation;
+      const fail = reason => ({...observation, reason});
       const rgba = color => {
         const m = color.match(/^rgba?\(([^)]+)\)$/);
         if (!m) return null;
@@ -91,19 +99,20 @@ def assert_visible_focus(page, locator):
       let transparent = false;
       for (let node = el.parentElement; node; node = node.parentElement) {
         const s = getComputedStyle(node), color = rgba(s.backgroundColor);
-        if (s.backgroundImage !== 'none') return {reason: 'Complex focus background needs review'};
-        if (!color) return {reason: 'Unresolved focus background color'};
+        if (s.backgroundImage !== 'none') return fail('Complex focus background needs review');
+        if (!color) return fail('Unresolved focus background color');
         if (color[3] === 1) { background = color; break; }
         if (color[3] !== 0) transparent = true;
       }
+      observation.adjacent_background = background;
       const foreground = rgba(style.outlineColor);
       if (transparent || !foreground || foreground[3] !== 1)
-        return {reason: 'Translucent focus contrast needs review'};
+        return fail('Translucent focus contrast needs review');
       const a = luminance(foreground), b = luminance(background);
-      const contrast = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+      observation.contrast = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
       const rect = el.getBoundingClientRect();
-      const offset = parseFloat(style.outlineOffset), width = parseFloat(style.outlineWidth);
-      if (offset < 0) return {reason: 'Inset focus outline needs review'};
+      const {offset, width} = observation.outline;
+      if (offset < 0) return fail('Inset focus outline needs review');
       const extent = offset + width;
       for (let node = el.parentElement; node; node = node.parentElement) {
         const s = getComputedStyle(node), r = node.getBoundingClientRect();
@@ -111,18 +120,79 @@ def assert_visible_focus(page, locator):
              (rect.left - extent < r.left || rect.right + extent > r.right)) ||
             (/(hidden|clip|scroll|auto)/.test(s.overflowY) &&
              (rect.top - extent < r.top || rect.bottom + extent > r.bottom)))
-          return {reason: 'Focus outline is clipped by an ancestor'};
+          return fail('Focus outline is clipped by an ancestor');
       }
       const point = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
-      return {width, style: style.outlineStyle, contrast,
+      return {...observation,
         visible: !!point && (point === el || el.contains(point)),
         viewport: rect.left - extent >= 0 && rect.right + extent <= innerWidth};
-    }""")
-    assert not result.get("reason"), result.get("reason")
-    assert result["style"] not in ("none", "hidden") and result["width"] >= 2, \
-        "Keyboard focus requires a visible outline at least 2 CSS pixels wide"
-    assert result["contrast"] >= 3, "Focus outline contrast is below 3:1"
-    assert result["visible"] and result["viewport"], "Keyboard focus is obscured or offscreen"
+    }""", measure_scene)
+
+
+def _focus_diagnostic(observation, unfocused):
+    """Keep labels escaped and style measurements useful within the 600-character report."""
+    control = dict(observation.get("control", unfocused.get("control", {})))
+    detail = {"control": control,
+              "focused": observation.get("outline"), "unfocused": unfocused.get("outline"),
+              "adjacent": observation.get("adjacent_background"),
+              "contrast": round(observation["contrast"], 3) if "contrast" in observation else None}
+    encoded = json.dumps(detail, ensure_ascii=True, separators=(",", ":"))
+    # Non-ASCII labels may expand sixfold when escaped; shorten identity text
+    # before the runner's hard truncation can hide the actionable measurements.
+    for key in ("label", "id", "role"):
+        while len(encoded) > 490 and control.get(key):
+            control[key] = control[key][:len(control[key]) // 2]
+            encoded = json.dumps(detail, ensure_ascii=True, separators=(",", ":"))
+    return encoded
+
+
+def validate_focus_observation(observation, unfocused):
+    """Enforce the explicit outline contract; not a pixel-area WCAG AAA measurement."""
+    outline = observation.get("outline", {})
+    reason = observation.get("reason")
+    if not reason and (outline.get("style") in (None, "none", "hidden")
+                       or outline.get("width", 0) < 2):
+        reason = "Keyboard focus requires a visible outline at least 2 CSS pixels wide"
+    if not reason and observation.get("contrast", 0) < 3:
+        reason = "Focus outline contrast is below 3:1"
+    if not reason and not (observation.get("visible") and observation.get("viewport")):
+        reason = "Keyboard focus is obscured or offscreen"
+    if not reason and outline == unfocused.get("outline"):
+        reason = "Focus outline is unchanged between unfocused and focused states"
+    if reason:
+        raise AssertionError(reason + "; " + _focus_diagnostic(observation, unfocused))
+    return {"control": observation["control"], "focused": outline,
+            "unfocused": unfocused["outline"],
+            "adjacent_background": observation["adjacent_background"],
+            "contrast": round(observation["contrast"], 3), "outline_changed": True}
+
+
+def assert_visible_focus(page, locator):
+    """A >=2 CSS px outline, >=3:1 adjacent contrast, and a change on focus.
+
+    A computed outline color, style, width, or offset must change after actual
+    keyboard focus. An always-on outline does not establish a focus indicator.
+    Color-only changes are allowed if the focused outline still meets the same
+    size/adjacent-contrast requirements. This finite CSS check does not measure
+    pixel-area or the focused/unfocused pixel contrast required by WCAG AAA.
+    """
+    assert locator.count() == 1 and locator.is_visible(), "Keyboard target is missing or hidden"
+    # The seed/app may have focused this target already. Observe a real unfocused
+    # state rather than comparing two snapshots of an already focused control.
+    for _ in range(60):
+        if not locator.evaluate("el => el === document.activeElement"):
+            break
+        page.keyboard.press("Tab")
+    else:
+        snapshot = _focus_snapshot(locator)
+        raise AssertionError("Control cannot leave focus with Tab; "
+                             + _focus_diagnostic(snapshot, snapshot))
+    unfocused = _focus_snapshot(locator)
+    try:
+        tab_to(page, locator)
+    except AssertionError as exc:
+        raise AssertionError(str(exc) + "; " + _focus_diagnostic({}, unfocused)) from exc
+    return validate_focus_observation(_focus_snapshot(locator, measure_scene=True), unfocused)
 
 
 def assert_mobile_reflow(page):
@@ -225,8 +295,7 @@ def _focus(page):
     for text in ("Review accessibility", "Plan next milestone"):
         controls.extend((page.get_by_role("checkbox", name=text, exact=True),
                          page.get_by_role("button", name="Delete " + text, exact=True)))
-    for control in controls:
-        assert_visible_focus(page, control)
+    return {"controls": [assert_visible_focus(page, control) for control in controls]}
 
 
 def _mobile(page):
@@ -278,8 +347,7 @@ def common_accessibility_checks(seed_for_accessibility):
 
     def focus(page):
         seed_for_accessibility(page)
-        for control in _controls(page):
-            assert_visible_focus(page, control)
+        return {"controls": [assert_visible_focus(page, control) for control in _controls(page)]}
 
     def mobile(page):
         seed_for_accessibility(page)

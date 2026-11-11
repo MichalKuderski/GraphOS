@@ -59,6 +59,9 @@ def calibration_variant(files: dict[str, str], case: str) -> dict[str, str]:
     elif case == "low-contrast-text":
         result["styles.css"] += ("\nbody, body * { color: #94a3b8 !important; "
                                  "background-color: #f8fafc !important; }\n")
+    elif case == "always-on-focus":
+        result["styles.css"] += ("\nbutton,input,textarea,select,a {outline: 3px solid #134fbe !important; "
+                                 "outline-offset: 3px !important;}\n")
     elif case != "positive-fixture":
         raise ValueError("unknown calibration case")
     return result
@@ -240,6 +243,7 @@ def main(argv=None) -> int:
             report["compiled_from_current_source"] = True
             persist()
             api.start()
+            eve.env["GRAPHOS_RECEIPT_API_URL"] = api.url
             eve.start()
             execution_env = {**controller_env, "GRAPHOS_API_URL": api.url, "EVE_SERVER_URL": eve.url}
             os.environ.clear()

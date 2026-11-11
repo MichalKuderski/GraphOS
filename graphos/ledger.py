@@ -7,6 +7,7 @@ lived: no correctness depends on one process, connection, or in-memory object.
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import re
 import secrets
@@ -22,6 +23,10 @@ from psycopg.types.json import Jsonb
 
 class Conflict(ValueError):
     """The requested transition, binding, or input is not valid."""
+
+
+class ReceiptAuthorizationError(Conflict):
+    """A narrow receipt capability does not authorize this capture."""
 
 
 def _json(value: Any) -> str:
@@ -65,6 +70,101 @@ def _safe(value: Any) -> Any:
     if isinstance(value, list):
         return [_safe(item) for item in value]
     return value
+
+
+def _receipt_id(value: Any, name: str, pattern: str, maximum: int = 200) -> str:
+    value = _text(value, name, maximum)
+    if not re.fullmatch(pattern, value):
+        raise Conflict(f"invalid {name}")
+    return value
+
+
+def _model_usage(value: Any) -> dict:
+    counts = {"input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens",
+              "actual_cost_microdollars"}
+    if not isinstance(value, dict) or set(value) != counts | {"generation_id", "finish_reason"}:
+        raise Conflict("invalid bounded model usage fields")
+    result = {key: _integer(value[key], key, 0, 2**53 - 1) for key in counts}
+    generation = value["generation_id"]
+    if generation is not None:
+        _receipt_id(generation, "generation_id", r"gen_[A-Za-z0-9_-]{1,508}", 512)
+    reason = value["finish_reason"]
+    if reason is not None:
+        _receipt_id(reason, "finish_reason", r"[A-Za-z0-9_-]{1,128}", 128)
+    return {**result, "generation_id": generation, "finish_reason": reason}
+
+
+def _failure_usage(value: Any, actual_cost: int, cost_known: bool) -> dict | None:
+    if value is None:
+        return None
+    counts = {"input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens",
+              "actual_cost_microdollars", "model_runs"}
+    if (not cost_known or not isinstance(value, dict)
+            or set(value) != counts | {"cost_source", "generations"}
+            or value["cost_source"] != "eve_gateway_usage_events"):
+        raise Conflict("failure usage requires bounded known runtime usage")
+    result = {key: _integer(value[key], key, 0, 2**53 - 1) for key in counts}
+    if result["actual_cost_microdollars"] != actual_cost:
+        raise Conflict("failure usage cost does not match charged total")
+    generations = value["generations"]
+    if not 1 <= result["model_runs"] <= 3 or not isinstance(generations, list) or len(generations) != result["model_runs"]:
+        raise Conflict("failure usage requires 1..3 distinct model runs")
+    runs, ids, safe = set(), set(), []
+    for item in generations:
+        if not isinstance(item, dict) or set(item) != {"run_id", "generation_id", "finish_reason"}:
+            raise Conflict("invalid failure generation fields")
+        run_id = _receipt_id(item["run_id"], "model_run_id", r"[A-Za-z0-9_-]{1,128}", 128)
+        checked = _model_usage({**{key: 0 for key in counts - {"model_runs"}},
+                                "generation_id": item["generation_id"], "finish_reason": item["finish_reason"]})
+        generation = checked["generation_id"]
+        if run_id in runs or (generation is not None and generation in ids):
+            raise Conflict("duplicate failure usage identity")
+        runs.add(run_id)
+        if generation is not None:
+            ids.add(generation)
+        safe.append({"run_id": run_id, "generation_id": generation, "finish_reason": checked["finish_reason"]})
+    return {**result, "cost_source": "eve_gateway_usage_events", "generations": safe}
+
+
+def _receipt_event(value: Any) -> dict:
+    if not isinstance(value, dict):
+        raise Conflict("receipt event must be an object")
+    kind = value.get("kind")
+    if not isinstance(kind, str):
+        raise Conflict("invalid receipt event kind")
+    fields = {"event_id", "kind", "session_id"}
+    if kind == "session":
+        fields |= {"task_id", "epoch", "revision", "input_hash"}
+    if kind in {"model_started", "generation", "usage"}:
+        fields |= {"model_run_id", "model_id", "model_attempt"}
+    if kind == "generation":
+        fields.add("generation_id")
+    elif kind == "usage":
+        fields.add("usage")
+    elif kind == "session_terminal":
+        fields.add("outcome")
+    if kind not in {"session", "model_started", "generation", "usage", "session_terminal"} or set(value) != fields:
+        raise Conflict("invalid receipt event fields")
+    result = dict(value)
+    _receipt_id(value["event_id"], "event_id", r"[A-Za-z0-9_.:-]{1,200}")
+    _receipt_id(value["session_id"], "session_id", r"[A-Za-z0-9_-]{1,200}")
+    if kind == "session":
+        _receipt_id(value["task_id"], "task_id", r"[A-Za-z0-9_-]{1,128}", 128)
+        _integer(value["epoch"], "epoch", 1)
+        _integer(value["revision"], "revision", 1)
+        result["input_hash"] = _digest(value["input_hash"])
+    if "model_run_id" in fields:
+        _receipt_id(value["model_run_id"], "model_run_id", r"[A-Za-z0-9_-]{1,128}", 128)
+        _receipt_id(value["model_id"], "model_id", r"[A-Za-z0-9_./:-]{1,200}")
+        _integer(value["model_attempt"], "model_attempt", 0, 0)
+    if kind == "generation":
+        _receipt_id(value["generation_id"], "generation_id", r"gen_[A-Za-z0-9_-]{1,508}", 512)
+    elif kind == "usage":
+        result["usage"] = _model_usage(value["usage"])
+    elif kind == "session_terminal" and (not isinstance(value["outcome"], str)
+            or value["outcome"] not in {"completed", "failed", "cancelled"}):
+        raise Conflict("invalid session outcome")
+    return result
 
 
 def _spec(value: Any) -> dict:
@@ -390,6 +490,136 @@ class Ledger:
             if not allowed:
                 raise Conflict("artifact is outside this lease's scope")
 
+    def create_receipt_grant(self, run_id: str, task_id: str, token: str, epoch: int,
+                             revision: int, input_hash: str) -> dict:
+        """Delegate capture only; the lease credential and accounting stay private."""
+        with self._connect() as conn:
+            run = self._run(conn, run_id)
+            task = self._task(conn, run, task_id)
+            self._bindings(run, task, revision, input_hash)
+            attempt = self._attempt(conn, task, token, epoch, "BUILD")
+            capture_token = hmac.new(token.encode(),
+                ("graphos-receipt-v1:" + attempt["id"]).encode(), hashlib.sha256).hexdigest()
+            digest = hashlib.sha256(capture_token.encode()).hexdigest()
+            existing = conn.execute("SELECT token_hash FROM graphos_receipt_grants WHERE attempt_id=%s", (attempt["id"],)).fetchone()
+            if existing:
+                if not secrets.compare_digest(existing["token_hash"], digest):
+                    raise Conflict("receipt grant binding changed")
+            else:
+                self._active_run(run)
+                self._require_current(task, attempt)
+                conn.execute("INSERT INTO graphos_receipt_grants(attempt_id,token_hash) VALUES (%s,%s)", (attempt["id"], digest))
+                self._event(conn, run, "RECEIPT_CAPTURE_GRANTED", {"task_id": task_id, "attempt_id": attempt["id"]})
+            return {"run_id": run_id, "task_id": task_id, "attempt_id": attempt["id"],
+                    "capture_token": capture_token,
+                    "capture_path": f"/v1/runs/{run_id}/attempts/{attempt['id']}/receipts"}
+
+    @staticmethod
+    def _receipt_attempt(conn, run_id: str, attempt_id: str) -> dict:
+        attempt = conn.execute("SELECT a.*,a.expires_at > clock_timestamp() AS unexpired,t.run_id,t.revision AS attempt_revision,t.epoch AS task_epoch,t.active_attempt_id FROM graphos_attempts a JOIN graphos_tasks t ON t.id=a.task_id WHERE a.id=%s AND t.run_id=%s AND a.kind='BUILD'", (attempt_id, run_id)).fetchone()
+        if not attempt:
+            raise Conflict("unknown build receipt attempt")
+        return attempt
+
+    def capture_attempt_receipt(self, run_id: str, attempt_id: str, capture_token: str,
+                                payload: dict) -> dict:
+        """Record bounded runtime facts without settling cost or accepting artifacts.
+
+        Existing model callbacks survive fencing. New provider intents still need
+        the current build lease, and an unresolved prior intent blocks another.
+        IDs are recovery lookup keys, never authoritative provider cost evidence.
+        """
+        payload = _receipt_event(payload)
+        _text(capture_token, "capture_token", 256)
+        identity = payload["kind"] + (":" + payload["model_run_id"] if "model_run_id" in payload else "")
+        payload_hash = _hash(payload)
+        with self._connect() as conn:
+            run = self._run(conn, run_id)
+            attempt = self._receipt_attempt(conn, run_id, attempt_id)
+            grant = conn.execute("SELECT * FROM graphos_receipt_grants WHERE attempt_id=%s", (attempt_id,)).fetchone()
+            if not grant or not secrets.compare_digest(grant["token_hash"], hashlib.sha256(capture_token.encode()).hexdigest()):
+                raise ReceiptAuthorizationError("invalid receipt capture capability")
+            existing = conn.execute("SELECT * FROM graphos_attempt_receipt_events WHERE attempt_id=%s AND (event_id=%s OR identity_key=%s)", (attempt_id, payload["event_id"], identity)).fetchall()
+            if existing:
+                if any(record["payload_hash"] != payload_hash for record in existing):
+                    raise Conflict("receipt identity reused with a different payload")
+                return {"recorded": True, "duplicate": True, "attempt_id": attempt_id,
+                        "event_id": payload["event_id"], "kind": payload["kind"]}
+
+            kind = payload["kind"]
+            if kind in {"session", "model_started"}:
+                # Settlement remains legal during reconciliation/overrun, but a
+                # fresh provider intent must not spend through either pause.
+                if run["state"] != "ACTIVE":
+                    raise Conflict("new receipt intent requires an active run")
+                if (attempt["state"] != "ACTIVE" or not attempt["unexpired"]
+                        or attempt["active_attempt_id"] != attempt_id
+                        or attempt["task_epoch"] != attempt["epoch"]
+                        or attempt["attempt_revision"] != run["revision"]):
+                    raise Conflict("new receipt intent requires a current build lease")
+                # Capture must never perform accounting or expiry transitions.
+                # An abandoned sibling may already have unreported spend even
+                # before a dispatcher observes its expiry and pauses the run.
+                if conn.execute("SELECT 1 FROM graphos_attempts a JOIN graphos_tasks t ON t.id=a.task_id WHERE t.run_id=%s AND a.kind='BUILD' AND a.state='ACTIVE' AND a.expires_at<=clock_timestamp() LIMIT 1", (run_id,)).fetchone():
+                    raise Conflict("new receipt intent blocked by an unresolved expired build")
+            if kind == "session":
+                if (payload["task_id"] != attempt["task_id"] or payload["epoch"] != attempt["epoch"]
+                        or payload["revision"] != attempt["attempt_revision"]
+                        or payload["input_hash"] != attempt["input_hash"]):
+                    raise Conflict("receipt session does not match its claimed input binding")
+                try:
+                    with conn.transaction():
+                        conn.execute("UPDATE graphos_receipt_grants SET session_id=%s WHERE attempt_id=%s", (payload["session_id"], attempt_id))
+                except psycopg.errors.UniqueViolation as exc:
+                    raise Conflict("session is already bound to another attempt") from exc
+            else:
+                if grant["session_id"] != payload["session_id"]:
+                    raise Conflict("receipt session does not match this attempt")
+                if kind == "session_terminal":
+                    conn.execute("UPDATE graphos_receipt_grants SET terminal_outcome=%s WHERE attempt_id=%s", (payload["outcome"], attempt_id))
+                else:
+                    model = conn.execute("SELECT * FROM graphos_model_receipts WHERE attempt_id=%s AND model_run_id=%s", (attempt_id, payload["model_run_id"])).fetchone()
+                    if kind == "model_started":
+                        if grant["terminal_outcome"] is not None:
+                            raise Conflict("terminal session cannot dispatch another model")
+                        models = conn.execute("SELECT usage FROM graphos_model_receipts WHERE attempt_id=%s", (attempt_id,)).fetchall()
+                        if len(models) >= 3 or any(item["usage"] is None for item in models):
+                            raise Conflict("model receipt budget exhausted or previous model unresolved")
+                        conn.execute("INSERT INTO graphos_model_receipts(attempt_id,model_run_id,model_id,model_attempt) VALUES (%s,%s,%s,%s)", (attempt_id, payload["model_run_id"], payload["model_id"], payload["model_attempt"]))
+                    else:
+                        if not model or model["model_id"] != payload["model_id"] or model["model_attempt"] != payload["model_attempt"]:
+                            raise Conflict("receipt model does not match a registered intent")
+                        generation = payload.get("generation_id") if kind == "generation" else payload["usage"]["generation_id"]
+                        if generation is not None:
+                            if model["generation_id"] is not None and model["generation_id"] != generation:
+                                raise Conflict("model generation identity changed")
+                            try:
+                                with conn.transaction():
+                                    conn.execute("UPDATE graphos_model_receipts SET generation_id=%s WHERE attempt_id=%s AND model_run_id=%s", (generation, attempt_id, payload["model_run_id"]))
+                            except psycopg.errors.UniqueViolation as exc:
+                                raise Conflict("generation is already bound to another model") from exc
+                        if kind == "usage":
+                            conn.execute("UPDATE graphos_model_receipts SET usage=%s WHERE attempt_id=%s AND model_run_id=%s", (Jsonb({**payload["usage"], "cost_source": "eve_gateway_usage_events"}), attempt_id, payload["model_run_id"]))
+            conn.execute("INSERT INTO graphos_attempt_receipt_events(attempt_id,event_id,identity_key,payload_hash,payload) VALUES (%s,%s,%s,%s,%s)", (attempt_id, payload["event_id"], identity, payload_hash, Jsonb(payload)))
+            self._event(conn, run, "ATTEMPT_RECEIPT_CAPTURED", {"attempt_id": attempt_id,
+                "event_id": payload["event_id"], "kind": kind, "attempt_revision": attempt["attempt_revision"]})
+            return {"recorded": True, "duplicate": False, "attempt_id": attempt_id,
+                    "event_id": payload["event_id"], "kind": kind}
+
+    def get_attempt_receipts(self, run_id: str, attempt_id: str) -> dict:
+        """Operator recovery view; includes old revisions, never capability secrets."""
+        with self._connect() as conn:
+            self._run(conn, run_id)
+            attempt = self._receipt_attempt(conn, run_id, attempt_id)
+            grant = conn.execute("SELECT session_id,terminal_outcome,created_at FROM graphos_receipt_grants WHERE attempt_id=%s", (attempt_id,)).fetchone()
+            models = conn.execute("SELECT model_run_id,model_id,model_attempt,generation_id,usage,created_at FROM graphos_model_receipts WHERE attempt_id=%s ORDER BY created_at,model_run_id", (attempt_id,)).fetchall()
+            events = conn.execute("SELECT event_id,payload,created_at FROM graphos_attempt_receipt_events WHERE attempt_id=%s ORDER BY created_at,event_id", (attempt_id,)).fetchall()
+            return _safe({"run_id": run_id, "attempt_id": attempt_id, "task_id": attempt["task_id"],
+                "attempt_revision": attempt["attempt_revision"], "attempt_state": attempt["state"],
+                "cost_uncertain": attempt["cost_uncertain"], "capture": grant, "models": models,
+                "events": events, "failure_usage": (attempt["result"] or {}).get("usage"),
+                "source": "trusted_runtime_capture", "settles_cost": False})
+
     @staticmethod
     def _attempt(conn, task: dict, token: str, epoch: int, kind: str) -> dict:
         _text(token, "lease token", 256)
@@ -432,12 +662,14 @@ class Ledger:
             self._event(conn, run, "BUILD_SUBMITTED", {"task_id": task_id, "attempt_id": attempt["id"], "candidate_hash": candidate_hash, "actual_cost": actual_cost, "provenance": provenance})
             return _safe(self._task(conn, run, task_id))
 
-    def fail_build(self, run_id: str, task_id: str, token: str, epoch: int, reason: str, actual_cost: int, cost_known: bool = False) -> dict:
+    def fail_build(self, run_id: str, task_id: str, token: str, epoch: int, reason: str, actual_cost: int, cost_known: bool = False, usage: dict | None = None) -> dict:
         reason = _text(reason, "reason", 4096)
         actual_cost = _integer(actual_cost, "actual_cost")
         if type(cost_known) is not bool:
             raise Conflict("cost_known must be boolean")
-        submission = _hash({"reason": reason, "cost": actual_cost, "cost_known": cost_known})
+        usage = _failure_usage(usage, actual_cost, cost_known)
+        metadata = {"usage": usage} if usage is not None else {}
+        submission = _hash({"reason": reason, "cost": actual_cost, "cost_known": cost_known, **metadata})
         with self._connect() as conn:
             run = self._run(conn, run_id)
             task = self._task(conn, run, task_id)
@@ -446,12 +678,26 @@ class Ledger:
                 return _safe(task)
             self._active_run(run)
             self._require_current(task, attempt)
+            if usage is not None and conn.execute("SELECT 1 FROM graphos_receipt_grants WHERE attempt_id=%s", (attempt["id"],)).fetchone():
+                captured = conn.execute("SELECT * FROM graphos_model_receipts WHERE attempt_id=%s", (attempt["id"],)).fetchall()
+                reported = {item["run_id"]: item for item in usage["generations"]}
+                if (set(reported) != {item["model_run_id"] for item in captured}
+                        or any(item["usage"] is None for item in captured)):
+                    raise Conflict("failure usage does not cover completed captured models")
+                for item in captured:
+                    detail = reported[item["model_run_id"]]
+                    if ((detail["generation_id"] is not None and detail["generation_id"] != item["generation_id"])
+                            or detail["finish_reason"] != item["usage"]["finish_reason"]):
+                        raise Conflict("failure usage conflicts with captured model identity")
+                for key in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens", "actual_cost_microdollars"):
+                    if usage[key] != sum(item["usage"][key] for item in captured):
+                        raise Conflict("failure usage does not match captured model totals")
             charge = actual_cost if cost_known else max(actual_cost, attempt["reservation"])
             self._charge(conn, run, attempt["reservation"], charge)
             state = "EXHAUSTED" if task["build_attempts"] >= run["spec"]["max_attempts"] else "PENDING"
-            conn.execute("UPDATE graphos_attempts SET state='FAILED',actual_cost=%s,cost_uncertain=%s,submission_hash=%s,result=%s WHERE id=%s", (charge, not cost_known, submission, Jsonb({"reason": reason, "cost_known": cost_known}), attempt["id"]))
+            conn.execute("UPDATE graphos_attempts SET state='FAILED',actual_cost=%s,cost_uncertain=%s,submission_hash=%s,result=%s WHERE id=%s", (charge, not cost_known, submission, Jsonb({"reason": reason, "cost_known": cost_known, **metadata}), attempt["id"]))
             conn.execute("UPDATE graphos_tasks SET state=%s,active_attempt_id=NULL,state_version=state_version+1 WHERE id=%s", (state, task_id))
-            self._event(conn, run, "BUILD_FAILED", {"task_id": task_id, "attempt_id": attempt["id"], "reason": reason, "actual_cost": charge, "cost_known": cost_known, "state": state})
+            self._event(conn, run, "BUILD_FAILED", {"task_id": task_id, "attempt_id": attempt["id"], "reason": reason, "actual_cost": charge, "cost_known": cost_known, "state": state, **metadata})
             self._refresh_state(conn, run)
             return _safe(self._task(conn, run, task_id))
 

@@ -1,8 +1,37 @@
 # GraphOS implementation roadmap
 
+## Active checkpoint — generation quality and receipt durability (2026-11-08)
+
+Stay within the three existing browser profiles. The unpublished patch is being
+qualified against the published `5d367595cab7b168aae9d70c0a97059e0e777203`
+baseline; historical CI and live outcomes do not qualify changed source. See
+[checkpoint evidence](../evals/results/receipt-durability-checkpoint-20261108.json).
+
+Required order: (1) offline real-Eve/fake-provider crash and receipt checks,
+(2) current-source full regression and positive/negative focus calibration,
+(3) separately authorized exact-candidate static-web repair, then inventory
+repair, each freshly verified and separately accounted. No paid requests, merge,
+deployment, credential or budget changes are authorized in this checkpoint.
+Do not proceed to parallel composition, additional profiles or wider evaluation
+before these gates are satisfied. Both distinct live repair demonstrations remain
+release blockers until they actually pass; replaying a seed is not a repair.
+
+The focus contract adds a real unfocused-to-keyboard-focused change to the
+existing outline/contrast/clipping requirements (static-web v3, local-notes v2,
+local-inventory v2). Earlier accepted artifacts need evidence from those suites.
+Same-byte repairs retain their bound rejection and completed generation cost;
+changed candidates require fresh verification. The callback journal and retained
+event recovery preserve facts independently of cost settlement. Their durability
+limits and recovery commands are in [operations](operations.md#receipt-recovery).
+
+Keep the three pilot cohorts separate: planned/dispatched/accepted/undispatched
+are **6/3/0/3**, **6/2/0/4**, and **6/6/1/0**. The two subsequent repair experiments
+each exhausted two attempts without acceptance. Preserve all these failures and
+denominators; the checkpoint's fake-provider tests add no live quality samples.
+
 GraphOS currently implements an evidence-controlled, single-tenant execution
-slice for one registered task-list application. The PostgreSQL ledger supports
-task dependencies, but the public profile deliberately admits one fixed product
+slice for three registered offline browser applications. The PostgreSQL ledger supports
+task dependencies, but each public profile deliberately admits one fixed product
 contract. Fixture generation, model integration, a parallel development team,
 and a measured advantage over other systems are different milestones.
 

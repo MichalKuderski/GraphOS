@@ -1,13 +1,37 @@
 {
   "id": "local-notes",
-  "version": 1,
+  "version": 2,
   "status": "active",
   "display_name": "Local notes",
   "description": "A dependency-free offline notes app with title/body editing, search, and localStorage persistence; this is a bounded product contract.",
-  "required_files": ["index.html", "app.js", "styles.css"],
+  "required_files": [
+    "index.html",
+    "app.js",
+    "styles.css"
+  ],
   "fixture_directory": "notes",
-  "task_template": {"key": "app", "objective": "Build a polished offline notes app satisfying every fixed local-notes profile requirement.", "depends_on": []},
-  "required_checks": ["accessible_structure", "create_note", "edit_note", "cancel_edit", "search_notes", "delete_note", "local_storage_reload", "reject_empty_input", "literal_html_input", "keyboard_note_operations", "axe_empty", "axe_populated", "keyboard_navigation", "visible_focus", "mobile_reflow"],
+  "task_template": {
+    "key": "app",
+    "objective": "Build a polished offline notes app satisfying every fixed local-notes profile requirement.",
+    "depends_on": []
+  },
+  "required_checks": [
+    "accessible_structure",
+    "create_note",
+    "edit_note",
+    "cancel_edit",
+    "search_notes",
+    "delete_note",
+    "local_storage_reload",
+    "reject_empty_input",
+    "literal_html_input",
+    "keyboard_note_operations",
+    "axe_empty",
+    "axe_populated",
+    "keyboard_navigation",
+    "visible_focus",
+    "mobile_reflow"
+  ],
   "acceptance_criteria": [
     "The page has one visible main landmark, a visible heading, and explicitly labeled Note title, Note body, and Search notes textboxes.",
     "The Save note button creates a note with a nonblank title and body. Each note has data-testid=note-item, a heading containing its title, and a body with data-testid=note-body.",
@@ -20,7 +44,7 @@
     "The interface works offline without external resources, server code, dependencies, or a user account.",
     "Creating, editing, and canceling a note work through keyboard controls. Every visible control is reachable by Tab.",
     "Empty and populated/editing states have zero automated axe-core 4.14.0 WCAG 2 A/AA, WCAG 2.1 A/AA, and WCAG 2.2 AA violations or incomplete findings, including text contrast of at least 4.5:1 for normal text and 3:1 for large text.",
-    "Focused controls have an opaque solid outline at least 2 CSS pixels wide with contrast of at least 3:1 against the adjacent solid background, a nonnegative outline offset, and no clipping or obstruction.",
+    "Focused controls have an opaque solid outline at least 2 CSS pixels wide with contrast of at least 3:1 against the adjacent solid background, a nonnegative outline offset, and no clipping or obstruction. The computed outline color, style, width, or offset must change between unfocused and keyboard-focused states; an unchanged always-on outline is insufficient.",
     "Populated pages including a long unbroken title have no horizontal overflow or offscreen text or controls at viewport widths of 320 and 390 pixels."
   ],
   "selector_contract": {
@@ -39,6 +63,7 @@
     "Notes are local to one browser and origin. No sync, multi-user access, account security, backup service, rich text, attachments, or backend is included.",
     "Browser storage can be cleared or unavailable; this profile is not suitable for the sole copy of important information.",
     "Accessibility checks cover finite automated rules and states. They do not certify WCAG conformance or full assistive-technology, zoom, or browser coverage.",
-    "Other project families require separate trusted profiles and acceptance suites."
+    "Other project families require separate trusted profiles and acceptance suites.",
+    "Focus-state verification compares computed outline properties and adjacent-background contrast in declared states; it is not a same-pixel area or complete WCAG focus-appearance assessment."
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "static-web",
-  "version": 2,
+  "version": 3,
   "status": "active",
   "description": "A dependency-free accessible task-list web app; this milestone validates this specific product contract, not arbitrary websites.",
   "required_files": [
@@ -36,7 +36,7 @@
     "HTML-looking task input is displayed literally and cannot create DOM elements or execute script.",
     "Empty, populated, and completed-task states have no axe-core 4.14.0 WCAG 2 A/AA, WCAG 2.1 A/AA, or WCAG 2.2 AA automated violations or incomplete findings, including color contrast. Normal text needs at least 4.5:1 contrast; large text needs at least 3:1.",
     "The complete add, toggle, filter, and delete flow works with Tab, Enter, and Space, with every required control reachable by keyboard.",
-    "Every visible required control has a keyboard focus outline at least 2 CSS pixels wide, at least 3:1 contrast against a solid adjacent background, and no clipping or obstruction. Use an opaque solid outline and a nonnegative outline offset.",
+    "Every visible required control has a keyboard focus outline at least 2 CSS pixels wide, at least 3:1 contrast against a solid adjacent background, and no clipping or obstruction. Use an opaque solid outline and a nonnegative outline offset. The computed outline color, style, width, or offset must change between unfocused and keyboard-focused states; an unchanged always-on outline is insufficient.",
     "At viewport widths of 320 and 390 CSS pixels, populated and completed states including a long unbroken task label have no horizontal page overflow or offscreen text or controls."
   ],
   "selector_contract": {
@@ -56,6 +56,7 @@
     "No server-side code, dependency install, backend, external network, deployment, or user identity service is supported.",
     "Other project families require additional trusted profiles and suites before execution.",
     "Automated accessibility checks cover only the declared states and rules. Passing does not certify WCAG conformance, assistive-technology usability, all zoom settings, all browsers, or arbitrary interaction states. Incomplete axe findings fail closed and require repair or a separately designed trusted review process.",
-    "The focus check deliberately requires an opaque 2px-or-larger outline over a solid background. Equivalent custom focus designs need a separately verified profile before acceptance."
+    "The focus check deliberately requires an opaque 2px-or-larger outline over a solid background. Equivalent custom focus designs need a separately verified profile before acceptance.",
+    "Focus-state verification compares computed outline properties and adjacent-background contrast in declared states; it is not a same-pixel area or complete WCAG focus-appearance assessment."
   ]
 }

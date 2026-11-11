@@ -120,3 +120,61 @@ tested new code.
 Do not log bearer tokens, lease tokens, Gateway keys, full environment variables,
 or unrestricted model/provider responses. Logs and evidence need their own
 retention and access policies.
+
+## Receipt recovery
+
+The current receipt protocol records a session and exact model-run intent before
+provider dispatch. Only a first, nonduplicate intent ACK permits dispatch. An
+intent whose ACK was lost is never permission to repeat the model call. The first
+trusted Gateway generation ID is captured before its chunk is forwarded to Eve.
+Model text cannot supply that identity. Usage and terminal facts are independent
+of final candidate output; capture does not charge/refund a run, release a
+reservation, clear cost uncertainty, or authorize delivery.
+
+Configure `GRAPHOS_RECEIPT_API_URL` as a stable trusted API origin and
+`GRAPHOS_RECEIPT_OUTBOX_DIR` on a private retained volume accessible only to the
+Eve worker/recovery operator. The default is `.state/receipt-outbox` under the Eve
+working directory. Direct callback transport ignores ambient proxies and rejects
+redirects. Journal records contain scoped receipt capabilities: directory mode
+0700 and record mode 0600 are mandatory; do not upload them as test evidence.
+Record contents and directory links are fsynced before callback transmission.
+Committed records remain after ACK so identical facts can be recovered after an
+unknown response. Recovery does not call a model or make accounting transitions.
+
+With provider credentials absent, replay one attempt's committed journal:
+
+```sh
+cd agents/eve
+env -u AI_GATEWAY_API_KEY -u VERCEL_OIDC_TOKEN node dist/src/recover-receipts.js \
+  --run-id RUN_ID --attempt-id ATTEMPT_ID
+```
+
+The origin/outbox settings must refer to the original trusted service and volume.
+To recover a retained usage/terminal event that never entered a handler, provide
+the original private envelope, existing Eve session ID, and trusted broker URL:
+
+```sh
+env -u AI_GATEWAY_API_KEY -u VERCEL_OIDC_TOKEN node dist/src/recover-receipts.js \
+  --envelope-file /private/original-envelope.json \
+  --session-id EXISTING_SESSION_ID --eve-url http://127.0.0.1:3001
+```
+
+This path uses the configured `GRAPHOS_EVE_TOKEN` only to read an authenticated
+snapshot. It does not create/send/end/cancel a session, restart uncertain work,
+register new work from a snapshot, or settle costs. The API checks the existing
+grant/session/model binding. Terminal capture uses the channel handler because
+Eve 0.91's terminal publication path does not invoke authored agent hooks.
+Conflicts or pending journal entries stop recovery for operator investigation.
+Afterward, inspect operator receipt history and accounting separately. A runtime
+cost report or generation lookup ID is not a reconciled provider invoice.
+
+Bounded guarantee: process death after journal commit is covered on the retained
+volume, as are callback failure before commit and committed callbacks with lost
+ACKs. A crash before a generation journal commit can still lose an observed ID;
+an unfinished `.tmp` file is not a committed record. Retained Eve usage/terminal
+events have a separate recovery path, but an ID withheld before reaching Eve may
+not. Host/volume loss, automated recovery scheduling, journal archival/sharding,
+and account-wide invoice reconciliation remain open. The current scan is limited
+to 4096 committed records and 16 per selected attempt; reaching the limit fails
+closed. Broader operation requires retention/archival and a tested persistent
+volume policy. None of these checks establishes universal reliability.

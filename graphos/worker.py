@@ -118,7 +118,21 @@ def _eve_environment() -> dict[str, str]:
     return {name: value for name, value in os.environ.items() if name in allowed}
 
 
-def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dict | None = None) -> dict:
+def _receipt_context(claim: dict, receipt: dict | None) -> dict:
+    if (not isinstance(receipt, dict) or receipt.get("run_id") != claim.get("run_id")
+            or receipt.get("attempt_id") != claim.get("attempt_id")
+            or any(not isinstance(receipt.get(key), str)
+                   or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", receipt[key])
+                   for key in ("run_id", "attempt_id"))
+            or not isinstance(receipt.get("capture_token"), str)
+            or not re.fullmatch(r"[A-Za-z0-9_-]{32,256}", receipt["capture_token"])):
+        raise BuildFailure("missing or mismatched scoped receipt grant before generation", actual_cost=0)
+    return {key: receipt[key] for key in ("run_id", "attempt_id", "capture_token")}
+
+
+def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dict | None = None,
+               *, receipt: dict | None = None) -> dict:
+    capture = _receipt_context(claim, receipt)
     environment = _eve_environment()
     command = ["node", str(ROOT / "agents" / "eve" / "dist" / "src" / "cli.js")]
     # The resolved top-level context carries the same diagnostics as the claim.
@@ -128,7 +142,8 @@ def _eve_build(claim: dict, profile: dict, dependencies: list[dict], repair: dic
     if repair is not None:
         request["repair"] = repair
     try:
-        encoded = canonical(request)
+        # Private callback authority is never part of the model's TaskRequest.
+        encoded = canonical({"request": request, "receipt": capture})
     except ArtifactError as exc:
         raise BuildFailure("eve request could not be serialized before generation", actual_cost=0) from exc
     # Check serialized bytes, including JSON escaping and UTF-8 expansion. Never
@@ -234,8 +249,16 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
                 if bundle.get("manifest_hash") != digest or bundle_digest(bundle["files"]) != digest:
                     raise WorkerError("repair candidate content does not match its rejected manifest")
                 repair = {**repair, "files": bundle["files"]}
+            grant = _request(api_url, token, task_route + "/receipt-grant", _identity(claim))
+            capture = _receipt_context(claim, grant)
             model_started = True
-            output = _eve_build(claim, profile, dependencies, repair)
+            output = _eve_build(claim, profile, dependencies, repair, receipt=capture)
+            if repair is not None and bundle_digest(output["files"]) == repair["candidate_hash"]:
+                # The same bytes under the same bound inputs/suite/policy retain
+                # their prior rejection. Charge the completed model call, but do
+                # not schedule an identical candidate for another verification.
+                raise BuildFailure("repair returned the unchanged rejected candidate",
+                                   output["usage"]["actual_cost_microdollars"], output["usage"])
         payload = {**_identity(claim), "files": output["files"],
                    "actual_cost": output["usage"]["actual_cost_microdollars"],
                    "provenance": {**output["provenance"], "usage": output["usage"]}}
@@ -246,7 +269,8 @@ def build_once(api_url: str, token: str, run_id: str, builder: str = "fixture",
         cost_known = not model_started or (isinstance(exc, BuildFailure) and exc.actual_cost is not None)
         result = _request(api_url, token, task_route + "/fail",
                           {"token": claim["token"], "epoch": claim["epoch"],
-                           "reason": str(exc)[:300], "actual_cost": charge, "cost_known": cost_known})
+                           "reason": str(exc)[:300], "actual_cost": charge, "cost_known": cost_known,
+                           **({"usage": exc.usage} if isinstance(exc, BuildFailure) and exc.usage else {})})
         return {"status": "failed", "claim": claim, "result": result,
                 "reason": str(exc)[:300], "provenance": {"mode": builder},
                 **({"usage": exc.usage} if isinstance(exc, BuildFailure) and exc.usage else {})}

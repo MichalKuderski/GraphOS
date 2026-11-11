@@ -81,7 +81,7 @@ def summarize_build(result: dict) -> dict:
 
 
 def guarded_adapter(original_build, rejected_binding: dict, report: dict, persist):
-    def build(build_claim, profile, dependencies, repair=None):
+    def build(build_claim, profile, dependencies, repair=None, *, receipt=None):
         try:
             repair_guard(build_claim, repair, rejected_binding)
         except (ValueError, KeyError, TypeError) as exc:
@@ -90,7 +90,7 @@ def guarded_adapter(original_build, rejected_binding: dict, report: dict, persis
             raise worker.BuildFailure("extra live build rejected before model invocation", actual_cost=0)
         report.update(live_builds_dispatched=1, repair_bindings_checked_before_dispatch=True)
         persist()
-        return original_build(build_claim, profile, dependencies, repair)
+        return original_build(build_claim, profile, dependencies, repair, receipt=receipt)
     return build
 
 
@@ -178,6 +178,7 @@ def main(argv=None) -> int:
         injection_http = None
         injection.close()
         live.start()
+        eve.env["GRAPHOS_RECEIPT_API_URL"] = live.url
         eve.start()
         execution_env = {**base_env, "GRAPHOS_API_URL": live.url, "EVE_SERVER_URL": eve.url,
                          "GRAPHOS_ALLOW_FIXTURE": "0"}

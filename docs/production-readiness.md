@@ -1,5 +1,13 @@
 # Production-readiness ledger
 
+**2026-11-08 checkpoint:** The generation-quality/focus/receipt patch is local and
+unpublished, based on `5d367595`. Its current qualification is recorded separately
+in [the checkpoint report](../evals/results/receipt-durability-checkpoint-20261108.json).
+The baseline observations below remain historical: they do not certify the new
+static-web v3, local-notes v2 or local-inventory v2 suites. No paid calls, merge,
+deployment or budget changes occurred in this checkpoint. Both new distinct live
+repair demonstrations remain open. No production-readiness claim is made.
+
 GraphOS implements a bounded, single-tenant platform and three offline
 application profiles. It is not a universally capable or fully production-certified
 agent platform. This ledger separates historical measurements from current

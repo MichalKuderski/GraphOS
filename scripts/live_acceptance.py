@@ -37,7 +37,8 @@ def eve_environment(env: dict[str, str]) -> dict[str, str]:
         raise ValueError("Gateway and distinct eve broker credentials are required")
     allowed = {"PATH", "HOME", "LANG", "LC_ALL", "TMPDIR", "NODE_EXTRA_CA_CERTS",
                "SSL_CERT_FILE", "SSL_CERT_DIR", "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY",
-               "https_proxy", "http_proxy", "no_proxy", "AI_GATEWAY_API_KEY", "GRAPHOS_EVE_TOKEN"}
+               "https_proxy", "http_proxy", "no_proxy", "AI_GATEWAY_API_KEY", "GRAPHOS_EVE_TOKEN",
+               "GRAPHOS_RECEIPT_API_URL", "GRAPHOS_RECEIPT_OUTBOX_DIR"}
     return {**{k: v for k, v in env.items() if k in allowed}, "GRAPHOS_LIVE_ENABLED": "1",
             "GRAPHOS_GATEWAY_BUDGET_USD": "1", "NODE_USE_ENV_PROXY": "1", "EVE_SCHEDULES_DISABLED": "1"}
 
@@ -211,6 +212,7 @@ def main(argv=None) -> int:
         report["compiled_from_current_source"] = True
         persist()
         api.start()
+        eve.env["GRAPHOS_RECEIPT_API_URL"] = api.url
         eve.start()
         execution_env = {**controller_env, "GRAPHOS_API_URL": api.url, "EVE_SERVER_URL": eve.url}
         os.environ.clear()

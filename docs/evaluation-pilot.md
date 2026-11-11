@@ -18,9 +18,10 @@ multiuser backends, or long-lived production services.
 python scripts/evaluate_profiles.py calibrate
 ```
 
-This makes no model requests. It runs the known fixture and three altered copies
+This makes no model requests. It runs the known fixture and four altered copies
 for each profile: missing HTML entrypoint, disabled storage writes, and low
-contrast text. The original fixture remains untouched. A negative control counts
+contrast text, and an always-visible outline that does not distinguish keyboard
+focus. The original fixture remains untouched. A negative control counts
 only when the expected check fails; a missing Docker image or unrelated exception
 does not count as detecting the injected defect. Positive and negative controls
 are both retained, with profile, suite, policy, source, and verifier identities.

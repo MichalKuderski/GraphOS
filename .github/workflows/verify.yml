@@ -33,6 +33,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: agents/eve/package-lock.json
+      - run: npm ci --prefix agents/eve
       - name: Generate isolated test credentials
         run: |
           python - <<'PY'
