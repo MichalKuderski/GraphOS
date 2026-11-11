@@ -1,0 +1,74 @@
+{
+  "observed_at": "2026-11-07T20:25:09.858476+00:00",
+  "pilot": "profile-live-pilot-reconnect-20261107.json",
+  "read_only_lookup": true,
+  "receipts": [
+    {
+      "id": "gen_01M6VT0K5A83FBTKQT8WNRFYQA",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.00442175",
+      "gateway_cost": "0.00442175",
+      "native_tokens_prompt": 1783,
+      "native_tokens_completion": 1732,
+      "native_tokens_reasoning": 256,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:08:18.000Z"
+    },
+    {
+      "id": "gen_01M6VT1030CEBRQ7ZQ5ZMBVAPK",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.0100896",
+      "gateway_cost": "0.0100896",
+      "native_tokens_prompt": 3888,
+      "native_tokens_completion": 4530,
+      "native_tokens_reasoning": 0,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:08:31.000Z"
+    },
+    {
+      "id": "gen_01M6VT1V24BGQJY88PZ2HW1W8H",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.01014425",
+      "gateway_cost": "0.01014425",
+      "native_tokens_prompt": 15529,
+      "native_tokens_completion": 3131,
+      "native_tokens_reasoning": 0,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:08:59.000Z"
+    },
+    {
+      "id": "gen_01M6VT2YX8QTTHN6CV3SYFXD6Y",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.008832",
+      "gateway_cost": "0.008832",
+      "native_tokens_prompt": 2048,
+      "native_tokens_completion": 3328,
+      "native_tokens_reasoning": 832,
+      "finish_reason": "stop",
+      "created_at": "2026-11-07T20:09:35.000Z"
+    }
+  ],
+  "prior_session_provider_spend_usd": "0.11503990",
+  "pilot_provider_spend_usd": "0.03348760",
+  "cumulative_provider_receipt_spend_usd": "0.14852750",
+  "session_authorization_usd": 5,
+  "key_budget_usd": 1,
+  "key_budget_is_soft": true,
+  "billing_settings_changed": false,
+  "credit_purchase_performed": false,
+  "status": "RECONCILED",
+  "failed_trial_reconciliation": "profile-schema-rejection-reconciliation-20261107.json",
+  "gateway_budget_observation": {
+    "observed_at": "2026-11-07T20:25:50.982021+00:00",
+    "limit_usd": 1,
+    "current_spend_usd": "0.14852750",
+    "refresh_period": "none",
+    "active": true,
+    "receipt_sum_matches": true,
+    "billing_settings_changed": false
+  }
+}

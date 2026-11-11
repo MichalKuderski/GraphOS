@@ -1,0 +1,31 @@
+{
+  "session_id": "wrun_01M6VNHHJ7Y0XNMD33C3HV9H60",
+  "graphos_run_id": "0fdcc1c7-6d8b-4f02-995a-2c25dbbade34",
+  "read_only_lookup": true,
+  "receipts": [
+    {
+      "id": "gen_01M6VNHJN8KY91AN88GE67X3H7",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": 0.0041655,
+      "gateway_cost": 0.0041655,
+      "upstream_inference_cost": 0,
+      "native_tokens_prompt": 1198,
+      "native_tokens_completion": 1741,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T18:50:12.000Z"
+    },
+    {
+      "id": "gen_01M6VNHZRCC8G7RR7VAVCNMFYK",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": 0.00726615,
+      "gateway_cost": 0.00726615,
+      "upstream_inference_cost": 0,
+      "native_tokens_prompt": 3911,
+      "native_tokens_completion": 3125,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T18:50:25.000Z"
+    }
+  ]
+}

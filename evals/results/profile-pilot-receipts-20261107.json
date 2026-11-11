@@ -1,0 +1,75 @@
+{
+  "observed_at": "2026-11-07T19:55:29.561409+00:00",
+  "source_digest": "4bf02598a45ba6903a92133f0a311006fc77ebbfa86b15ed5fd293723d3e7ff4",
+  "pilot": "profile-live-pilot-20261107.json",
+  "read_only_lookup": true,
+  "receipts": [
+    {
+      "id": "gen_01M6VRZZPQ8A963PG2HQ18BYAS",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.0066125",
+      "gateway_cost": "0.0066125",
+      "native_tokens_prompt": 1786,
+      "native_tokens_completion": 2699,
+      "native_tokens_reasoning": 384,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T19:50:29.000Z",
+      "trial": "static-web-1"
+    },
+    {
+      "id": "gen_01M6VS0J2XQDWFHYEAMXTV2WF1",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.00687969",
+      "gateway_cost": "0.00687969",
+      "native_tokens_prompt": 5977,
+      "native_tokens_completion": 2662,
+      "native_tokens_reasoning": 0,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T19:50:48.000Z",
+      "trial": "static-web-1"
+    },
+    {
+      "id": "gen_01M6VS1HVBSHNQNQKW6AM0Y1WE",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.01273925",
+      "gateway_cost": "0.01273925",
+      "native_tokens_prompt": 2053,
+      "native_tokens_completion": 5793,
+      "native_tokens_reasoning": 320,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T19:51:21.000Z",
+      "trial": "local-notes-1"
+    },
+    {
+      "id": "gen_01M6VS2P6BM3SDK5N81WEY8BH1",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.01002075",
+      "gateway_cost": "0.01002075",
+      "native_tokens_prompt": 14731,
+      "native_tokens_completion": 3169,
+      "native_tokens_reasoning": 0,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T19:51:58.000Z",
+      "trial": "local-notes-1"
+    }
+  ],
+  "prior_session_provider_spend_usd": "0.05466171",
+  "key_budget_usd": 1,
+  "key_budget_is_soft": true,
+  "session_authorization_usd": 5,
+  "billing_settings_changed": false,
+  "credit_purchase_performed": false,
+  "pilot_provider_spend_usd": "0.03625219",
+  "cumulative_provider_receipt_spend_usd": "0.09091390",
+  "pilot_ledger_rounded_microdollars": 36254,
+  "status": "PARTIAL",
+  "all_pilot_costs_reconciled": false,
+  "unresolved_run_ids": [
+    "8cadac60-fe5d-49bc-bf8f-b70ca6b38e1f"
+  ],
+  "partial_receipt_scope": "Only the first two submitted trials; the interrupted inventory attempt is recorded separately in profile-pilot-interruption-20261107.json."
+}

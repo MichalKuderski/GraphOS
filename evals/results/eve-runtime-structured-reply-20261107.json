@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-11-07T20:26:22.127797+00:00",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "status": "PASS",
+  "typecheck": "PASS",
+  "node_tests": {
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": "PASS",
+  "runtime_smoke": {
+    "compiled_server": true,
+    "public_eve_client": true,
+    "anonymous_info_rejected": true,
+    "raw_token_rejected": true,
+    "model_generation_without_credentials_rejected": true,
+    "immediate_end_receipt_poll": true,
+    "delayed_end_receipt_read": true,
+    "post_end_history_retained": true,
+    "wrong_retirement_delivery_rejected": true,
+    "idle_model_calls": 0,
+    "live_model_calls": 0
+  },
+  "model_calls": 0,
+  "scope": "Compiled Eve/client authentication and retirement; adapter mocked-provider regressions. Not live model quality or production certification."
+}

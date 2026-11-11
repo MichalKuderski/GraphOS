@@ -1,0 +1,75 @@
+{
+  "checked_at_utc": "2026-11-07T15:53:51.445890+00:00",
+  "status": "passed",
+  "api_image_tag": "graphos-api:validation-20261107",
+  "postgres_image": "postgres:17-bookworm@sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994",
+  "paid_model_calls": 0,
+  "scope": "Packaged control-plane smoke test; no generated artifact execution or live model generation",
+  "checks": {
+    "health": true,
+    "ready_requires_operator": true,
+    "postgres_ready": true,
+    "fixture_disabled": true,
+    "builder_cannot_read_operator_runs": true,
+    "profile_assets_loaded": true,
+    "only_static_web_active": true,
+    "run_admitted": true,
+    "admission_idempotent": true,
+    "run_persisted": true,
+    "api_user_non_root": true,
+    "read_only_root": true,
+    "capabilities_dropped": true,
+    "no_new_privileges": true,
+    "internal_network": true,
+    "installed_package_uses_explicit_runtime_assets": true,
+    "installed_console_script_migrates": true,
+    "all_five_migrations_applied": true
+  },
+  "packaging_fixes": [
+    "Pinned Python base digest",
+    "Mounted ephemeral proxy CA for both networked pip steps",
+    "Made trusted /app source and runtime assets readable by non-root service user"
+  ],
+  "resource_recovery": {
+    "initial_failure": "Docker daemon filesystem ENOSPC during dependency install",
+    "cleanup": "Only task-owned obsolete verifier/API images, exact obsolete/API build-cache records, and task npm cache removed; current verifier image and source dev database preserved."
+  },
+  "api_image_id": "sha256:ea5747373f61c89c63b9d1952444d34437401e93b8927ede4c1e8111111b8208",
+  "dockerfile_sha256": "e50acb756396fde4f6525d4a4a68386b1cb18fd22b7aa8b748bc456ad2a97c57",
+  "requirements_lock_sha256": "81cd42c4ad721efeef7dd80e91ede8d5ccd1d91f8659bab5ef4ab872680e425e",
+  "verifier_image_digest_configured": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff",
+  "applied_migrations": [
+    "001_ledger.sql",
+    "002_constraints.sql",
+    "003_truthful_cost_overruns.sql",
+    "004_cost_receipts.sql",
+    "005_uncertain_cost_pause.sql"
+  ],
+  "packaged_python_sources": {
+    "__init__.py": "5c6f79e33c4400a2f3a0317f2a483395c153c80181ec63f62b63bd129da929d8",
+    "__main__.py": "b91d1fbf67e68e4882f983e46959cc93dd0f6a59d9b514da294ec05692c0a962",
+    "api.py": "550d5bdbc1fdae4c23101a8296196a607122dac63ba8559c0822a2122c75bbe8",
+    "artifacts.py": "ef5721edf651dd17328b5cccd50ce5c138c4b59875f8ca70f57613370a5d80f4",
+    "config.py": "944c412e9d5c807e1f78f33eb90b6d4b97a3f0d369436af382752f7bbb1f3952",
+    "ledger.py": "628d60d37d2b0b827bacdcbfc4714d8c7503b2d4fc4f52879f45c5e94b9d7870",
+    "profiles.py": "f5bee6aa7f0b864a2864ccb2ff3e30006c9b76e82905e3793850e3ca1f880803",
+    "sandbox.py": "ba07e62ac71969d66e031ad260733771840ec78b4a3502fc0d99283424991d83",
+    "worker.py": "37deea3b7dc90aba945b2bbf9d4fb40f92de44a8286eb0b337e39edc3918c303"
+  },
+  "source_changes_after_image_build": [
+    "__main__.py",
+    "transport.py",
+    "worker.py"
+  ],
+  "checks_passed": 18,
+  "runtime": {
+    "user": "10001:10001",
+    "read_only_root": true,
+    "network": "isolated internal bridge; no published ports; requests originate inside API container",
+    "data": "ephemeral API tmpfs; separate scratch PostgreSQL database/login on existing local server; no source database table mutation"
+  },
+  "temporary_resources_removed": true,
+  "api_image_retained": false,
+  "post_validation_cleanup": "Removed only this task API image and its seven exact build-cache records to restore disk capacity; rebuild the pinned Dockerfile to rerun.",
+  "validation_limit": "Packaged API, profile assets, migrations, and installed CLI migration command passed. Later CLI/worker/transport source changes require the final source test suite; they were not in this tested image."
+}

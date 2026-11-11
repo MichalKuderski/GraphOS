@@ -1,0 +1,53 @@
+{
+  "images": [
+    {
+      "name": "desktop",
+      "dimensions": {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "height": 900,
+        "scrollHeight": 900
+      },
+      "page_errors": [],
+      "path": "docs/screenshots/live-desktop.png"
+    },
+    {
+      "name": "mobile",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 844,
+        "scrollHeight": 856
+      },
+      "page_errors": [],
+      "path": "docs/screenshots/live-mobile.png"
+    }
+  ],
+  "candidate_execution": "chromium-in-docker-only",
+  "candidate_hash": "2f9a8bfaf37335ac9b1c44baea35609d74d7bc8acd9cb642a8609cc2ef1f21ed",
+  "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff",
+  "review": {
+    "screenshots_visually_inspected": true,
+    "blocking_layout_failure_observed": false,
+    "normal_text_contrast_target": 4.5,
+    "contrast_findings": [
+      {
+        "element": "delete button text",
+        "foreground": "#ffffff",
+        "background": "#f87171",
+        "contrast_ratio": 2.77
+      },
+      {
+        "element": "completed task text",
+        "foreground": "#94a3b8",
+        "background": "#f8fafc",
+        "contrast_ratio": 2.45
+      }
+    ],
+    "usability_findings": [
+      "Repeated full task text in delete buttons dominates desktop rows; visible Delete with existing full accessible name would reduce duplication."
+    ],
+    "scope": "Two tested viewports and three ordinary task strings; not a comprehensive accessibility audit",
+    "formal_suite_includes_contrast_check": false
+  }
+}

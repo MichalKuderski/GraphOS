@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-11-07T15:57:01.208999+00:00",
+  "mode": "integration-fixture",
+  "cases": [
+    {
+      "id": "happy_fixture_release",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "",
+      "duration_ms": 8165
+    },
+    {
+      "id": "duplicate_admission_and_submission",
+      "status": "PASS",
+      "details": {
+        "run_id": "786e4cfa-e9e7-40e2-9894-a5652552e563",
+        "duplicate_charge": false
+      },
+      "duration_ms": 164
+    },
+    {
+      "id": "registered_profile_boundary",
+      "status": "PASS",
+      "details": {
+        "unsupported_objective_rejected": true,
+        "unsupported_requirement_rejected": true,
+        "fixed_suite_scope": "registered static-web task-list contract only"
+      },
+      "duration_ms": 4
+    },
+    {
+      "id": "roles_and_cancellation",
+      "status": "PASS",
+      "details": {
+        "run_id": "5f03a8b9-f6d0-4bf9-94ea-ea1dc2ea32dd",
+        "state": "CANCELLED",
+        "stale_build_rejected": true,
+        "effect_dispatch_blocked": true,
+        "real_external_action_performed": false
+      },
+      "duration_ms": 142
+    },
+    {
+      "id": "evidence_revision_and_artifact_binding",
+      "status": "FAIL",
+      "error_type": "OSError",
+      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-0tzboeln'",
+      "duration_ms": 96
+    },
+    {
+      "id": "bad_candidate_fails_browser",
+      "status": "FAIL",
+      "error_type": "OSError",
+      "error": "[Errno 28] No space left on device: '/tmp/graphos-verify-mat170sz'",
+      "duration_ms": 100
+    },
+    {
+      "id": "worker_crash_and_lease_recovery",
+      "status": "PASS",
+      "details": {
+        "run_id": "8e3d8c81-3465-4559-a4ba-68b6c76bccd2",
+        "worker_exit_code": 137,
+        "expired_reservation_conservatively_charged": 13,
+        "uncertainty_paused_dispatch": true,
+        "authoritative_fixture_cost_after_reconciliation": 0,
+        "new_epoch": 3,
+        "stale_submission_rejected": true,
+        "replacement_artifact_submitted": true
+      },
+      "duration_ms": 1576
+    },
+    {
+      "id": "controller_restart_preserves_state",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "error": "A genuinely browser-verified fixture run is required for the restart check",
+      "duration_ms": 0
+    }
+  ],
+  "claims": {
+    "model_quality_measured": false,
+    "production_readiness_established": false,
+    "scope": "PostgreSQL HTTP control plane and Docker static-web verification"
+  },
+  "limits": [
+    "One supported static-web profile",
+    "Deterministic fixtures are not AI generation",
+    "No live deployment or financial execution",
+    "No statistical accuracy estimate",
+    "Controller restart is not a database disaster-recovery test"
+  ],
+  "live_model": {
+    "status": "BLOCKED",
+    "reason": "No model gateway credential configured",
+    "model_quality_measured": false
+  },
+  "finished_at": "2026-11-07T15:57:11.455725+00:00",
+  "summary": {
+    "pass": 4,
+    "fail": 4,
+    "not_run": 0,
+    "blocked": 0
+  },
+  "coverage": {
+    "configured_fixture_cases": 8,
+    "browser_reports_with_image_identity": 0,
+    "verifier_image_ids": [],
+    "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+    "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+    "controller_restart_requested": true,
+    "database_disaster_recovery_tested": false,
+    "real_external_effects_tested": false,
+    "statistical_model_benchmark_completed": false
+  }
+}

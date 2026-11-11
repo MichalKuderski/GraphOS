@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-11-07",
+  "scope": "agents/eve implementation and offline runtime boundary; not a live model or product acceptance evaluation",
+  "recording_basis": "Completed checks observed during this implementation session; no paid requests were made to create this report.",
+  "runtime": {
+    "node": "24.22.1",
+    "npm": "11.9.0",
+    "eve": "0.91.0",
+    "ai_sdk": "7.0.164",
+    "typescript": "7.0.2",
+    "zod": "4.6.7",
+    "just_bash": "3.6.0",
+    "dependency_lockfile": "agents/eve/package-lock.json",
+    "eve_release_caveat": "Latest non-prerelease package observed, but framework documentation still labels eve preview and its Nitro dependency is a beta."
+  },
+  "checks": [
+    {"command": "npm run typecheck", "working_directory": "agents/eve", "result": "passed"},
+    {"command": "NODE_USE_ENV_PROXY=1 npm run build", "working_directory": "agents/eve", "result": "passed", "details": "TypeScript broker compilation and complete eve/Nitro server build, including just-bash environment preparation."},
+    {"command": "npm test", "working_directory": "agents/eve", "result": "passed", "tests": 11, "failed": 0, "skipped": 0, "mock_boundary": "Model transport observations are mocked; broker validation, accounting, timeout cleanup, and CLI credential failure execute real implementation code."},
+    {"command": "NODE_USE_ENV_PROXY=1 npx eve info --json", "working_directory": "agents/eve", "result": "passed", "inspection": {"status": "ready", "errors": 0, "warnings": 0, "tools": [], "subagents": [], "skills": [], "schedules": []}},
+    {"command": "npm run test:runtime", "working_directory": "agents/eve", "result": "passed", "details": "Real compiled eve server on loopback and real public eve/client. Anonymous info and raw-token authentication returned 401; an authenticated generation request without model credentials was rejected before model work; test process was stopped.", "model_transport_mocked": false, "model_credentials_supplied": false}
+  ],
+  "model_catalog": {
+    "url": "https://ai-gateway.vercel.sh/v1/models",
+    "entries": 498,
+    "snapshot": "agents/eve/model-catalog.json",
+    "sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+    "selected_model": "openai/gpt-6-luna",
+    "selection_and_tiered_prices": "agents/eve/model-selection.json",
+    "catalog_fetch_is_model_generation": false
+  },
+  "live_generation": {
+    "model_calls": 0,
+    "status": "blocked_pending_credentials_and_verified_provider_spending_control",
+    "credential_status": "No Gateway credentials configured for these checks",
+    "session_authorization_usd": 5,
+    "provider_spending_control_verified": false,
+    "environment_budget_acknowledgment_is_proof": false,
+    "ledger_reservation_is_provider_invoice_cap": false,
+    "live_model_quality_verified": false,
+    "live_usage_and_cancellation_verified": false,
+    "paid_end_to_end_acceptance_completed": false
+  },
+  "limitations": [
+    "Only the fixed static-web task-list profile is implemented by this adapter.",
+    "No candidate code is executed by the agent; product acceptance requires the separate trusted verifier.",
+    "eve has no public maxRetries setting for this agent configuration. The wrapper limits repeated calls through one model instance, but durable replay after a crash can create another instance.",
+    "Provider-side accepted work may continue after a client timeout; dedicated spending restrictions and authoritative cost reconciliation remain necessary.",
+    "This report is not a production certification or evidence that this architecture outperforms a baseline."
+  ]
+}

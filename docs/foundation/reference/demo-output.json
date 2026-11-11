@@ -1,0 +1,118 @@
+{
+  "events": [
+    {
+      "sequence": 1,
+      "kind": "task_added",
+      "task_id": "api"
+    },
+    {
+      "sequence": 2,
+      "kind": "task_added",
+      "task_id": "ui"
+    },
+    {
+      "sequence": 3,
+      "kind": "task_claimed",
+      "task_id": "api",
+      "epoch": 1,
+      "worker": "builder-a",
+      "reserved": 10
+    },
+    {
+      "sequence": 4,
+      "kind": "lease_expired",
+      "task_id": "api",
+      "epoch": 1
+    },
+    {
+      "sequence": 5,
+      "kind": "task_claimed",
+      "task_id": "api",
+      "epoch": 2,
+      "worker": "builder-b",
+      "reserved": 10
+    },
+    {
+      "sequence": 6,
+      "kind": "stale_completion_rejected",
+      "reason": "stale, expired, or superseded lease"
+    },
+    {
+      "sequence": 7,
+      "kind": "artifact_produced",
+      "task_id": "api",
+      "artifact_hash": "bee4364ea02dc8f12168d61bf229163ebac650667a050fa3b5fe473183e01f7f"
+    },
+    {
+      "sequence": 8,
+      "kind": "artifact_verified",
+      "task_id": "api",
+      "verifier": "verifier"
+    },
+    {
+      "sequence": 9,
+      "kind": "task_claimed",
+      "task_id": "ui",
+      "epoch": 1,
+      "worker": "ui-builder",
+      "reserved": 10
+    },
+    {
+      "sequence": 10,
+      "kind": "task_invalidated",
+      "task_id": "api",
+      "revision": 2
+    },
+    {
+      "sequence": 11,
+      "kind": "task_invalidated",
+      "task_id": "ui",
+      "revision": 2
+    },
+    {
+      "sequence": 12,
+      "kind": "dependent_completion_rejected",
+      "reason": "stale, expired, or superseded lease"
+    },
+    {
+      "sequence": 13,
+      "kind": "unsafe_effect_retry_rejected",
+      "reason": "ambiguous outcome: reconcile before retrying"
+    },
+    {
+      "sequence": 14,
+      "kind": "stale_reconciliation_rejected",
+      "reason": "stale or mismatched dispatch token"
+    }
+  ],
+  "spent": 26,
+  "reserved": 0,
+  "effect": {
+    "key": "release:example:1",
+    "state": "UNKNOWN",
+    "attempts": 2,
+    "payload_hash": "a4ba535d117ccf9daae12f8192eefea76b3cff5bf1657fe2cfdaf533239dce4f"
+  },
+  "tasks": [
+    {
+      "task_id": "api",
+      "state": "READY",
+      "revision": 2,
+      "epoch": 3,
+      "attempts": 0,
+      "artifact_hash": null,
+      "input_signature": null,
+      "test_revision": "tests-v1"
+    },
+    {
+      "task_id": "ui",
+      "state": "PENDING",
+      "revision": 2,
+      "epoch": 2,
+      "attempts": 0,
+      "artifact_hash": null,
+      "input_signature": null,
+      "test_revision": "tests-v1"
+    }
+  ]
+}

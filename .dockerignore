@@ -1,0 +1,11 @@
+.git
+.venv
+.state
+**/node_modules
+**/.eve
+**/.output
+**/__pycache__
+**/.pytest_cache
+.env*
+evals/results
+docs/foundation/reference/__pycache__

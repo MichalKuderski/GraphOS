@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "mode": "live-model",
+  "status": "FAIL",
+  "started_at": "2026-11-07T18:47:59.673151+00:00",
+  "source_digest": "cd32258ff78470c2ce590024e2b7354fdc9704be0d99d4805625aaa451986b1d",
+  "max_attempts": 1,
+  "budget_microdollars": 1000000,
+  "attempt_reservation_microdollars": 1000000,
+  "gateway_budget_is_soft": true,
+  "attempts": [
+    {
+      "number": 1,
+      "started_at": "2026-11-07T18:48:07.965165+00:00",
+      "stage": "STOPPED_AFTER_BUILD",
+      "build_status": "failed",
+      "failure_reason": "eve adapter failed (eve_transport_or_runtime_error); no fixture fallback was attempted",
+      "build_identity": {
+        "attempt_id": "7fa4c0fd-7406-4d89-8cde-092d5f677802",
+        "task_id": "9b523cae-f38c-4c41-a700-770d97436df2",
+        "epoch": 1,
+        "revision": 1,
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242"
+      },
+      "usage": {},
+      "provenance": {
+        "mode": "eve"
+      },
+      "finished_at": "2026-11-07T18:48:58.902411+00:00"
+    }
+  ],
+  "production_certification": false,
+  "limits": [
+    "One fixed static-web task-list contract",
+    "No statistical reliability estimate",
+    "Operator must reconcile remaining session spend before dispatch",
+    "Process termination does not guarantee provider cancellation"
+  ],
+  "compiled_from_current_source": true,
+  "run_id": "ac7db3de-ce69-41e9-9d35-89d90c7d6e4c",
+  "state": "EXHAUSTED",
+  "spent_microdollars": 18662,
+  "accounting_reconciliation_required": false,
+  "finished_at": "2026-11-07T18:48:59.148593+00:00",
+  "source_unchanged": true
+}

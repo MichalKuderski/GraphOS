@@ -1,0 +1,104 @@
+{
+  "images": [
+    {
+      "profile": "local-notes",
+      "trial_id": "local-notes-1",
+      "candidate_hash": "d92687e9f1f0da40d505bf7b1d4607dfd3ab6272ae9733d4a8c10f0abfb77f62",
+      "viewport": "desktop",
+      "viewport_width": 1280,
+      "viewport_height": 900,
+      "dimensions": {
+        "width": 1280,
+        "height": 900,
+        "scrollWidth": 1280,
+        "scrollHeight": 1195
+      },
+      "page_errors": [],
+      "capture_passed": true,
+      "screenshot_path": "docs/screenshots/profile-local-notes-desktop.jpg",
+      "screenshot_sha256": "d3399ddedb88a6cdb677c95a80155488d81f525f04d3c2b254a335b4e3e641c1",
+      "visually_inspected": true,
+      "horizontal_overflow_observed": false
+    },
+    {
+      "profile": "local-notes",
+      "trial_id": "local-notes-1",
+      "candidate_hash": "d92687e9f1f0da40d505bf7b1d4607dfd3ab6272ae9733d4a8c10f0abfb77f62",
+      "viewport": "mobile",
+      "viewport_width": 390,
+      "viewport_height": 844,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "scrollWidth": 390,
+        "scrollHeight": 1490
+      },
+      "page_errors": [],
+      "capture_passed": true,
+      "screenshot_path": "docs/screenshots/profile-local-notes-mobile.jpg",
+      "screenshot_sha256": "b8530ca81e6cd2c5968038bc032cba5e664ccf7b47d12c78ce244c90fd07e204",
+      "visually_inspected": true,
+      "horizontal_overflow_observed": false
+    }
+  ],
+  "captured_at": "2026-11-07T20:37:53.108548+00:00",
+  "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29",
+  "candidate_execution": "chromium-in-docker-only",
+  "browser_process_sandbox": false,
+  "capture_driver_sha256": "41c0dd525d0368efd7c6409b7aad727c7af4b0fe47126b323c26de0302d00952",
+  "scope": "Manual visual spotcheck; two viewports and one trusted populated state per profile. Not comprehensive accessibility or production certification.",
+  "review": {
+    "screenshots_visually_inspected": true,
+    "blocking_layout_failure_observed": false,
+    "profiles_reviewed": [
+      "local-notes"
+    ],
+    "states_reviewed": [
+      "Three saved notes, including one long unbroken title; editor open on an existing note; focused title textbox."
+    ],
+    "observations": [
+      "Desktop and mobile screenshots show readable labels, note text, and controls, with no observed overlap or clipped note content.",
+      "The long unbroken title wraps inside its note card at both viewports.",
+      "Mobile action buttons stack within the viewport; vertical scrolling is expected for the populated list.",
+      "The title textbox has a distinct blue focus outline while unfocused controls do not have that outline.",
+      "No page errors were captured; document scroll width equals viewport width at both sizes."
+    ],
+    "focus_source_review": {
+      "author_outline_is_state_conditional": true,
+      "selectors": [
+        "input[type='text']:focus",
+        "textarea:focus",
+        "button:focus",
+        "button:focus-visible"
+      ],
+      "outline": "3px solid #134fbe",
+      "outline_offset": "3px",
+      "adjacent_backgrounds": [
+        "#f9fffd",
+        "#ffffff"
+      ],
+      "always_on_author_outline_found": false,
+      "scripted_outline_override_found": false,
+      "basis": "Read the accepted CSS and JavaScript as data and observed the focused title textbox in both screenshots. This was not a pixel-by-pixel focused/unfocused comparison of every control."
+    },
+    "limitations": [
+      "One accepted notes artifact, two Chromium viewports, and a fixed populated/editing state were reviewed.",
+      "No screen reader, high contrast mode, zoom sweep, alternate browser, or exhaustive interaction-state review was performed.",
+      "This manual spotcheck supplements the registered automated suite; it is not WCAG conformance certification or evidence of universal production readiness.",
+      "Task-list and inventory artifacts were not included in this review because their evaluated candidates had not qualified for release at capture time."
+    ]
+  },
+  "release_identity": {
+    "run_id": "a6d39170-0b71-4a63-bbed-609a0fdcba2a",
+    "profile": "local-notes",
+    "manifest_hash": "57ec8cf2f764aa2ca2d665206ae8a703132e7e104bbfb7793e9f4c657c64307e",
+    "release_id": "d81c52ca-468d-4919-ac19-b1f405b87289",
+    "deployment_performed": false,
+    "verification": {
+      "candidate_hash": "d92687e9f1f0da40d505bf7b1d4607dfd3ab6272ae9733d4a8c10f0abfb77f62",
+      "evidence_hash": "ac9505c3ed92689d6bed0c8222cbba27fe5688c6a366252ee74b19f6660cb0cb",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-07T20:44:41.397450+00:00",
+  "run_report": "evals/results/repair-followup-local-inventory-20261107.json",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "status": "RECONCILED",
+  "read_only_lookup": true,
+  "receipts": [
+    {
+      "id": "gen_01M6VVXTN0896YZNVTNXRV5MCC",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.00081575",
+      "gateway_cost": "0.00081575",
+      "native_tokens_prompt": 2487,
+      "native_tokens_completion": 33,
+      "native_tokens_reasoning": 64,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:41:44.000Z",
+      "attempt_number": 1
+    },
+    {
+      "id": "gen_01M6VVXY69XN10J12ZXPPMAY71",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.01001078",
+      "gateway_cost": "0.01001078",
+      "native_tokens_prompt": 542,
+      "native_tokens_completion": 3881,
+      "native_tokens_reasoning": 1024,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:41:48.000Z",
+      "attempt_number": 1
+    },
+    {
+      "id": "gen_01M6VVYV3ECRXZ6BX49WPHWMQ9",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.01085221",
+      "gateway_cost": "0.01085221",
+      "native_tokens_prompt": 9669,
+      "native_tokens_completion": 3861,
+      "native_tokens_reasoning": 320,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:42:18.000Z",
+      "attempt_number": 1
+    },
+    {
+      "id": "gen_01M6VW03PWMRCC0H7BHJYVS9YN",
+      "model": "openai/gpt-5.1-codex-mini",
+      "provider_name": "azure",
+      "total_cost": "0.00962875",
+      "gateway_cost": "0.00962875",
+      "native_tokens_prompt": 6891,
+      "native_tokens_completion": 3889,
+      "native_tokens_reasoning": 64,
+      "finish_reason": "tool-calls",
+      "created_at": "2026-11-07T20:42:59.000Z",
+      "attempt_number": 2
+    }
+  ],
+  "prior_session_provider_spend_usd": "0.31596019",
+  "followup_provider_spend_usd": "0.03130749",
+  "cumulative_provider_receipt_spend_usd": "0.34726768",
+  "ledger_rounded_microdollars": 31309,
+  "key_budget_usd": 1,
+  "key_budget_is_soft": true,
+  "session_authorization_usd": 5,
+  "billing_settings_changed": false,
+  "credit_purchase_performed": false
+}

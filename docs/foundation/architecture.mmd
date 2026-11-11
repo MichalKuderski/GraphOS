@@ -1,0 +1,21 @@
+flowchart TD
+    U[User goal and constraints] --> S[Versioned specification and acceptance criteria]
+    S --> P[Planner proposes typed graph]
+    P --> C[Deterministic compiler and policy checks]
+    C --> R{Choose validated execution route}
+    R --> A[One capable agent]
+    R --> W[Scoped parallel workers]
+    A --> I[Integrate immutable artifacts]
+    W --> I
+    I --> V[Independent verification on exact candidate]
+    V --> G{Current mandatory evidence complete?}
+    G -->|Yes| D[Deliver or perform authorized release]
+    G -->|No| F{Failure class and remaining budget}
+    F -->|Repairable| P
+    F -->|Ambiguous effect| X[Reconcile authoritative remote state]
+    F -->|Blocked or exhausted| B[Actionable incomplete report]
+    X --> C
+    L[(Durable task, artifact, evidence and effect ledger)] -.-> C
+    L -.-> I
+    V -.-> L
+    D --> O[Observe outcomes and propose evaluated improvements]

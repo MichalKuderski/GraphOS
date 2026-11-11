@@ -1,0 +1,46 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-11-07T15:57:00.337068+00:00",
+  "source_digest": "0d5cf6e561d93c0758042febfdb0224d894a6125ad3702ec318ad40e3734899a",
+  "commands": [
+    {
+      "command": [
+        "/workspace/GraphOS/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "graphos",
+        "tests",
+        "scripts",
+        "verifier"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/workspace/GraphOS/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "docs/foundation/reference",
+        "-q"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/workspace/GraphOS/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--junitxml",
+        "/workspace/GraphOS/evals/results/pytest.xml"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "model_generation": "not exercised by this pipeline",
+  "production_certification": false,
+  "finished_at": "2026-11-07T15:57:15.903407+00:00"
+}

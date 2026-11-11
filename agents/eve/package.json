@@ -1,0 +1,28 @@
+{
+  "name": "@graphos/eve-builder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "dependencies": {
+    "ai": "7.0.164",
+    "eve": "0.91.0",
+    "just-bash": "3.6.0",
+    "zod": "4.6.7"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build:broker": "tsc",
+    "build": "npm run build:broker && eve build",
+    "eve:start": "eve start --host 127.0.0.1 --port 3001 --no-schedules",
+    "test": "npm run build:broker && node --test dist/test/*.test.js",
+    "test:runtime": "node test/runtime-smoke.mjs && node test/receipt-runtime-smoke.mjs",
+    "broker": "node dist/src/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "typescript": "7.0.2"
+  }
+}

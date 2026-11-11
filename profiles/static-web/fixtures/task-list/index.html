@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GraphOS task list fixture</title><link rel="stylesheet" href="styles.css"><script src="app.js" defer></script></head>
+<body><main><p class="eyebrow">Deterministic integration fixture</p><h1>Make room for what matters.</h1><p class="intro">A small, persistent list for the next useful thing.</p>
+<form id="task-form"><label for="new-task">New task</label><div class="input-row"><input id="new-task" name="task" type="text" maxlength="1000" autocomplete="off"><button type="submit">Add task</button></div></form>
+<nav aria-label="Task filters"><button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="active" aria-pressed="false">Active</button><button type="button" data-filter="completed" aria-pressed="false">Completed</button></nav>
+<p id="empty">Your list is clear.</p><ul id="tasks" aria-label="Tasks"></ul><p id="summary" aria-live="polite"></p>
+</main></body></html>

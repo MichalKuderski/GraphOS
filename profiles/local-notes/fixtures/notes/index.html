@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local notes — a little room to think</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#note-title">Skip to note editor</a>
+  <main>
+    <header class="page-header">
+      <p class="eyebrow">YOUR PERSONAL NOTEBOOK</p>
+      <h1>A little room to think.</h1>
+      <p class="intro">Capture an idea. Make a plan. Keep the details close.</p>
+      <p class="privacy">Saved in this browser · No account needed</p>
+    </header>
+    <div class="workspace">
+      <section class="editor panel" aria-labelledby="editor-heading">
+        <p class="eyebrow">MAKE SPACE FOR AN IDEA</p>
+        <h2 id="editor-heading">New note</h2>
+        <form id="note-form" novalidate>
+          <label for="note-title">Note title</label>
+          <input id="note-title" name="title" type="text" autocomplete="off" aria-required="true" aria-describedby="form-help">
+          <label for="note-body">Note body</label>
+          <textarea id="note-body" name="body" rows="7" aria-required="true" aria-describedby="form-help"></textarea>
+          <p id="form-help" class="hint">Give your note a title and a few words. Both fields are required.</p>
+          <div class="form-actions">
+            <button type="submit" class="primary">Save note</button>
+            <button type="button" id="cancel-edit" hidden>Cancel editing</button>
+          </div>
+        </form>
+        <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+      </section>
+      <section class="collection" aria-labelledby="notes-heading">
+        <div class="collection-header"><h2 id="notes-heading">Your notes</h2><span id="note-count">0 notes</span></div>
+        <label for="search-notes">Search notes</label>
+        <input id="search-notes" type="text" autocomplete="off" placeholder="Find a title or a phrase">
+        <div id="notes-list" class="notes-list"></div>
+        <p id="empty-state" class="empty-state">Your next idea belongs here.<br><span>Create a note to get started.</span></p>
+      </section>
+    </div>
+    <footer>Just for you, on this device. Keep a separate copy of important notes.</footer>
+  </main>
+</body>
+</html>

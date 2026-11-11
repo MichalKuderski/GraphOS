@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:graphos:protocol:0.1.0",
+  "title": "GraphOS proposed portable contracts",
+  "description": "Structural validation only. Runtime code must enforce authority, state transitions, reference integrity, freshness, deduplication and cross-record invariants.",
+  "oneOf": [
+    { "$ref": "#/$defs/TaskSpec" },
+    { "$ref": "#/$defs/TaskResult" },
+    { "$ref": "#/$defs/VerificationRecord" },
+    { "$ref": "#/$defs/EffectIntent" },
+    { "$ref": "#/$defs/MessageEnvelope" }
+  ],
+  "$defs": {
+    "StableId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "RecordBase": {
+      "type": "object",
+      "required": ["schema_version", "kind", "record_id", "project_id", "run_id", "created_at"],
+      "properties": {
+        "schema_version": { "const": "0.1.0" },
+        "kind": { "type": "string" },
+        "record_id": { "$ref": "#/$defs/StableId" },
+        "project_id": { "$ref": "#/$defs/StableId" },
+        "run_id": { "$ref": "#/$defs/StableId" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "plan_version", "spec_hash", "input_manifest_hash", "policy_hash"],
+      "properties": {
+        "task_id": { "$ref": "#/$defs/StableId" },
+        "plan_version": { "type": "integer", "minimum": 1 },
+        "spec_hash": { "$ref": "#/$defs/Sha256" },
+        "input_manifest_hash": { "$ref": "#/$defs/Sha256" },
+        "policy_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "uri", "content_hash", "media_type"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/StableId" },
+        "uri": { "type": "string", "format": "uri", "maxLength": 2048 },
+        "content_hash": { "$ref": "#/$defs/Sha256" },
+        "media_type": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "Budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_cost_usd", "max_tokens", "max_elapsed_seconds", "max_attempts", "max_parallel_workers", "max_external_effects"],
+      "properties": {
+        "max_cost_usd": { "type": "number", "minimum": 0 },
+        "max_tokens": { "type": "integer", "minimum": 0 },
+        "max_elapsed_seconds": { "type": "integer", "minimum": 1 },
+        "max_attempts": { "type": "integer", "minimum": 1 },
+        "max_parallel_workers": { "type": "integer", "minimum": 1 },
+        "max_external_effects": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "Capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability_id", "operation", "resource_scope"],
+      "properties": {
+        "capability_id": { "$ref": "#/$defs/StableId" },
+        "operation": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "resource_scope": { "type": "string", "minLength": 1, "maxLength": 512 }
+      }
+    },
+    "TaskSpec": {
+      "allOf": [{ "$ref": "#/$defs/RecordBase" }],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["bindings", "objective", "depends_on", "inputs", "acceptance_criteria", "budget", "required_capabilities", "deadline"],
+      "properties": {
+        "kind": { "const": "task_spec" },
+        "bindings": { "$ref": "#/$defs/Bindings" },
+        "objective": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "depends_on": { "type": "array", "items": { "$ref": "#/$defs/StableId" }, "uniqueItems": true },
+        "inputs": { "type": "array", "items": { "$ref": "#/$defs/ArtifactRef" } },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion_id", "description", "verification_method"],
+            "properties": {
+              "criterion_id": { "$ref": "#/$defs/StableId" },
+              "description": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "verification_method": { "enum": ["executable_test", "measurement", "review_rubric", "user_acceptance"] }
+            }
+          }
+        },
+        "budget": { "$ref": "#/$defs/Budget" },
+        "required_capabilities": { "type": "array", "items": { "$ref": "#/$defs/Capability" } },
+        "deadline": { "type": "string", "format": "date-time" }
+      }
+    },
+    "TaskResult": {
+      "allOf": [{ "$ref": "#/$defs/RecordBase" }],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["bindings", "attempt_id", "lease_epoch", "expected_state_version", "producer_id", "status", "artifacts", "evidence", "claims", "unresolved_items", "usage"],
+      "properties": {
+        "kind": { "const": "task_result" },
+        "bindings": { "$ref": "#/$defs/Bindings" },
+        "attempt_id": { "$ref": "#/$defs/StableId" },
+        "lease_epoch": { "type": "integer", "minimum": 1 },
+        "expected_state_version": { "type": "integer", "minimum": 0 },
+        "producer_id": { "$ref": "#/$defs/StableId" },
+        "status": { "enum": ["submitted", "blocked", "failed"] },
+        "artifacts": { "type": "array", "items": { "$ref": "#/$defs/ArtifactRef" } },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/ArtifactRef" } },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion_id", "evidence_artifact_ids", "limitations"],
+            "properties": {
+              "criterion_id": { "$ref": "#/$defs/StableId" },
+              "evidence_artifact_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+              "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+            }
+          }
+        },
+        "unresolved_items": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cost_usd", "tokens", "elapsed_seconds", "external_effects"],
+          "properties": {
+            "cost_usd": { "type": "number", "minimum": 0 },
+            "tokens": { "type": "integer", "minimum": 0 },
+            "elapsed_seconds": { "type": "number", "minimum": 0 },
+            "external_effects": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "VerificationRecord": {
+      "allOf": [{ "$ref": "#/$defs/RecordBase" }],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["bindings", "result_record_id", "candidate_manifest_hash", "suite_id", "suite_version", "suite_hash", "environment_hash", "verifier", "outcome", "criterion_results", "evidence"],
+      "properties": {
+        "kind": { "const": "verification_record" },
+        "bindings": { "$ref": "#/$defs/Bindings" },
+        "result_record_id": { "$ref": "#/$defs/StableId" },
+        "candidate_manifest_hash": { "$ref": "#/$defs/Sha256" },
+        "suite_id": { "$ref": "#/$defs/StableId" },
+        "suite_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "suite_hash": { "$ref": "#/$defs/Sha256" },
+        "environment_hash": { "$ref": "#/$defs/Sha256" },
+        "verifier": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["principal_id", "execution_id", "producer_ids", "independence_basis"],
+          "properties": {
+            "principal_id": { "$ref": "#/$defs/StableId" },
+            "execution_id": { "$ref": "#/$defs/StableId" },
+            "producer_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+            "independence_basis": { "enum": ["isolated_test_runner", "separate_agent_execution", "human_review"] }
+          }
+        },
+        "outcome": { "enum": ["pass", "fail", "inconclusive"] },
+        "criterion_results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion_id", "outcome", "evidence_artifact_ids"],
+            "properties": {
+              "criterion_id": { "$ref": "#/$defs/StableId" },
+              "outcome": { "enum": ["pass", "fail", "inconclusive"] },
+              "evidence_artifact_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } }
+            }
+          }
+        },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ArtifactRef" } }
+      }
+    },
+    "EffectIntent": {
+      "allOf": [{ "$ref": "#/$defs/RecordBase" }],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["bindings", "operation_key", "operation", "target", "payload", "payload_hash", "requested_by", "required_capability", "execution_mode", "deadline"],
+      "properties": {
+        "kind": { "const": "effect_intent" },
+        "bindings": { "$ref": "#/$defs/Bindings" },
+        "operation_key": { "$ref": "#/$defs/StableId" },
+        "operation": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "target": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "payload": { "$ref": "#/$defs/ArtifactRef" },
+        "payload_hash": { "$ref": "#/$defs/Sha256" },
+        "requested_by": { "$ref": "#/$defs/StableId" },
+        "required_capability": { "$ref": "#/$defs/Capability" },
+        "execution_mode": { "enum": ["simulation", "live"] },
+        "deadline": { "type": "string", "format": "date-time" }
+      }
+    },
+    "MessageEnvelope": {
+      "allOf": [{ "$ref": "#/$defs/RecordBase" }],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["message_id", "correlation_id", "causation_ids", "sender_id", "recipient_id", "message_type", "body_record_id", "body_hash", "bindings"],
+      "properties": {
+        "kind": { "const": "message_envelope" },
+        "message_id": { "$ref": "#/$defs/StableId" },
+        "correlation_id": { "$ref": "#/$defs/StableId" },
+        "causation_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+        "sender_id": { "$ref": "#/$defs/StableId" },
+        "recipient_id": { "$ref": "#/$defs/StableId" },
+        "message_type": { "enum": ["task_dispatch", "result_submission", "verification_submission", "effect_proposal", "acknowledgement", "status_event", "clarification", "plan_patch"] },
+        "body_record_id": { "$ref": "#/$defs/StableId" },
+        "body_hash": { "$ref": "#/$defs/Sha256" },
+        "bindings": { "$ref": "#/$defs/Bindings" }
+      }
+    }
+  }
+}

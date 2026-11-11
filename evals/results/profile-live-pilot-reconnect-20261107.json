@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "experiment_id": "20261107T200809-56d3f164",
+  "mode": "live",
+  "status": "INCOMPLETE",
+  "started_at": "2026-11-07T20:08:09.319848+00:00",
+  "source_digest": "4f782c50dd042b71c01f0adad72bbb16c3c32d8ae85c831ffa1487f7f1f7aecc",
+  "profiles": [
+    "static-web",
+    "local-notes",
+    "local-inventory"
+  ],
+  "protocol": {
+    "schema_version": 1,
+    "id": "local-browser-disclosed-contract-pilot-v1",
+    "scope": "Three fixed, disclosed local-browser application contracts; repeated generations are not independent product-task samples.",
+    "profiles": [
+      "static-web",
+      "local-notes",
+      "local-inventory"
+    ],
+    "trials_per_profile": 2,
+    "trial_order": "Repeat first, then profile in declared order",
+    "attempts_per_trial": 1,
+    "repair_attempts": 0,
+    "calibration_cases": [
+      {
+        "id": "positive-fixture",
+        "kind": "positive",
+        "expected_pass": true
+      },
+      {
+        "id": "missing-entrypoint",
+        "kind": "negative",
+        "expected_failed_check": "required_files"
+      },
+      {
+        "id": "disabled-persistence",
+        "kind": "negative",
+        "expected_failed_check": "local_storage_reload"
+      },
+      {
+        "id": "low-contrast-text",
+        "kind": "negative",
+        "expected_failed_check": "axe_empty"
+      }
+    ],
+    "live_denominator": "Every dispatched trial, including generation, verification, infrastructure, and accounting failures. Undispatched trials are separately counted against the planned sample.",
+    "accounting": {
+      "session_authorization_microdollars": 5000000,
+      "attempt_reservation_microdollars": 1000000,
+      "require_explicit_prior_session_spend": true,
+      "uncertain_cost_action": "Stop all further dispatch, retain reservation, require independent ledger and provider reconciliation.",
+      "gateway_budget_is_soft": true
+    },
+    "claims_not_supported": [
+      "Held-out generalization",
+      "Statistical reliability across arbitrary software projects",
+      "Production certification or WCAG conformance",
+      "Superiority over another model, agent configuration, or human team"
+    ],
+    "future_comparison": {
+      "design": "Independently curated task-family holdouts, paired configurations on the same tasks, equal declared budgets, randomized order, frozen graders, and all failures retained.",
+      "current_pilot_is_comparative": false
+    }
+  },
+  "evaluation_class": "disclosed-contract-live-pilot",
+  "held_out": false,
+  "production_certification": false,
+  "trials": [
+    {
+      "id": "static-web-1",
+      "profile": "static-web",
+      "repeat": 1,
+      "status": "FAIL",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:08:17.486705+00:00",
+          "stage": "VERIFIED",
+          "build_status": "submitted",
+          "build_identity": {
+            "attempt_id": "374bc9e2-f838-4ef7-bb3a-b2e8af16ac84",
+            "task_id": "d2487bcc-7fd0-4760-a194-df69393581d3",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "16d74716a02df74a564b97b7c01c30adc8ba3714d58a9e441152d0eed26994d9"
+          },
+          "usage": {
+            "input_tokens": 23120,
+            "output_tokens": 9649,
+            "cache_read_tokens": 1920,
+            "cache_write_tokens": 0,
+            "actual_cost_microdollars": 24657,
+            "model_runs": 3,
+            "cost_source": "eve_gateway_usage_events",
+            "generations": [
+              {
+                "run_id": "run_0",
+                "generation_id": "gen_01M6VT0K5A83FBTKQT8WNRFYQA",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_1",
+                "generation_id": "gen_01M6VT1030CEBRQ7ZQ5ZMBVAPK",
+                "finish_reason": "tool-calls"
+              },
+              {
+                "run_id": "run_2",
+                "generation_id": "gen_01M6VT1V24BGQJY88PZ2HW1W8H",
+                "finish_reason": "tool-calls"
+              }
+            ]
+          },
+          "provenance": {
+            "mode": "eve",
+            "model": "openai/gpt-5.1-codex-mini",
+            "session_id": "wrun_01M6VT0JJBT55MMQ9VQ5SWBC9E",
+            "delivery_id": "045e4b8f-6955-4211-8527-e4c0c00f38f4",
+            "request_sha256": "eed13e9157f7bd382c41e9edf847569aad265d49ad0de185466f2d0cf06fc0b4",
+            "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+            "input_hash": "16d74716a02df74a564b97b7c01c30adc8ba3714d58a9e441152d0eed26994d9",
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "generated_at": "2026-11-07T20:09:19.416Z"
+          },
+          "verification_identity": {
+            "attempt_id": "b10ac1aa-758a-4ea8-8d2f-6772253b1436",
+            "candidate_hash": "584fcd1d6bef65af1ef678f3c7b3ce2ba4f03032eecaeb8f872f1e4e7035ccb1",
+            "input_hash": "16d74716a02df74a564b97b7c01c30adc8ba3714d58a9e441152d0eed26994d9",
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+          },
+          "verification_status": "verified",
+          "passed": false,
+          "report": {
+            "passed": false,
+            "checks": [
+              {
+                "name": "accessible_structure",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "add_task",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "toggle_completion",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "filter_tasks",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "delete_task",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "local_storage_reload",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "reject_empty_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "literal_html_input",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "axe_empty",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "empty",
+                  "rules_passed": 18,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_populated",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "populated",
+                  "rules_passed": 18,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "axe_completed",
+                "passed": true,
+                "detail": "Observed in Chromium",
+                "observations": {
+                  "engine": "axe-core@4.14.0",
+                  "state": "completed",
+                  "rules_passed": 18,
+                  "violations": 0,
+                  "incomplete": 0
+                }
+              },
+              {
+                "name": "keyboard_operation",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "visible_focus",
+                "passed": true,
+                "detail": "Observed in Chromium"
+              },
+              {
+                "name": "mobile_reflow",
+                "passed": false,
+                "detail": "Mobile reflow failed at 320px: {'tooWide': False, 'outside': ['BUTTON:Delete LongTaskLongTaskLongTaskLongTaskLongTaskLon', 'text:Delete LongTaskLongTaskLongTaskLongTaskLongTaskLon', 'text:Delete LongTaskLongTaskLongTaskLongTaskLongTaskLon']}"
+              }
+            ],
+            "runner": "docker-trusted-playwright-profiles-v2",
+            "browser_process_sandbox": false,
+            "duration_ms": 14304,
+            "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+            "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+            "image": "graphos-verifier:local",
+            "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+          },
+          "finished_at": "2026-11-07T20:09:33.877680+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:08:17.457243+00:00",
+      "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "451d9b51-bbb9-49ee-9fb1-66eb34454572",
+      "cost_status": "SETTLED",
+      "state": "EXHAUSTED",
+      "spent_microdollars": 24657,
+      "accounting_reconciliation_required": false,
+      "accounted_microdollars": 24657,
+      "finished_at": "2026-11-07T20:09:33.920990+00:00"
+    },
+    {
+      "id": "local-notes-1",
+      "profile": "local-notes",
+      "repeat": 1,
+      "status": "ACCOUNTING_UNKNOWN",
+      "dispatch_started": true,
+      "attempts": [
+        {
+          "number": 1,
+          "started_at": "2026-11-07T20:09:33.950762+00:00",
+          "stage": "STOPPED_AFTER_BUILD",
+          "build_status": "failed",
+          "failure_reason": "eve adapter failed (eve_turn_not_completed); no fixture fallback was attempted",
+          "build_identity": {
+            "attempt_id": "67f99e5c-3413-4c0f-8349-2e0867e61fbb",
+            "task_id": "e7cab837-e889-47e0-97d2-dfca16c68b5c",
+            "epoch": 1,
+            "revision": 1,
+            "input_hash": "ce28631b92cf28b3e26d3ca9970db57cb84b5a7a95dc1545f8e2c56e7b2aaac5"
+          },
+          "usage": {},
+          "provenance": {
+            "mode": "eve"
+          },
+          "finished_at": "2026-11-07T20:10:00.584421+00:00"
+        }
+      ],
+      "started_at": "2026-11-07T20:09:33.926922+00:00",
+      "suite_hash": "b23ee63669b199c45086daf69007a8084c8cac56b4af2ec17ee980b753f1917a",
+      "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+      "run_id": "86424a99-a168-475f-ae7b-3b02c91044dc",
+      "cost_status": "UNKNOWN",
+      "state": "RECONCILIATION_REQUIRED",
+      "spent_microdollars": 1000000,
+      "accounting_reconciliation_required": true,
+      "accounted_microdollars": 1000000,
+      "finished_at": "2026-11-07T20:10:00.602784+00:00"
+    },
+    {
+      "id": "local-inventory-1",
+      "profile": "local-inventory",
+      "repeat": 1,
+      "status": "NOT_DISPATCHED",
+      "dispatch_started": false,
+      "attempts": []
+    },
+    {
+      "id": "static-web-2",
+      "profile": "static-web",
+      "repeat": 2,
+      "status": "NOT_DISPATCHED",
+      "dispatch_started": false,
+      "attempts": []
+    },
+    {
+      "id": "local-notes-2",
+      "profile": "local-notes",
+      "repeat": 2,
+      "status": "NOT_DISPATCHED",
+      "dispatch_started": false,
+      "attempts": []
+    },
+    {
+      "id": "local-inventory-2",
+      "profile": "local-inventory",
+      "repeat": 2,
+      "status": "NOT_DISPATCHED",
+      "dispatch_started": false,
+      "attempts": []
+    }
+  ],
+  "prior_spend_microdollars": 115040,
+  "budget_microdollars": 2000000,
+  "attempt_reservation_microdollars": 1000000,
+  "accounted_spend_microdollars": 1024657,
+  "gateway_budget_is_soft": true,
+  "compiled_from_current_source": true,
+  "summary": {
+    "overall": {
+      "planned": 6,
+      "dispatched": 2,
+      "passed": 0,
+      "failed_or_incomplete": 2,
+      "not_dispatched": 4,
+      "observed_pass_fraction": 0.0
+    },
+    "by_profile": {
+      "static-web": {
+        "planned": 2,
+        "dispatched": 1,
+        "passed": 0,
+        "failed_or_incomplete": 1,
+        "not_dispatched": 1,
+        "observed_pass_fraction": 0.0
+      },
+      "local-notes": {
+        "planned": 2,
+        "dispatched": 1,
+        "passed": 0,
+        "failed_or_incomplete": 1,
+        "not_dispatched": 1,
+        "observed_pass_fraction": 0.0
+      },
+      "local-inventory": {
+        "planned": 2,
+        "dispatched": 0,
+        "passed": 0,
+        "failed_or_incomplete": 0,
+        "not_dispatched": 2,
+        "observed_pass_fraction": null
+      }
+    }
+  },
+  "stop_reason": "unknown_cost_requires_reconciliation",
+  "finished_at": "2026-11-07T20:10:00.801547+00:00",
+  "source_unchanged": true,
+  "settled_spend_microdollars": 24657,
+  "session_accounted_microdollars": 1139697,
+  "subsequent_reconciliation": "profile-schema-rejection-reconciliation-20261107.json"
+}

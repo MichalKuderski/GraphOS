@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mode": "live-model",
+  "status": "FAIL",
+  "started_at": "2026-11-07T18:40:37.919465+00:00",
+  "source_digest": "ca47abec2b2d1ac3e181bf5d800a16f2713f9bb5efc6b3fb601cb1100b3e516e",
+  "max_attempts": 1,
+  "budget_microdollars": 1000000,
+  "attempt_reservation_microdollars": 1000000,
+  "gateway_budget_is_soft": true,
+  "attempts": [
+    {
+      "number": 1,
+      "started_at": "2026-11-07T18:40:46.789923+00:00",
+      "stage": "STOPPED_AFTER_BUILD",
+      "build_status": "failed",
+      "build_identity": {
+        "attempt_id": "676de03d-1733-4e15-859b-2c418aa87edf",
+        "task_id": "b7e6a82a-a15c-44c1-943a-a20073ba3753",
+        "epoch": 1,
+        "revision": 1,
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242"
+      },
+      "usage": {},
+      "provenance": {
+        "mode": "eve"
+      },
+      "finished_at": "2026-11-07T18:40:48.567857+00:00"
+    }
+  ],
+  "production_certification": false,
+  "limits": [
+    "One fixed static-web task-list contract",
+    "No statistical reliability estimate",
+    "Operator must reconcile remaining session spend before dispatch",
+    "Process termination does not guarantee provider cancellation"
+  ],
+  "compiled_from_current_source": true,
+  "run_id": "4ce53d57-4ea1-4844-a126-8bc3cfc1d01d",
+  "state": "RECONCILIATION_REQUIRED",
+  "spent_microdollars": 1000000,
+  "accounting_reconciliation_required": true,
+  "finished_at": "2026-11-07T18:40:48.766684+00:00",
+  "source_unchanged": true
+}

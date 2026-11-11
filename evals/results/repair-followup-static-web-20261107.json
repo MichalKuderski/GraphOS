@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "mode": "live-model",
+  "status": "FAIL",
+  "started_at": "2026-11-07T20:38:19.586729+00:00",
+  "source_digest": "feb503899c9eaab24d236f4848a41eb7b433a59413a72041eaf7e57ab90e33bf",
+  "max_attempts": 2,
+  "budget_microdollars": 2000000,
+  "attempt_reservation_microdollars": 1000000,
+  "gateway_budget_is_soft": true,
+  "attempts": [
+    {
+      "number": 1,
+      "started_at": "2026-11-07T20:38:28.660762+00:00",
+      "stage": "VERIFIED",
+      "build_status": "submitted",
+      "build_identity": {
+        "attempt_id": "5a431a35-fdf5-4cb2-96d8-133b8e7d51d8",
+        "task_id": "20e8c531-0380-4195-9485-5d37c8b0bd95",
+        "epoch": 1,
+        "revision": 1,
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009"
+      },
+      "usage": {
+        "input_tokens": 13615,
+        "output_tokens": 6622,
+        "cache_read_tokens": 3840,
+        "cache_write_tokens": 0,
+        "actual_cost_microdollars": 15805,
+        "model_runs": 3,
+        "cost_source": "eve_gateway_usage_events",
+        "generations": [
+          {
+            "run_id": "run_0",
+            "generation_id": "gen_01M6VVQW3SKRV7XC476E275HSP",
+            "finish_reason": "tool-calls"
+          },
+          {
+            "run_id": "run_1",
+            "generation_id": "gen_01M6VVQZDX07T1B23RK208JJJE",
+            "finish_reason": "tool-calls"
+          },
+          {
+            "run_id": "run_2",
+            "generation_id": "gen_01M6VVRN9TQZ14EDEFJ0RS7HJP",
+            "finish_reason": "tool-calls"
+          }
+        ]
+      },
+      "provenance": {
+        "mode": "eve",
+        "model": "openai/gpt-5.1-codex-mini",
+        "session_id": "wrun_01M6VVQV9Q6AT5F0C0V4CX0KXY",
+        "delivery_id": "424bc092-8e64-4b17-9f05-cbec0002816d",
+        "request_sha256": "ad364b2772f3f22af3a79e97bdecc545e99110b93aa1f79657a409234448266d",
+        "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009",
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "generated_at": "2026-11-07T20:39:14.007Z"
+      },
+      "verification_identity": {
+        "attempt_id": "6a4b121b-a4ed-4b6a-9f2a-3ee9cb4464f1",
+        "candidate_hash": "e432c2863fc71be64f36912245d78aa5d4ba12608110090097b66d1e4815c8f9",
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009",
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+      },
+      "verification_status": "verified",
+      "passed": false,
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": false,
+            "detail": "axe empty: violations:aria-required-children at ['#task-list']"
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_completed",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "completed",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": false,
+            "detail": "Keyboard focus requires a visible outline at least 2 CSS pixels wide"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": false,
+            "detail": "Mobile reflow failed at 320px: {'tooWide': True, 'outside': ['BUTTON:Completed']}"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 16119,
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "finished_at": "2026-11-07T20:39:30.282415+00:00"
+    },
+    {
+      "number": 2,
+      "started_at": "2026-11-07T20:39:30.302075+00:00",
+      "stage": "VERIFIED",
+      "build_status": "submitted",
+      "build_identity": {
+        "attempt_id": "b904d49f-2b18-4a4e-8811-d27ca304c50d",
+        "task_id": "20e8c531-0380-4195-9485-5d37c8b0bd95",
+        "epoch": 3,
+        "revision": 1,
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009"
+      },
+      "usage": {
+        "input_tokens": 18709,
+        "output_tokens": 7524,
+        "cache_read_tokens": 5248,
+        "cache_write_tokens": 0,
+        "actual_cost_microdollars": 18571,
+        "model_runs": 2,
+        "cost_source": "eve_gateway_usage_events",
+        "generations": [
+          {
+            "run_id": "run_0",
+            "generation_id": "gen_01M6VVSR3FNJDA47THBMW5ACA1",
+            "finish_reason": "tool-calls"
+          },
+          {
+            "run_id": "run_1",
+            "generation_id": "gen_01M6VVTJQ09JERFXVJ7JTRKAC8",
+            "finish_reason": "tool-calls"
+          }
+        ]
+      },
+      "provenance": {
+        "mode": "eve",
+        "model": "openai/gpt-5.1-codex-mini",
+        "session_id": "wrun_01M6VVSQH6D0XGA0HTFT9C059X",
+        "delivery_id": "05e917ba-0b4d-4a9b-85e4-e21c4520e53f",
+        "request_sha256": "c314498fdcafad66bce70df341fb375eaac42a14edd43bb5a4e28d9068c622e9",
+        "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009",
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "generated_at": "2026-11-07T20:40:19.995Z"
+      },
+      "verification_identity": {
+        "attempt_id": "6fb7bd58-fc05-4f32-9d5d-ef220ce39f90",
+        "candidate_hash": "ea88980dec856f48c52fd2b31309d38a338326834c92a5f3acd9707632c9ebd4",
+        "input_hash": "6ba44939c04bb3712aba8da73bfd9f41ce03dd7a531b02f5c5ad8e2b9b09a009",
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea"
+      },
+      "verification_status": "verified",
+      "passed": false,
+      "report": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "axe_empty",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "empty",
+              "rules_passed": 23,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_populated",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "populated",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "axe_completed",
+            "passed": true,
+            "detail": "Observed in Chromium",
+            "observations": {
+              "engine": "axe-core@4.14.0",
+              "state": "completed",
+              "rules_passed": 24,
+              "violations": 0,
+              "incomplete": 0
+            }
+          },
+          {
+            "name": "keyboard_operation",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "visible_focus",
+            "passed": false,
+            "detail": "Keyboard focus requires a visible outline at least 2 CSS pixels wide"
+          },
+          {
+            "name": "mobile_reflow",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-profiles-v2",
+        "browser_process_sandbox": false,
+        "duration_ms": 16291,
+        "suite_hash": "ae977f6bd545b67ed20f2bd56db3aa89741ebe04ed4e8ec05c4a21d87f0c37a0",
+        "policy_hash": "e8e1a08e3879bdee353fdddbfc6ba9d2087f09c91256b9e703007ff5d20800ea",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:5e41aa97d58442daf1d05e49bf2ccc7b63d382e954a8befac26ad4d72b7f9e29"
+      },
+      "finished_at": "2026-11-07T20:40:36.450433+00:00"
+    }
+  ],
+  "production_certification": false,
+  "limits": [
+    "One disclosed registered app contract",
+    "No statistical reliability estimate",
+    "Operator must reconcile remaining session spend before dispatch",
+    "Process termination does not guarantee provider cancellation"
+  ],
+  "compiled_from_current_source": true,
+  "run_id": "d23ffbe1-5662-4264-85eb-88f8df47915b",
+  "state": "EXHAUSTED",
+  "spent_microdollars": 34376,
+  "accounting_reconciliation_required": false,
+  "finished_at": "2026-11-07T20:40:36.665340+00:00",
+  "source_unchanged": true,
+  "evaluation_class": "exploratory-generation-plus-repair",
+  "first_attempt_pilot_denominator": false,
+  "prior_session_spend_usd": "0.28158655",
+  "receipt_report": "evals/results/repair-followup-static-web-receipts-20261107.json"
+}

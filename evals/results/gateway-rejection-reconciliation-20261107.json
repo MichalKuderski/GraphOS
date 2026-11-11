@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-07T19:00:35.111815+00:00",
+  "kind": "operator_reconciliation_from_gateway_rejection_and_usage",
+  "provider_invoice": false,
+  "gateway_key_spend_usd": 0.05466171,
+  "settled_model_sessions": [
+    {
+      "session_id": "wrun_01M6VNV2XNACQ7ZR713KANN6DP",
+      "cost_usd": "0.00761875",
+      "state": "completed"
+    },
+    {
+      "session_id": "wrun_01M6VNQZVX1FQ7Z5M316RQANPT",
+      "cost_usd": "0.0106744",
+      "state": "completed"
+    },
+    {
+      "session_id": "wrun_01M6VN42AB3YK6GWJ78J987NMN",
+      "cost_usd": "0.00627625",
+      "state": "completed"
+    },
+    {
+      "session_id": "wrun_01M6VNHHJ7Y0XNMD33C3HV9H60",
+      "cost_usd": "0.01143165",
+      "state": "completed"
+    },
+    {
+      "session_id": "wrun_01M6VNDSS6EEK9JDP7C33GZJAJ",
+      "cost_usd": "0.018660660000000003",
+      "state": "completed"
+    }
+  ],
+  "rejected_requests": [
+    {
+      "run_id": "06f2fd61-3838-4011-a1da-d27c4547b16f",
+      "session_id": "wrun_01M6VMBY05N0FWPH1C00WMBQS2",
+      "gateway_status": 403,
+      "gateway_code": "customer_verification_required",
+      "local_workflow_terminal": true,
+      "response_log_sha256": "3fe88d8ebabf6af5f6eef61dd80b1450d6bad217bf6d4086bfd0cb26b4e446b7"
+    },
+    {
+      "run_id": "4ce53d57-4ea1-4844-a126-8bc3cfc1d01d",
+      "session_id": "wrun_01M6VN0AYCWPR7BSJ4AKHWGJ3B",
+      "gateway_status": 403,
+      "gateway_code": "no_providers_available",
+      "local_workflow_terminal": true,
+      "response_log_sha256": "5e50f4f515bab12e5e883afba884ab24f15035680be539ad93faa088783ee1f7"
+    }
+  ],
+  "basis": "Explicit pre-provider Gateway403 rejection, terminal local workflow, zero observed spend after each access rejection, and current dedicated-key spend fully accounted for by settled model sessions. No inference that arbitrary failed requests are free.",
+  "reconciliations": [
+    {
+      "run_id": "06f2fd61-3838-4011-a1da-d27c4547b16f",
+      "attempt_id": "15807279-f89c-40e7-a05f-e4450d1d120c",
+      "receipt_id": "operator-gateway-rejection-09ceedd50d6fd7093c51282db4a5defca336c60072cddd6fbf45346b54c840c4",
+      "actual_cost_microdollars": 0,
+      "state": "EXHAUSTED",
+      "uncertain_attempts_remaining": 0
+    },
+    {
+      "run_id": "4ce53d57-4ea1-4844-a126-8bc3cfc1d01d",
+      "attempt_id": "676de03d-1733-4e15-859b-2c418aa87edf",
+      "receipt_id": "operator-gateway-rejection-b64730d790fe78f22a5401d57bf237a6ab8bdf2c45845362debe8d2f8be9b93d",
+      "actual_cost_microdollars": 0,
+      "state": "EXHAUSTED",
+      "uncertain_attempts_remaining": 0
+    }
+  ]
+}

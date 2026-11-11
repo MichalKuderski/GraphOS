@@ -1,0 +1,194 @@
+{
+  "observed_at": "2026-11-07T16:04:47.763250+00:00",
+  "status": "passed_composed_actual_backend_ui_coverage",
+  "environment": "actual localhost GraphOS API with PostgreSQL; pre-existing Docker-verified fixture run",
+  "api_url": "http://127.0.0.1:8030",
+  "accepted_run_id": "f98b5d89-03c9-406e-ae0d-ecf953535be1",
+  "builder_mode": "fixture",
+  "live_model_calls": 0,
+  "model_spend_microdollars": 0,
+  "checks": [
+    {
+      "name": "real operator authentication; token input cleared and hidden before screenshots",
+      "status": "passed"
+    },
+    {
+      "name": "one active profile and five contract-only profiles",
+      "status": "passed"
+    },
+    {
+      "name": "real released fixture selection, accepted evidence, and fixture provenance displayed",
+      "status": "passed"
+    },
+    {
+      "name": "actual release endpoint validated current evidence and produced matching JSON download",
+      "status": "passed",
+      "http_status": 200,
+      "download_filename": "graphos-release-f98b5d89-03c9-406e-ae0d-ecf953535be1.json",
+      "download_sha256": "60666bfecade285d0538f2e204d8c5afaf5310f01f9717553eea0c288962642d"
+    },
+    {
+      "name": "actual verification report opens and displays eight passed browser checks",
+      "status": "passed",
+      "check_count": 8
+    },
+    {
+      "name": "no localStorage, sessionStorage, cookies, URL credentials, or token in DOM after connect",
+      "status": "passed"
+    },
+    {
+      "name": "desktop layout has no horizontal overflow",
+      "status": "passed"
+    },
+    {
+      "name": "mobile layout has no horizontal overflow",
+      "status": "passed"
+    },
+    {
+      "name": "disconnect clears credentials and disables run controls",
+      "status": "passed"
+    },
+    {
+      "name": "no browser console errors or uncaught JavaScript errors",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/screenshots/dashboard-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1050
+      },
+      "actual_backend": true
+    },
+    {
+      "path": "docs/screenshots/dashboard-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "actual_backend": true
+    }
+  ],
+  "release_manifest": {
+    "run_id": "f98b5d89-03c9-406e-ae0d-ecf953535be1",
+    "revision": 1,
+    "spec_hash": "58c9bbb080f8a938aa489f7743887464db2a3027d9be8f6a2c28ae17dffecdca",
+    "profile": "static-web",
+    "tasks": [
+      {
+        "task_id": "4d23fd69-fb8b-467a-8e60-a78c17e0a25d",
+        "task_key": "app",
+        "candidate_hash": "414250e07565d2a47f587e92a8650b37f110e2266dc876049d9f300adebd504c",
+        "evidence_hash": "88ab2319832db20b9ff9b0657b9cd28e405e817947779e1c5d71fec8ab6a46f8",
+        "input_hash": "3c0e6c01d23a39ec3b19955582a787d15fea6091171b84054bef032d83c7914b",
+        "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+        "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+        "verifier_id": "verifier:acceptance-real-verifier-worker",
+        "producer_id": "builder:acceptance-real-builder-worker",
+        "provenance": {
+          "mode": "fixture",
+          "usage": {
+            "actual_cost_microdollars": 0
+          },
+          "fixture": "static-web-task-list-v1",
+          "ai_generated": false
+        }
+      }
+    ],
+    "manifest_hash": "5ac9313f0aa60a2c6572ff3f38ea3e55e478cda799c0a107e8c6243b41b1b35a",
+    "release_id": "b58bf28e-ba9d-4b8f-8f48-66100a65a580",
+    "deployment_performed": false,
+    "scope": "Acceptance applies only to the registered capability profile",
+    "fixture_enabled_on_service": true
+  },
+  "verification": {
+    "runner": "docker-trusted-playwright-static-web-v1",
+    "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+    "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+    "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff",
+    "passed_checks": [
+      "accessible_structure",
+      "add_task",
+      "toggle_completion",
+      "filter_tasks",
+      "delete_task",
+      "local_storage_reload",
+      "reject_empty_input",
+      "literal_html_input"
+    ]
+  },
+  "storage": {
+    "localStorageKeys": [],
+    "sessionStorageKeys": [],
+    "cookie": "",
+    "search": "",
+    "hash": ""
+  },
+  "browser_version": "156.0.8078.79",
+  "earlier_control_flow": {
+    "run_id": "7f6db1d7-cd89-4789-9001-30d3581806b2",
+    "checks": [
+      {
+        "name": "real operator authentication and cleared token input",
+        "status": "passed"
+      },
+      {
+        "name": "one active profile and five contract-only profiles",
+        "status": "passed"
+      },
+      {
+        "name": "real fixed-contract run creation through dashboard",
+        "status": "passed"
+      },
+      {
+        "name": "readonly objective and acceptance criteria",
+        "status": "passed"
+      },
+      {
+        "name": "revision invalidates current evidence and fences interrupted verification",
+        "status": "passed"
+      },
+      {
+        "name": "cancellation and terminal state rendered",
+        "status": "passed"
+      },
+      {
+        "name": "release disabled without accepted evidence",
+        "status": "passed"
+      },
+      {
+        "name": "no localStorage, sessionStorage, cookies, or URL credentials",
+        "status": "passed"
+      },
+      {
+        "name": "disconnect clears token and disables mutations",
+        "status": "passed"
+      },
+      {
+        "name": "no uncaught browser JavaScript errors",
+        "status": "passed"
+      }
+    ],
+    "final_state": "CANCELLED",
+    "new_fixture_attempt_blocked_by": "Docker vfs no space left on device; no artifact falsely accepted"
+  },
+  "environment_incidents": [
+    {
+      "run_id": "7f6db1d7-cd89-4789-9001-30d3581806b2",
+      "outcome": "Docker preparation failed due disk exhaustion. UI revision and cancellation passed; final state CANCELLED."
+    },
+    {
+      "run_id": "e105f220-ddfc-4126-9518-e968bdcc9e12",
+      "outcome": "Second fresh fixture attempt failed creating verifier temp directory due disk exhaustion; cancelled through API."
+    }
+  ],
+  "limits": [
+    "Deterministic fixture provenance only; no live model capability was evaluated.",
+    "The accepted run was created by the platform HTTP acceptance harness and was preserved; this browser check validated its real UI inspection and current release download.",
+    "Fresh fixture generation in the separate UI-created run was blocked by disk exhaustion. Coverage is composed across actual runs, not a single fresh creation-through-release browser scenario.",
+    "Chromium only, desktop 1440x1050 and mobile 390x844 viewports; this is not a complete accessibility or cross-browser audit.",
+    "Role credentials were read privately, cleared from input before screenshots, and excluded from this report."
+  ]
+}

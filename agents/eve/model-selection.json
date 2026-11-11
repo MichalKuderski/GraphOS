@@ -1,0 +1,95 @@
+{
+  "verified_date": "2026-11-07",
+  "catalog_url": "https://ai-gateway.vercel.sh/v1/models",
+  "catalog_entries": 498,
+  "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+  "model_id": "openai/gpt-5.1-codex-mini",
+  "selection_reason": "Explicit switch after GPT-6 Luna free-tier rejection: economical coding-focused model advertising structured output and availableToFreeTier=true in the current Vercel model directory. Not an automatic fallback or a quality ranking.",
+  "reasoning": "low",
+  "context_window": 400000,
+  "pricing_unit": "USD per token",
+  "pricing": {
+    "input": "0.00000025",
+    "output": "0.000002",
+    "input_cache_read": "0.00000003",
+    "web_search": "14"
+  },
+  "model_metadata": {
+    "id": "openai/gpt-5.1-codex-mini",
+    "object": "model",
+    "created": 1755815280,
+    "released": 1762905600,
+    "owned_by": "openai",
+    "name": "GPT 5.1 Codex Mini",
+    "description": "GPT-5.1 Codex mini is a smaller, faster, and cheaper version of GPT-5.1 Codex.",
+    "context_window": 400000,
+    "max_tokens": 128000,
+    "type": "language",
+    "zdr": "all",
+    "no_training": "all",
+    "tags": [
+      "file-input",
+      "implicit-caching",
+      "reasoning",
+      "tool-use",
+      "vision",
+      "web-search",
+      "structured-output"
+    ],
+    "supported_specifications": [
+      "v2",
+      "v3",
+      "v4"
+    ],
+    "modalities": {
+      "input": [
+        "text",
+        "image",
+        "pdf"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "supported_parameters": [
+      "max_tokens",
+      "temperature",
+      "stop",
+      "tools",
+      "tool_choice",
+      "reasoning",
+      "include_reasoning",
+      "response_format",
+      "structured_outputs"
+    ],
+    "temperature": true,
+    "reasoning_options": [
+      {
+        "type": "toggle"
+      },
+      {
+        "type": "effort",
+        "values": [
+          "none",
+          "low",
+          "medium",
+          "high"
+        ]
+      }
+    ],
+    "knowledge": "2024-09-30",
+    "pricing": {
+      "input": "0.00000025",
+      "output": "0.000002",
+      "input_cache_read": "0.00000003",
+      "web_search": "14"
+    }
+  },
+  "access_evidence": {
+    "url": "https://vercel.com/ai-gateway/models?freeTier=true",
+    "availableToFreeTier": true,
+    "directory_snapshot_sha256": "e14fd57536a9edd2146ce255cf6b84d1ae518438de3ff09f7bae4be2ecafb94e"
+  },
+  "previous_selection": "model-selection-gpt6.json",
+  "previous_rejection": "HTTP403 no_providers_available: free tier users do not have access to GPT-6 Luna"
+}

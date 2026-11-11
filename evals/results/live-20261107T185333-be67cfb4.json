@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "mode": "live-model",
+  "status": "PASS",
+  "started_at": "2026-11-07T18:53:33.101405+00:00",
+  "source_digest": "bf31dc9926cda5883bff06cf39a05b15ff8d3080bf50cb45341393b1757320b0",
+  "max_attempts": 1,
+  "budget_microdollars": 1000000,
+  "attempt_reservation_microdollars": 1000000,
+  "gateway_budget_is_soft": true,
+  "attempts": [
+    {
+      "number": 1,
+      "started_at": "2026-11-07T18:53:41.878413+00:00",
+      "stage": "VERIFIED",
+      "build_status": "submitted",
+      "build_identity": {
+        "attempt_id": "3daf72a4-3d27-41a5-9793-48e34b40ed9b",
+        "task_id": "184cf2c5-8704-404a-b438-dd0179b779f1",
+        "epoch": 1,
+        "revision": 1,
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242"
+      },
+      "usage": {
+        "input_tokens": 6192,
+        "output_tokens": 4704,
+        "cache_read_tokens": 1280,
+        "cache_write_tokens": 0,
+        "actual_cost_microdollars": 10675,
+        "model_runs": 2,
+        "cost_source": "eve_gateway_usage_events",
+        "generations": [
+          {
+            "run_id": "run_0",
+            "generation_id": "gen_01M6VNR0DSQ5FMYKCX7WQPN2R3",
+            "finish_reason": "tool-calls"
+          },
+          {
+            "run_id": "run_1",
+            "generation_id": "gen_01M6VNRCJEA2CCD1BAK9QKWE79",
+            "finish_reason": "tool-calls"
+          }
+        ]
+      },
+      "provenance": {
+        "mode": "eve",
+        "model": "openai/gpt-5.1-codex-mini",
+        "session_id": "wrun_01M6VNQZVX1FQ7Z5M316RQANPT",
+        "delivery_id": "251953ac-7707-4659-8434-387c8f26d8f6",
+        "request_sha256": "27e88771c695a763332e6ee0c3e9bfafc8077dcaf32d4420aa930809c4696dac",
+        "catalog_sha256": "530d1d56cd0a5bf0a56393f547f7609534f11b7905713a4d4736aa598a4e72ff",
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242",
+        "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+        "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+        "generated_at": "2026-11-07T18:54:13.319Z"
+      },
+      "verification_identity": {
+        "attempt_id": "ba7b7332-b1ce-43d0-8b03-12f2356430c4",
+        "candidate_hash": "2f9a8bfaf37335ac9b1c44baea35609d74d7bc8acd9cb642a8609cc2ef1f21ed",
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242",
+        "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+        "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77"
+      },
+      "verification_status": "verified",
+      "passed": true,
+      "report": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "accessible_structure",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "add_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "toggle_completion",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "filter_tasks",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "delete_task",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "local_storage_reload",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "reject_empty_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          },
+          {
+            "name": "literal_html_input",
+            "passed": true,
+            "detail": "Observed in Chromium"
+          }
+        ],
+        "runner": "docker-trusted-playwright-static-web-v1",
+        "browser_process_sandbox": false,
+        "duration_ms": 10347,
+        "suite_hash": "1bedecfd805e08297b182cd91fc13e38fa3cd9d7551006a08b60ac90c14c803e",
+        "policy_hash": "f8914dcee58454212b2f8872e69575af47a827804697d1e1a3f942bdcbf55e77",
+        "image": "graphos-verifier:local",
+        "image_id": "sha256:2d978e4d6df94d6cc3ac5967807a85be639a74f0121b97c9760a8caf336165ff"
+      },
+      "finished_at": "2026-11-07T18:54:23.822858+00:00"
+    }
+  ],
+  "production_certification": false,
+  "limits": [
+    "One fixed static-web task-list contract",
+    "No statistical reliability estimate",
+    "Operator must reconcile remaining session spend before dispatch",
+    "Process termination does not guarantee provider cancellation"
+  ],
+  "compiled_from_current_source": true,
+  "run_id": "8a0181b8-bdac-49b6-9902-8c2686de815a",
+  "state": "READY_FOR_RELEASE",
+  "spent_microdollars": 10675,
+  "accounting_reconciliation_required": false,
+  "export": {
+    "exported": "/workspace/GraphOS/.state/live-deliveries/20261107T185333-be67cfb4",
+    "tasks": 1,
+    "run_id": "8a0181b8-bdac-49b6-9902-8c2686de815a",
+    "revision": 1,
+    "manifest_hash": "cdd1a2503e364f2f5ebdd5cc031a7a3fb18463b4407cead3b10ef1104c06873e"
+  },
+  "finished_at": "2026-11-07T18:54:24.027449+00:00",
+  "source_unchanged": true
+}

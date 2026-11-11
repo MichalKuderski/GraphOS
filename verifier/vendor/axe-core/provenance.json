@@ -1,0 +1,16 @@
+{
+  "name": "axe-core",
+  "version": "4.14.0",
+  "license": "MPL-2.0",
+  "source": "https://registry.npmjs.org/axe-core/4.14.0",
+  "tarball": "https://registry.npmjs.org/axe-core/-/axe-core-4.14.0.tgz",
+  "integrity": "sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==",
+  "integrity_verified": true,
+  "retrieved_on": "2026-11-07",
+  "files_sha256": {
+    "axe.min.js": "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878",
+    "LICENSE": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e",
+    "package.json": "486715407f3c8c7d1de882bacc2622acb0adf1ec0f21807fc1251aed64bf9001"
+  },
+  "note": "Registry tarball SHA-512 verified before extracting these unchanged upstream files. Registry signatures and SLSA attestations were not independently verified."
+}

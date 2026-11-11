@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mode": "live-model",
+  "status": "FAIL",
+  "started_at": "2026-11-07T18:42:41.736111+00:00",
+  "source_digest": "e0324a114ce7e8f85e413edb8480aff1b08f5cf2ea97b493d5397dfad68c1f68",
+  "max_attempts": 1,
+  "budget_microdollars": 1000000,
+  "attempt_reservation_microdollars": 1000000,
+  "gateway_budget_is_soft": true,
+  "attempts": [
+    {
+      "number": 1,
+      "started_at": "2026-11-07T18:42:49.034229+00:00",
+      "stage": "STOPPED_AFTER_BUILD",
+      "build_status": "failed",
+      "build_identity": {
+        "attempt_id": "d57e3f19-0ce1-46ea-bf09-e4165aa0955b",
+        "task_id": "03a113c7-88b3-403c-9d9d-49f7551db6b4",
+        "epoch": 1,
+        "revision": 1,
+        "input_hash": "a2015856510d7122eef273bfe8127dc1ce1f7d98e2c86433bb519a59bac02242"
+      },
+      "usage": {},
+      "provenance": {
+        "mode": "eve"
+      },
+      "finished_at": "2026-11-07T18:43:08.751693+00:00"
+    }
+  ],
+  "production_certification": false,
+  "limits": [
+    "One fixed static-web task-list contract",
+    "No statistical reliability estimate",
+    "Operator must reconcile remaining session spend before dispatch",
+    "Process termination does not guarantee provider cancellation"
+  ],
+  "compiled_from_current_source": true,
+  "run_id": "10223221-ac3c-4bf6-a4d5-61ad8eb0b596",
+  "state": "EXHAUSTED",
+  "spent_microdollars": 6277,
+  "accounting_reconciliation_required": false,
+  "finished_at": "2026-11-07T18:43:08.947558+00:00",
+  "source_unchanged": true
+}
